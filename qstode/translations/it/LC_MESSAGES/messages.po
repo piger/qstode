@@ -1,0 +1,841 @@
+# Italian translations for QStode.
+# Copyright (C) 2012 Daniel Kertesz <daniel@spatof.org>
+# This file is distributed under the same license as the QStode project.
+# Daniel Kertesz <daniel@spatof.org>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: QStode 0.1.13\n"
+"Report-Msgid-Bugs-To: daniel@spatof.org\n"
+"POT-Creation-Date: 2013-10-27 17:09+0100\n"
+"PO-Revision-Date: 2013-10-27 17:13+0100\n"
+"Last-Translator: Daniel Kertesz <daniel@spatof.org>\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: qstode/forms/admin.py:22 qstode/forms/admin.py:42 qstode/forms/user.py:64
+#: qstode/forms/user.py:89 qstode/forms/user.py:112
+#: qstode/templates-ink/admin/list_users.html:13
+msgid "Username"
+msgstr "Username"
+
+#: qstode/forms/admin.py:28 qstode/forms/admin.py:48 qstode/forms/user.py:39
+#: qstode/forms/user.py:43 qstode/forms/user.py:66 qstode/forms/user.py:118
+msgid "Email"
+msgstr "Email"
+
+#: qstode/forms/admin.py:33 qstode/forms/admin.py:52 qstode/forms/user.py:40
+#: qstode/forms/user.py:70 qstode/forms/user.py:98
+msgid "Password"
+msgstr "Password"
+
+#: qstode/forms/admin.py:38
+msgid "Administrator"
+msgstr "Amministratore"
+
+#: qstode/forms/admin.py:39 qstode/forms/admin.py:66
+#: qstode/templates-ink/admin/list_users.html:25
+msgid "Active"
+msgstr "Attivo"
+
+#: qstode/forms/admin.py:58 qstode/forms/user.py:55 qstode/forms/user.py:77
+#: qstode/forms/user.py:106
+msgid "Passwords must match"
+msgstr "Le password non corrispondono"
+
+#: qstode/forms/admin.py:61 qstode/forms/user.py:58 qstode/forms/user.py:109
+msgid "Confirm new password"
+msgstr "Conferma nuova password"
+
+#: qstode/forms/admin.py:65 qstode/templates/page_common.html:25
+msgid "Admin"
+msgstr "Amministrazione"
+
+#: qstode/forms/bookmark.py:61 qstode/templates/navbar.html:51
+#: qstode/templates-ink/navbar.html:51
+msgid "Search tags"
+msgstr "Ricerca tag"
+
+#: qstode/forms/bookmark.py:69
+msgid "Search query"
+msgstr "Query di ricerca"
+
+#: qstode/forms/bookmark.py:82
+msgid "Title"
+msgstr "Titolo"
+
+#: qstode/forms/bookmark.py:83
+msgid "URL"
+msgstr "URL"
+
+#: qstode/forms/bookmark.py:84
+msgid "Private"
+msgstr "Privato"
+
+#: qstode/forms/bookmark.py:85 qstode/forms/bookmark.py:114
+#: qstode/templates-ink/about.html:37
+msgid "Tag"
+msgstr "Tag"
+
+#: qstode/forms/bookmark.py:88
+msgid "Note"
+msgstr "Note"
+
+#: qstode/forms/bookmark.py:118
+msgid "Name"
+msgstr "Nome"
+
+#: qstode/forms/bookmark.py:121
+msgid "Rename"
+msgstr "Rinomina"
+
+#: qstode/forms/bookmark.py:125
+msgid "Tag already exists"
+msgstr "Tag già presente nel database"
+
+#: qstode/forms/user.py:30
+msgid "Username already exists"
+msgstr "Username non disponibile"
+
+#: qstode/forms/user.py:34
+msgid "E-mail already registered"
+msgstr "E-mail non disponibile"
+
+#: qstode/forms/user.py:47
+msgid "New password"
+msgstr "Nuova password"
+
+#: qstode/forms/user.py:52 qstode/forms/user.py:75 qstode/forms/user.py:103
+#, python-format
+msgid "Password length must be between %(min)d and %(max)d characters"
+msgstr ""
+"La lunghezza della password deve essere tra %(min)d e %(max)d caratteri"
+
+#: qstode/forms/user.py:80
+msgid "Confirm password"
+msgstr "Conferma password"
+
+#: qstode/templates/404.html:2 qstode/templates-ink/404.html:2
+msgid "Page not found"
+msgstr "Pagina non trovata"
+
+#: qstode/templates/404.html:8 qstode/templates-ink/404.html:5
+msgid "404 - Page not found"
+msgstr "404 - Pagina non trovata"
+
+#: qstode/templates/404.html:9 qstode/templates-ink/404.html:7
+msgid ""
+"The page you requested could not be found and the server is sad about it."
+msgstr ""
+"La pagina richiesta non è stata trovata, con sommo dispiacere del server."
+
+#: qstode/templates/404.html:11 qstode/templates/500.html:10
+#: qstode/templates-ink/404.html:9 qstode/templates-ink/500.html:7
+msgid "Back"
+msgstr "Torna indietro"
+
+#: qstode/templates/500.html:2 qstode/templates-ink/500.html:2
+msgid "Server Error"
+msgstr "Errore del server"
+
+#: qstode/templates/500.html:8 qstode/templates-ink/500.html:5
+msgid "An unexpected error has occurred"
+msgstr "Il server ha prodotto un errore processando la richiesta"
+
+#: qstode/templates/_common.html:5 qstode/templates-ink/_common.html:5
+msgid "A selection of the best articles passing by our displays"
+msgstr ""
+"Una selezione <em>critica</em> dei migliori articoli che passano sui nostri "
+"schermi"
+
+#: qstode/templates/_post_macros.html:18
+#: qstode/templates-ink/_post_macros.html:27
+msgid "Title of the bookmark"
+msgstr "Titolo del bookmark"
+
+#: qstode/templates/_post_macros.html:30
+#: qstode/templates-ink/_post_macros.html:43
+msgid "A comma-separated list of tags"
+msgstr "Una lista di tag separate da virgola"
+
+#: qstode/templates/_post_macros.html:45
+msgid "To save a private bookmark."
+msgstr "Per salvare un bookmark privato."
+
+#: qstode/templates/_post_macros.html:54
+#: qstode/templates-ink/_post_macros.html:59
+msgid ""
+"Select some text from the bookmarked page and it will appear here, or write "
+"a note."
+msgstr ""
+"Seleziona del testo dalla pagina che stai salvando per farlo comparire qui, "
+"oppure scrivi una nota."
+
+#: qstode/templates/_single_bookmark.html:47
+#: qstode/templates-ink/_single_bookmark.html:37
+msgid "PRIVATE"
+msgstr "PRIVATO"
+
+#: qstode/templates/_single_bookmark.html:49
+#: qstode/templates-ink/_single_bookmark.html:16
+#, python-format
+msgid "added %(quando)s"
+msgstr "aggiunto %(quando)s"
+
+#: qstode/templates/_single_bookmark.html:52
+msgid "Modify"
+msgstr "Modifica"
+
+#: qstode/templates/about.html:2 qstode/templates/navbar.html:40
+#: qstode/templates-ink/_topbar.html:8 qstode/templates-ink/about.html:2
+#: qstode/templates-ink/footer.html:30 qstode/templates-ink/navbar.html:40
+msgid "About"
+msgstr "About"
+
+#: qstode/templates/about.html:15 qstode/templates-ink/about.html:33
+msgid "Statistics"
+msgstr "Statistiche"
+
+#: qstode/templates/advanced_search.html:2
+#: qstode/templates/advanced_search.html:9
+#: qstode/templates/page_common.html:15
+#: qstode/templates-ink/advanced_search.html:2
+msgid "Advanced search"
+msgstr "Ricerca avanzata"
+
+#: qstode/templates/create_profile.html:3
+msgid "Create profile"
+msgstr "Crea profilo"
+
+#: qstode/templates/create_profile.html:9
+msgid "Create your user profile"
+msgstr "Crea il tuo profilo utente"
+
+#: qstode/templates/create_profile.html:35
+msgid "Create"
+msgstr "Crea"
+
+#: qstode/templates/footer.html:3 qstode/templates-ink/footer.html:54
+msgid "Back to top"
+msgstr "Torna in cima"
+
+#: qstode/templates/footer.html:4
+msgid "Built with"
+msgstr "Costruito con"
+
+#: qstode/templates/footer.html:5
+msgid "Icons from"
+msgstr "Icone create da"
+
+#: qstode/templates/footer.html:5
+msgid "licensed under"
+msgstr "sotto licenza"
+
+#: qstode/templates/footer.html:7
+msgid "Contact us: <em>info [at] qsto.de</em>"
+msgstr "Per informazioni e contatti: <em>info [at] qsto.de</em>"
+
+#: qstode/templates/help.html:2
+msgid "How to use QStode"
+msgstr "Come usare QStode"
+
+#: qstode/templates/help.html:9
+msgid "Usage manual"
+msgstr "Manuale d'uso"
+
+#: qstode/templates/navbar.html:23 qstode/templates-ink/navbar.html:23
+msgid "Edit profile"
+msgstr "Modifica profilo"
+
+#: qstode/templates/navbar.html:25 qstode/templates-ink/navbar.html:25
+msgid "Sign Out"
+msgstr "Esci"
+
+#: qstode/templates/navbar.html:29 qstode/templates-ink/_topbar.html:46
+#: qstode/templates-ink/navbar.html:29
+msgid "Login"
+msgstr "Entra"
+
+#: qstode/templates/navbar.html:35 qstode/templates/page_common.html:14
+#: qstode/templates-ink/_topbar.html:6 qstode/templates-ink/index.html:3
+#: qstode/templates-ink/navbar.html:35
+msgid "Home"
+msgstr "Home"
+
+#: qstode/templates/navbar.html:37 qstode/templates/page_common.html:17
+#: qstode/templates-ink/_sidebar.html:5 qstode/templates-ink/_topbar.html:7
+#: qstode/templates-ink/navbar.html:37 qstode/templates-ink/post.html:11
+msgid "Help"
+msgstr "Aiuto"
+
+#: qstode/templates/navbar.html:44 qstode/templates-ink/_form_helpers.html:22
+#: qstode/templates-ink/_topbar.html:11 qstode/templates-ink/navbar.html:44
+#: qstode/templates-ink/post_popup.html:19
+#: qstode/templates-ink/request_reset_change.html:40
+msgid "Save"
+msgstr "Salva"
+
+#: qstode/templates/page_common.html:13
+msgid "Shortcuts"
+msgstr "Scorciatoie"
+
+#: qstode/templates/page_common.html:32
+msgid "See also"
+msgstr "Vedi anche"
+
+#: qstode/templates/page_common.html:54 qstode/templates-ink/_sidebar.html:22
+msgid "Popular tags"
+msgstr "Tag popolari"
+
+#: qstode/templates/page_with_bookmarks.html:32
+#: qstode/templates-ink/page_with_bookmarks.html:20
+msgid "No bookmark was found matching your request."
+msgstr "Non sono stati trovati bookmark corrispondenti."
+
+#: qstode/templates/permission_denied.html:6
+#: qstode/templates/register_user.html:30
+msgid "Warning!"
+msgstr "Attenzione!"
+
+#: qstode/templates/permission_denied.html:7
+msgid "You don't have the permission required to view this page."
+msgstr "Non hai i permessi necessari per visualizzare la pagina richiesta."
+
+#: qstode/templates/register_user.html:9
+msgid "New user registration"
+msgstr "Registrazione nuovo utente"
+
+#: qstode/templates/register_user.html:24
+msgid "Register"
+msgstr "Registrati"
+
+#: qstode/templates/register_user.html:30
+msgid "Registration of new users is currently disabled."
+msgstr "La registrazione di nuovi utenti non è attiva."
+
+#: qstode/templates/search_results.html:3 qstode/templates/tag_results.html:3
+#: qstode/templates/tag_results.html:12
+#: qstode/templates-ink/search_results.html:2
+#: qstode/templates-ink/search_results.html:9
+#: qstode/templates-ink/tag_results.html:2
+#: qstode/templates-ink/tag_results.html:6
+msgid "Search results"
+msgstr "Risultati della ricerca"
+
+#: qstode/templates/search_results.html:13
+#: qstode/templates-ink/search_results.html:7
+#, python-format
+msgid "Search results for: %(query)s"
+msgstr "Risultati della ricerca per: %(query)s"
+
+#: qstode/templates/search_results.html:33
+#: qstode/templates/tag_results.html:40
+msgid "Your search didn't match any bookmark."
+msgstr "La ricerca non ha prodotto risultati."
+
+#: qstode/templates/single_bookmark.html:20
+#: qstode/templates-ink/single_bookmark.html:20
+msgid "Other bookmarks in the same category"
+msgstr "Altri bookmark nella stessa categoria"
+
+#: qstode/templates/tagged.html:2
+msgid "Tag search "
+msgstr "Ricerca per tag"
+
+#: qstode/templates/tagged.html:5 qstode/templates-ink/tagged.html:6
+msgid "Tagged with:"
+msgstr "Taggati con:"
+
+#: qstode/templates/tagged.html:11 qstode/templates-ink/tagged.html:9
+msgid "near tags:"
+msgstr "tag vicine:"
+
+#: qstode/templates/unauthenticated.html:2
+#: qstode/templates-ink/unauthenticated.html:2
+msgid "Authentication required"
+msgstr "Per visualizzare la pagina richiesta è necessario autenticarsi"
+
+#: qstode/templates/unauthenticated.html:7
+#, python-format
+msgid "You must %(login)s first."
+msgstr "Devi prima effettuare l'%(login)s"
+
+#: qstode/templates/unauthenticated.html:7
+msgid "sign on"
+msgstr "accesso"
+
+#: qstode/templates/admin/create_user.html:3
+msgid "Admin: create user"
+msgstr "Amministrazione: crea utente"
+
+#: qstode/templates/admin/create_user.html:7
+msgid "Create a new user"
+msgstr "Crea un nuovo utente"
+
+#: qstode/templates/admin/delete_user.html:2
+msgid "Delete user"
+msgstr "Cancella utente"
+
+#: qstode/templates/admin/delete_user.html:5
+#, python-format
+msgid "Delete user %(username)s"
+msgstr "Cancella l'utente %(username)s"
+
+#: qstode/templates/admin/edit_user.html:3
+msgid "Admin: modify user"
+msgstr "Amministrazione: modifica utente"
+
+#: qstode/templates/admin/edit_user.html:6
+msgid "Modify user profile"
+msgstr "Modifica profilo utente"
+
+#: qstode/templates/admin/edit_user.html:36
+#: qstode/templates-ink/admin/edit_user.html:22
+msgid "Update"
+msgstr "Aggiorna"
+
+#: qstode/templates/admin/index.html:10
+#: qstode/templates-ink/admin/index.html:9
+msgid "User list"
+msgstr "Lista utenti"
+
+#: qstode/templates/admin/index.html:11
+msgid "Create user"
+msgstr "Crea utente"
+
+#: qstode/templates-ink/_form_helpers.html:23
+#: qstode/templates-ink/delete_bookmark.html:18
+#: qstode/templates-ink/post_popup.html:20
+msgid "Cancel"
+msgstr "Annulla"
+
+#: qstode/templates-ink/_form_helpers.html:29
+msgid "Page:"
+msgstr "Pagina:"
+
+#: qstode/templates-ink/_sidebar.html:4
+#: qstode/templates-ink/advanced_search.html:6
+msgid "Advanced Search"
+msgstr "Ricerca avanzata"
+
+#: qstode/templates-ink/_sidebar.html:8 qstode/templates-ink/_topbar.html:40
+msgid "My Bookmarks"
+msgstr "I miei bookmark"
+
+#: qstode/templates-ink/_sidebar.html:11
+#: qstode/templates-ink/admin/index.html:6
+msgid "Administration"
+msgstr "Amministrazione"
+
+#: qstode/templates-ink/_sidebar.html:15
+msgid "RSS Feed"
+msgstr "Feed RSS"
+
+#: qstode/templates-ink/_single_bookmark.html:43
+#: qstode/templates-ink/delete_bookmark.html:17
+#: qstode/templates-ink/admin/list_users.html:16
+#: qstode/templates-ink/admin/list_users.html:26
+msgid "Delete"
+msgstr "Cancella"
+
+#: qstode/templates-ink/_topbar.html:17
+#: qstode/templates-ink/advanced_search.html:28
+msgid "Search"
+msgstr "Ricerca"
+
+#: qstode/templates-ink/_topbar.html:41
+msgid "Edit Profile"
+msgstr "Modifica profilo"
+
+#: qstode/templates-ink/_topbar.html:42
+msgid "Logout"
+msgstr "Esci"
+
+#: qstode/templates-ink/about.html:6
+msgid "About QStode"
+msgstr "A proposito di QStode"
+
+#: qstode/templates-ink/about.html:17
+msgid "Third party libraries and licenses"
+msgstr "Software di terze parti e license"
+
+#: qstode/templates-ink/about.html:36
+msgid "Bookmark"
+msgstr "Bookmark"
+
+#: qstode/templates-ink/advanced_search.html:8
+msgid "Ask QStode about something:"
+msgstr "Chiedi qualcosa a QStode:"
+
+#: qstode/templates-ink/delete_bookmark.html:7
+msgid "Deleting Bookmark"
+msgstr "Cancellando bookmark"
+
+#: qstode/templates-ink/delete_bookmark.html:9
+msgid "Do you really want to delete this bookmark?"
+msgstr "Vuoi veramente cancellare questo bookmark?"
+
+#: qstode/templates-ink/edit_bookmark.html:8
+msgid "Edit Bookmark"
+msgstr "Modifica bookmark"
+
+#: qstode/templates-ink/help.html:2 qstode/templates-ink/help.html:6
+msgid "Help Manual"
+msgstr "Manuale d'uso"
+
+#: qstode/templates-ink/index.html:6
+msgid "Latest bookmarks"
+msgstr "Ultimi bookmark"
+
+#: qstode/templates-ink/login.html:2 qstode/templates-ink/login.html:6
+msgid "Sign on"
+msgstr "Login"
+
+#: qstode/templates-ink/login.html:35
+msgid "ERROR"
+msgstr "ERRORE"
+
+#: qstode/templates-ink/login.html:35
+msgid "Authentication failed!"
+msgstr "Autenticazione fallita!"
+
+#: qstode/templates-ink/login.html:39
+msgid "Sign in"
+msgstr "Accedi"
+
+#: qstode/templates-ink/login.html:43
+#, python-format
+msgid "Forgot your password? You can request a %(reset)s!"
+msgstr "Hai dimenticato la password? Puoi richiedere un %(reset)s!"
+
+#: qstode/templates-ink/login.html:43
+msgid "reset"
+msgstr "reset"
+
+#: qstode/templates-ink/login.html:45
+#, python-format
+msgid ""
+"If you are lazy you could also try to sign on with %(google)s OpenID by "
+"clicking %(openid_login)s."
+msgstr ""
+"Se sei pigro puoi anche provare il login tramite OpenID con %(google)s "
+"cliccando %(openid_login)s."
+
+#: qstode/templates-ink/login.html:45
+#: qstode/templates-ink/user_details.html:10
+msgid "here"
+msgstr "qui"
+
+#: qstode/templates-ink/password_reset_email.html:3
+msgid "QStode &mdhash; Password reset"
+msgstr "QStode &mdash; Reset password"
+
+#: qstode/templates-ink/password_reset_email.html:7
+msgid "QStode &mdash; Password recovery"
+msgstr "QStode &mdash; Recupero password"
+
+#: qstode/templates-ink/password_reset_email.html:9
+#, python-format
+msgid ""
+"A password reset was requested for your account at <a href=\"%(main_url)s"
+"\">QStode</a>; to set a new password click <a href=\"%(reset_url)s\">here</"
+"a>."
+msgstr ""
+"È stata richiesto un reset della password per il tuo account su <a href="
+"\"%(main_url)s\">QStode</a>; per impostare una nuova password clicca <a href="
+"\"%(reset_url)s\">qui</a>"
+
+#: qstode/templates-ink/password_reset_email.html:11
+msgid ""
+"If you haven't requested a password reset you can safely ignore this message."
+msgstr ""
+"Se non hai richiesto un reset della password puoi ignorare questo messaggio."
+
+#: qstode/templates-ink/post.html:4
+msgid "Save a bookmark"
+msgstr "Salva un bookmark"
+
+#: qstode/templates-ink/post.html:8
+msgid "Save a Bookmark"
+msgstr "Salva un bookmark"
+
+#: qstode/templates-ink/post.html:11
+#, python-format
+msgid ""
+"To add a Bookmark you can also use the <strong>bookmarklet</strong>! Check "
+"out the %(help)s section to find out more."
+msgstr ""
+"Per salvare un bookmark puoi usare anche il <strong>bookmarklet</strong>! "
+"Troverai maggiorni informazioni nella sezione %(help)s."
+
+#: qstode/templates-ink/post_popup.html:3
+msgid "Post a new bookmark"
+msgstr "Salva un nuovo bookmark"
+
+#: qstode/templates-ink/request_reset.html:3
+#: qstode/templates-ink/request_reset_done.html:2
+msgid "Request a reset of your password"
+msgstr "Richiedi un reset della tua password"
+
+#: qstode/templates-ink/request_reset.html:7
+msgid "Password reset"
+msgstr "Reset della password"
+
+#: qstode/templates-ink/request_reset.html:10
+msgid ""
+"If you have lost your password you can request a reset by filling the form "
+"below with your email address; you will soon receive a mail with further "
+"instructions (remember to check your <strong>spam</strong> folder!)."
+msgstr ""
+"Se hai perso la password puoi richiedere un reset inserendo nel campo "
+"sottostante il tuo indirizzo email; riceverai presto istruzioni per "
+"procedere (e ricorda di controllare la cartella dello <strong>spam</"
+"strong>!)."
+
+#: qstode/templates-ink/request_reset.html:24
+msgid "Send request"
+msgstr "Invia richiesta"
+
+#: qstode/templates-ink/request_reset_change.html:3
+#: qstode/templates-ink/request_reset_change.html:7
+msgid "Password recovery: choose a new password"
+msgstr "Recupero password: inserisci una nuova password"
+
+#: qstode/templates-ink/request_reset_done.html:6
+msgid "Password reset: sent"
+msgstr "Password reset: inviato"
+
+#: qstode/templates-ink/request_reset_done.html:9
+msgid ""
+"A password reset process is already active for your account; check your "
+"email, especially your <strong>spam</strong> folder!"
+msgstr ""
+"Una procedura di password reset è già attiva per il tuo account; controlla "
+"la tua email, specialmente la cartella dello <strong>spam</strong>!"
+
+#: qstode/templates-ink/request_reset_done.html:11
+msgid ""
+"If the email address was correct you will soon receive an email with further "
+"instructions to reset your password. Remember to check also the "
+"<strong>spam</strong> folder of your email account."
+msgstr ""
+"Se l'indirizzo email che hai inserito è corretto riceverai presto un "
+"messaggio con le istruzioni per procedere con il reset della tua password. "
+"Ricorda anche di controllare la cartella dello <strong>spam</strong> nella "
+"tua casella email."
+
+#: qstode/templates-ink/reset_password_done.html:3
+msgid "Password reset: done"
+msgstr "Password reset: completato"
+
+#: qstode/templates-ink/reset_password_done.html:7
+msgid "Password reset complete"
+msgstr "Password reset completato"
+
+#: qstode/templates-ink/reset_password_done.html:9
+#, python-format
+msgid ""
+"Password successfully updated! You can now <a href=\"%(login)s\">sign on</a> "
+"using your new password."
+msgstr ""
+"La tua password è stata aggiornata! Puoi procedere effettuando il <a href="
+"\"%(login)s\">login</a> usando le tue nuove credenziali."
+
+#: qstode/templates-ink/tagged.html:2
+msgid "Tag search"
+msgstr "Ricerca per tag"
+
+#: qstode/templates-ink/unauthenticated.html:10
+#, python-format
+msgid "You must <a href=\"%(login)s\">sign in</a> first!"
+msgstr "Devi effettuare <a href=\"%(login)s\">l'accesso</a> prima!"
+
+#: qstode/templates-ink/user_bookmarks.html:2
+#, python-format
+msgid "%(username)s's bookmarks"
+msgstr "bookmark di %(username)s"
+
+#: qstode/templates-ink/user_bookmarks.html:5
+#, python-format
+msgid "Bookmarks of <em>%(username)s</em>"
+msgstr "Bookmark di <em>%(username)s</em>"
+
+#: qstode/templates-ink/user_details.html:3
+msgid "Profile"
+msgstr "Profilo utente"
+
+#: qstode/templates-ink/user_details.html:7
+msgid "User profile"
+msgstr "Profilo utente"
+
+#: qstode/templates-ink/user_details.html:10
+#, python-format
+msgid ""
+"If your email account is hosted at %(gmail)s you can try to enable the "
+"OpenID login by clicking %(openid_login)s."
+msgstr ""
+"Se il tuo account di posta è ospitato da %(gmail)s puoi provare ad abilitare "
+"il login con OpenID cliccando %(openid_login)s."
+
+#: qstode/templates-ink/user_details.html:13
+#, python-format
+msgid "Your email address is: <em>%(email)s</em>"
+msgstr "L'indirizzo e-mail con cui sei registrato è <em>%(email)s</em>"
+
+#: qstode/templates-ink/user_details.html:22
+msgid "You can leave this blank if you don't want to change password"
+msgstr "Puoi lasciare questo campo in bianco se non desideri cambiare password"
+
+#: qstode/templates-ink/user_details.html:36
+#, python-format
+msgid ""
+"<a href=\"%(backup)s\">Download</a> a backup of your bookmarks in HTML format"
+msgstr ""
+"<a href=\"%(backup)s\">Scarica</a> una copia di backup dei tuoi bookmark in "
+"formato HTML."
+
+#: qstode/templates-ink/admin/create_user.html:3
+#: qstode/templates-ink/admin/create_user.html:7
+msgid "Administration: create new user"
+msgstr "Amministrazione: crea nuovo utente"
+
+#: qstode/templates-ink/admin/delete_user.html:3
+#: qstode/templates-ink/admin/delete_user.html:7
+msgid "Administration: delete user"
+msgstr "Amministrazione: cancella utente"
+
+#: qstode/templates-ink/admin/edit_user.html:3
+#: qstode/templates-ink/admin/edit_user.html:7
+msgid "Administration: modify user"
+msgstr "Amministrazione: modifica utente"
+
+#: qstode/templates-ink/admin/index.html:2
+msgid "Administration: index"
+msgstr "Amministrazione: indice"
+
+#: qstode/templates-ink/admin/index.html:10
+msgid "Create new user"
+msgstr "Crea un nuovo utente"
+
+#: qstode/templates-ink/admin/list_users.html:3
+#: qstode/templates-ink/admin/list_users.html:7
+msgid "Administration: manage users"
+msgstr "Amministrazione: gestione utenti"
+
+#: qstode/templates-ink/admin/list_users.html:14
+msgid "E-mail"
+msgstr "E-mail"
+
+#: qstode/templates-ink/admin/list_users.html:15
+msgid "Status"
+msgstr "Stato"
+
+#: qstode/templates-ink/admin/list_users.html:25
+msgid "Inactive"
+msgstr "Inattivo"
+
+#: qstode/views/admin.py:53
+#, python-format
+msgid "Successfully created user %(username)s"
+msgstr "Utente %(username)s creato con successo"
+
+#: qstode/views/admin.py:90
+#, python-format
+msgid "User %(user)s updated"
+msgstr "Utente %(user)s aggiornato"
+
+#: qstode/views/bookmark.py:154
+msgid "Bookmark added!"
+msgstr "Bookmark aggiunto!"
+
+#: qstode/views/bookmark.py:198
+msgid "Bookmark modified"
+msgstr "Bookmark modificato"
+
+#: qstode/views/bookmark.py:224
+msgid "Bookmark deleted"
+msgstr "Bookmark cancellato"
+
+#: qstode/views/filters.py:69
+msgid "year"
+msgstr "anno"
+
+#: qstode/views/filters.py:69
+msgid "years"
+msgstr "anni"
+
+#: qstode/views/filters.py:70
+msgid "month"
+msgstr "mese"
+
+#: qstode/views/filters.py:70
+msgid "months"
+msgstr "mesi"
+
+#: qstode/views/filters.py:71
+msgid "week"
+msgstr "settimana"
+
+#: qstode/views/filters.py:71
+msgid "weeks"
+msgstr "settimane"
+
+#: qstode/views/filters.py:72
+msgid "day"
+msgstr "giorno"
+
+#: qstode/views/filters.py:72
+msgid "days"
+msgstr "giorni"
+
+#: qstode/views/filters.py:73
+msgid "hour"
+msgstr "ora"
+
+#: qstode/views/filters.py:73
+msgid "hours"
+msgstr "ore"
+
+#: qstode/views/filters.py:74
+msgid "minute"
+msgstr "minuto"
+
+#: qstode/views/filters.py:74
+msgid "minutes"
+msgstr "minuti"
+
+#: qstode/views/filters.py:75
+msgid "second"
+msgstr "secondo"
+
+#: qstode/views/filters.py:75
+msgid "seconds"
+msgstr "secondi"
+
+#: qstode/views/filters.py:84
+#, python-format
+msgid "%(num)s %(time)s ago"
+msgstr "%(num)s %(time)s fa"
+
+#: qstode/views/user.py:55 qstode/views/user.py:195
+#, python-format
+msgid "Successfully logged in as %(user)s"
+msgstr "Login effettuato come %(user)s"
+
+#: qstode/views/user.py:86
+msgid "Profile successfully updated"
+msgstr "Profilo aggiornato con successo"
+
+#: qstode/views/user.py:186
+msgid "OpenID profile updated!"
+msgstr "profilo OpenID aggiornato!"
+
+#: qstode/views/user.py:236
+msgid "User registered, now you must wait for an admin approval"
+msgstr ""
+"Utente registrato, ora dovrai aspettare che un admin confermi il tuo account"

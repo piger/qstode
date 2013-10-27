@@ -1,0 +1,21 @@
+<script type="text/javascript"
+	src="{{ url_for('static', filename='js/jquery-1.10.2.min.js') }}"></script>
+<script type="text/javascript"
+	src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script type="text/javascript"
+	src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+
+<script type="text/javascript"
+	src="{{ versioned_url("js/qstode.js") }}"></script>
+
+<!-- Auto-submit the language selection form -->
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    $("#lang_selector").change(function() {
+      $("#lang_form").submit();
+    });
+
+    $.datepicker.setDefaults( $.datepicker.regional[ "{{ g.lang }}" ] );
+  });
+</script>

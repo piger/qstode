@@ -1,0 +1,36 @@
+{% extends "_base_page.html" %}
+{% import "_form_helpers.html" as h %}
+{% block title %}{% trans %}Administration: manage users{% endtrans %}{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('Administration: manage users') }}</h3>
+
+  {% if users %}
+	<table class="ink-table bordered alternating">
+	  <thead>
+		<tr>
+		  <th>{% trans %}Username{% endtrans %}</th>
+		  <th>{% trans %}E-mail{% endtrans %}</th>
+		  <th>{% trans %}Status{% endtrans %}</th>
+		  <th>{% trans %}Delete{% endtrans %}</th>
+		</tr>
+      </thead>
+
+      <tbody>
+		{% for user in users %}
+		  <tr>
+			<td><a href="{{ url_for("admin_edit_user", id=user.id) }}">{{ user.username }}</a></td>
+			<td>{{ user.email }}</td>
+			<td>{% if user.active -%}{{ _('Active') }}{% else %}{{ _('Inactive') }}{% endif -%}</td>
+			<td><a href="{{ url_for('admin_delete_user', id=user.id) }}" class="btn btn-mini btn-danger">{% trans %}Delete{% endtrans %}</td>
+		  </tr>
+		{% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+	<p>No user was found.</p>
+  {% endif %}
+
+{% endblock %}

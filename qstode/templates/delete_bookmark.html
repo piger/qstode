@@ -1,0 +1,22 @@
+{% extends "_base_page.html" %}
+{% from "_single_bookmark.html" import render_bookmark with context %}
+{% block title %}Confirm delete{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('Deleting Bookmark') }}</h3>
+
+  <p>{{ _('Do you really want to delete this bookmark?') }}</p>
+
+  {{ render_bookmark(bookmark) }}
+
+  <form action="" method="post" class="ink-form">
+	{{ form.hidden_tag() }}
+
+	<div class="form-actions">
+	  <button type="submit" class="ink-button red">{{ _('Delete') }}</button>
+      <button type="button" class="ink-button" onlick="history.go(-1)">{{ _('Cancel') }}</button>
+	</div>
+  </form>
+
+{% endblock %}

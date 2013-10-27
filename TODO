@@ -1,0 +1,1 @@
+- Tag objects should be deleted when no related entry is found on bookmark_tags (i.e. when a tag is not used on any bookmark)

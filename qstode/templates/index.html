@@ -1,0 +1,7 @@
+{% extends "page_with_bookmarks.html" %}
+{% from "_form_helpers.html" import title_with_page with context %}
+{% block title %}{{ _('Home') }}{% endblock %}
+
+{% block page_top %}
+  {{ title_with_page(_('Latest bookmarks')) }}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "_base_page.html" %}
+{% block title %}{% trans %}Server Error{% endtrans %}{% endblock %}
+{% block content %}
+
+  <h3>{% trans %}An unexpected error has occurred{% endtrans %}</h3>
+
+  <p><a href="{{ url_for('index') }}">{{ _('Back') }}</a></p>
+
+{% endblock %}

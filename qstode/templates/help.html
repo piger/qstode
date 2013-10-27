@@ -1,0 +1,14 @@
+{% extends "_base_page.html" %}
+{% block title %}{{ _('Help Manual') }}{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('Help Manual') }}</h3>
+
+  {% if not g.lang or g.lang == 'en'  %}
+    {% include "help_en.html" %}
+  {% else %}
+    {% include "help_it.html" %}
+  {% endif %}
+
+{% endblock %}

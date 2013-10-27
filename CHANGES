@@ -1,0 +1,30 @@
+QStode Changelog
+================
+
+Version 0.1.19
+--------------
+
+(to be announced)
+
+- Miscellaneous bug fixes in the admin section.
+
+Version 0.1.18
+--------------
+
+Cleanup release, released on July, 1st 2013.
+
+- Categories are gone.
+- Big localization effort, almost complete.
+- Internal refactoring.
+- New CSS theme :-)
+- Documentation of installation process and API use.
+- Changed environment variable name from `QSTODE_WEB_CONFIG` to a more
+  generic `APP_CONFIG`.
+
+Version 0.1.17
+--------------
+
+Some new features and a pretty new theme.
+
+- Support for OpenID login with an existing account.
+- Better support for localization.

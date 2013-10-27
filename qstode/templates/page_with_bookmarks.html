@@ -1,0 +1,26 @@
+{% extends "_base_page.html" %}
+{% from "_single_bookmark.html" import render_pagination, render_bookmark with context %}
+
+{% block content %}
+
+  {% block page_top %}{% endblock %}
+
+  {% if bookmarks.items %}
+
+	{% for bookmark in bookmarks.items %}
+	  {{ render_bookmark(bookmark) }}
+	{% endfor %}
+
+	{% if bookmarks.pages > 1 %}
+	  {{ render_pagination(bookmarks) }}
+	{% endif %}
+	
+  {% else %}
+	
+	<p>{% trans %}No bookmark was found matching your request.{% endtrans %}</p>
+	
+  {% endif %}
+
+  {% block page_bottom %}{% endblock %}
+  
+{% endblock %}

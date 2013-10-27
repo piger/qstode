@@ -1,0 +1,11 @@
+*.swp
+*.pyc
+*~
+*.egg-info/
+.coverage
+alembic.ini
+whoosh/
+oid_store/
+doc/_build/
+env
+qstode/static/font

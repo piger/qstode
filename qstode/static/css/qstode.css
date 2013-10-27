@@ -1,0 +1,102 @@
+/* ink theme
+ *
+ * (c) 2013 Daniel Kertesz
+ */
+body {
+  background: #f7f7f7;
+}
+.spaced-form {
+  margin: 1em 0;
+}
+#topbar .ink-navigation ul li.top-logo a {
+  color: #1B232B;
+}
+#topbar .ink-navigation ul li.top-logo a:hover {
+  color: #3E4042;
+  color: #7F8285;
+  font-weight: normal;
+}
+.main {
+  margin-top: 1.3em;
+}
+div.right-menu {
+  float: right;
+}
+a.bookmarklet-link {
+  text-decoration: none;
+}
+a.bookmarklet-link:hover {
+  text-decoration: none;
+  color: #fff;
+}
+footer {
+  border-top: 1px solid #CCC;
+  background: #f0f0f0;
+}
+.bookmark .notes {
+  margin-top: 0.8em;
+}
+.bookmark .url,
+.bookmark .info {
+  margin-top: 0.5em;
+}
+.bookmark h5 a {
+  color: #2D5170;
+}
+.bookmark h5 a:hover {
+  text-decoration: none;
+  color: #466C8C;
+}
+.bookmark a.href {
+  color: #226199;
+}
+.bookmark a.href:hover {
+  border-bottom: 1px dashed #3F4245;
+  text-decoration: none;
+}
+.bookmark .ink-label {
+  font-weight: normal;
+}
+.bookmark .ink-label .info {
+  background-color: #297CC4;
+}
+.bookmark .bookmark-actions a:hover {
+  text-decoration: none;
+}
+.bookmark .bookmark-actions a:hover .ink-label.warning {
+  background-color: #FCB84C;
+}
+.bookmark .bookmark-actions a:hover .ink-label.info {
+  background-color: #1C5C9C;
+}
+div.bookmark {
+  margin-top: 0.8em;
+  border-radius: 5px;
+  padding: 0.2em 0.5em;
+}
+div.bookmark:hover {
+  background-color: #ededed;
+}
+a.bookmark-owner a {
+  color: #7088B5;
+}
+a.bookmark-owner:hover {
+  text-decoration: none;
+}
+.bookmark-tags a:hover {
+  text-decoration: none;
+}
+.bookmark-tags a:hover .ink-label.info {
+  background-color: #175B96;
+  font-weight: normal;
+}
+.button-small {
+  font-size: 0.9em;
+  padding: 0;
+}
+.popup-header a {
+  color: #344F69;
+}
+.popup-header a:hover {
+  text-decoration: none;
+}

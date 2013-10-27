@@ -1,0 +1,33 @@
+{% extends "_base_page.html" %}
+{% from "_post_macros.html" import bookmark_form %}
+{% import "_form_helpers.html" as h %}
+{% block title %}{% trans %}Save a bookmark{% endtrans %}{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('Save a Bookmark') }}</h3>
+
+  {% autoescape false %}
+	<p>{{ _("To add a Bookmark you can also use the <strong>bookmarklet</strong>! Check out the %(help)s section to find out more.", help="<a href='%s'>%s</a>" % (url_for('help'), _("Help"))) }}</p>
+  {% endautoescape %}
+    </p>
+
+    <div class="large-60">
+
+	  <form action="{{ action }}" method="post" class="ink-form">
+	    {{ form.hidden_tag() }}
+	    {{ bookmark_form(form) }}
+        {{ h.render_actions() }}
+	  </form>
+    </div>
+
+{% endblock %}
+
+
+{% block extrajs %}
+  <script src="{{ url_for('static', filename="js/post.js") }}" type="text/javascript"></script>
+
+  {% if g.lang == "it" %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.ui.datepicker-it.min.js') }}"></script>
+  {% endif %}
+{% endblock %}

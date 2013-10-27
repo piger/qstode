@@ -1,0 +1,47 @@
+{% extends "_public_base_page.html" %}
+
+{% block title %}{{ _('Password recovery: choose a new password') }}{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('Password recovery: choose a new password') }}</h3>
+
+  <div class="large-50">
+
+    <form action="" method="post" class="ink-form spaced-form">
+	  {{ form.hidden_tag() }}
+
+	  <div class="control-group validation{%- if form.password.errors %} error{% endif -%}">
+	    {{ form.password.label() }}
+
+	    <div class="control">
+		  {{ form.password() }}
+
+		  {%- for error in form.password.errors %}
+		    <p class="tip">{{ error }}</p>
+		  {% endfor -%}
+	    </div>
+	  </div>
+
+	  <div class="control-group validation{%- if form.password_confirm.errors %} error{% endif -%}">
+	    {{ form.password_confirm.label() }}
+
+	    <div class="control">
+		  {{ form.password_confirm() }}
+
+		  {%- for error in form.password_confirm.errors %}
+		    <p class="tip">{{ error }}</p>
+		  {% endfor -%}
+	    </div>
+	  </div>
+
+	  <div class="control-group">
+        <div class="control">
+	      <button type="submit" class="ink-button blue">{{ _('Save') }}</button>
+        </div>
+	  </div>
+
+    </form>
+  </div>
+
+{% endblock %}

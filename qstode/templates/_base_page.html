@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+
+{% block page %}
+
+  <div class="column-group half-gutters">
+
+    <div class="large-20 medium-25">
+      {% include "_sidebar.html" %}
+    </div>
+
+    <div class="large-80 medium-75">
+      {% include "messages.html" %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </div><!-- /.column-group -->
+
+{% endblock %}

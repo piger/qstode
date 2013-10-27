@@ -1,0 +1,37 @@
+{% extends "_base_page.html" %}
+{% block title %}{% trans %}Advanced search{% endtrans %}{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('Advanced Search') }}</h3>
+
+  <p>{% trans %}Ask QStode about something:{% endtrans %}</p>
+
+  <div class="large-70">
+
+    <form action="" method="post" class="ink-form form-search{%- if form.errors %} error{%- endif %}">
+	  {{ form.hidden_tag() }}
+
+	  <div class="control-group validation required {%- if form.q.errors %} error{%- endif %}">
+	    <div class="control">
+	      {{ form.q() }}
+
+	      {% for error in form.q.errors %}
+	        <p class="tip">{{ error }}</p>
+	      {% endfor %}
+
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control">
+	      <button type="submit" class="ink-button blue">{{ _('Search') }}</button>
+        </div>
+      </div>
+
+	    </div><!--/controls-->
+	  </div><!--/control-group-->
+    </form>
+  </div>
+
+{% endblock %}

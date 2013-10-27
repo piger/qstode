@@ -1,0 +1,10 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+	{% for category, message in messages %}
+	  <div class="ink-alert basic {{ category }}">
+		<button class="ink-dismiss">&times;</button>
+		{{ message }}
+	  </div>
+	{% endfor %}
+  {% endif %}
+{% endwith %}

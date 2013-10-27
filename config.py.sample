@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+# QStode web frontend configuration file.
+
+# Run in DEBUG mode (Flask)
+DEBUG = False
+
+# Show SQLAlchemy DEBUG logging
+SQLDEBUG = False
+
+# This must be kept SECRET, generated with:
+# python -c 'import os; print "%r" % os.urandom(24)'
+# or other means
+SECRET_KEY = 'secret'
+
+# Database URI
+SQLALCHEMY_DATABASE_URI = "postgresql://username:password@localhost:5432/dbname"
+
+# Localization
+BABEL_DEFAULT_LOCALE = "it"
+BABEL_DEFAULT_TIMEZONE = "Europe/Rome"
+
+# Mail configuration
+SMTP_HOST = "localhost"
+SMTP_PORT = 25
+MAIL_FROM = "qstode@example.com"
+
+# the domain for the session cookie. If this is not set, the cookie will be
+# valid for all subdomains of SERVER_NAME. (Flask)
+# SESSION_COOKIE_DOMAIN = None
+
+# (Flask)
+# SERVER_NAME = ""
+
+# Whoosh
+WHOOSH_INDEX_PATH = ""
+
+# Flask-OpenID
+OPENID_FS_STORE_PATH = ""
+
+# Extra templates directory (Flask)
+# EXTRA_TEMPLATES = [
+#     "/path/to/directory",
+# ]
+
+USER_REGISTRATION_ENABLED = True
+
+SUPPORTED_LANGUAGES = [
+    ('en', 'English'),
+    ('it', 'Italiano'),
+]
+
+SUPPORTED_LANGUAGES_ISO = [
+    l[0] for l in SUPPORTED_LANGUAGES]
+
+# Recaptcha, for user registration
+RECAPTCHA_USE_SSL = False
+RECAPTCHA_PUBLIC_KEY = ''
+RECAPTCHA_PRIVATE_KEY = ''
+
+# google favicon service
+USE_GOOGLE_FAVICON = True

@@ -1,0 +1,13 @@
+{% extends "_base_page.html" %}
+{% block title %}{% trans %}Authentication required{% endtrans %}{% endblock %}
+{% block content %}
+
+  <div class="ink-alert block error">
+    <button class="ink-dismiss">&times;</button>
+
+    <h4>Warning!</h4>
+
+    <p>{% trans login=url_for('login') %}You must <a href="{{ login }}">sign in</a> first!{% endtrans %}</p>
+  </div><!-- /alert -->
+
+{% endblock %}

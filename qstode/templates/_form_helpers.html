@@ -1,0 +1,48 @@
+{% macro render_field(field, help=None) -%}
+  <div class="control-group validation {%- if field.errors %} error{%- endif %}">
+    {{ field.label() }}
+
+    <div class="control">
+      {{ field(**kwargs) }}
+
+      {%- for error in field.errors %}
+	    <p class="tip">{{ error }}</span>
+      {%- endfor %}
+
+      {% if help %}
+        <p class="tip">{{ help }}</p>
+      {% endif %}
+    </div><!--/controls-->
+  </div><!--/control-group-->
+{%- endmacro %}
+
+{% macro render_actions(submit_label=None, cancel_label=None) -%}
+  <div class="control-group">
+    <div class="control">
+      <button type="submit" class="ink-button blue">{{ submit_label or _('Save') }}</button>
+      <button type="button" class="ink-button">{{ cancel_label or _('Cancel') }}</button>
+    </div><!--/controls-->
+  </div><!--/control-group-->
+{%- endmacro %}
+
+{% macro title_with_page(title) %}
+  <h3>{{ title }}{%- if bookmarks and bookmarks.page > 1 %}<small> {{ _('Page:') }} {{ bookmarks.page }}</small>{% endif -%}</h3>
+{% endmacro %}
+
+{% macro render_checkbox(field, help=None) -%}
+  <div class="control-group column-group horizontal-gutters {% if field.errors %}error{% endif %}">
+	{{ field.label(class="large-10 content-right") }}
+
+	<div class="control large-30">
+      {{ field(**kwargs) }}
+
+      {%- for error in field.errors %}
+	    <p class="tip">{{ error }}</span>
+      {%- endfor %}
+
+      {% if help %}
+        <p class="tip">{{ help }}</p>
+      {% endif %}
+	</div>
+  </div>
+{%- endmacro %}

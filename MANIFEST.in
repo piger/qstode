@@ -1,0 +1,5 @@
+include Makefile AUTHORS LICENSE
+recursive-include qstode/templates *
+recursive-include qstode/templates-ink *
+recursive-include qstode/static *
+recursive-include qstode/data *

@@ -1,0 +1,40 @@
+{% extends "_base_page.html" %}
+{% block title %}{{ _('About') }}{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('About QStode') }}</h3>
+
+  <p>{{ trans }}
+	QStode is a web application that allows registered users to store bookmarks
+	(like the goold old del.icio.us) categorized by tags.<br />
+
+	At the moment social functions (for example the subscription to other users
+	bookmark feed) are missing.
+	{{ endtrans }}
+  </p>
+
+  <h4>{{ _('Third party libraries and licenses') }}</h4>
+
+  <p>All software used is available under an open source license.</p>
+
+  <dl>
+    <dt><a href="http://flask.pocoo.org/">Flask</a></dt>
+    <dd>A great Python micro-framework to build web applications.</dd>
+
+    <dt><a href="http://www.sqlalchemy.org/">SQLAlchemy</a></dt>
+    <dd>A great ORM companion.</dd>
+
+    <dt><a href="http://ink.sapo.pt/typography">InK</a></dt>
+    <dd>Ink is a set of tools for quick development of web interfaces.</dd>
+
+  </dl>
+
+  <h4>{{ _('Statistics') }}</h4>
+
+  <ul>
+	<li>{{ _('Bookmark') }}: <strong>{{ data.num_bookmarks }}</strong></li>
+	<li>{{ _('Tag') }}: <strong>{{ data.num_tags }}</strong></li>
+  </ul>
+  
+{% endblock %}

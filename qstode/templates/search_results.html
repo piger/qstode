@@ -1,0 +1,12 @@
+{% extends "page_with_bookmarks.html" %}
+{% block title %}{{ _('Search results') }}{% endblock %}
+
+{% block page_top %}
+
+	{% if query %}
+	  <h3>{% trans query=query %}Search results for: {{ query }}{% endtrans %}</h3>
+	{% else %}
+	  <h3>{{ _('Search results') }}</h3>
+	{% endif %}
+
+{% endblock %}

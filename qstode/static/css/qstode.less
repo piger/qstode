@@ -1,0 +1,144 @@
+/* ink theme
+ *
+ * (c) 2013 Daniel Kertesz
+ */
+
+@light_gray: #f7f7f7;
+
+body {
+	background: @light_gray;
+}
+
+.spaced-form {
+	margin: 1em 0;
+}
+
+#topbar .ink-navigation ul li.top-logo a {
+	color: #1B232B;
+}
+
+#topbar .ink-navigation ul li.top-logo a:hover {
+	color: #3E4042;
+	color: #7F8285;
+	font-weight: normal;
+}
+
+// container for the whole page, just under the topbar
+.main {
+	margin-top: 1.3em;
+}
+
+// *** HEADER / TOPBAR
+div.right-menu {
+	float: right;
+	// margin-right: 1.5em;
+}
+div.right-menu li {
+	// margin-left: 1em;
+}
+
+// *** HELP ***
+a.bookmarklet-link {
+	text-decoration: none;
+}
+a.bookmarklet-link:hover {
+	text-decoration: none;
+	color: #fff;
+}
+
+// *** FOOTER ***
+footer {
+	border-top: 1px solid #CCC;
+	background: #f0f0f0;
+}
+
+// *** BOOKMARKS ***
+.bookmark {
+	.notes {
+		margin-top: 0.8em;
+	}
+	.url, .info {
+		margin-top: 0.5em;
+	}
+
+	h5 a {
+		color: #2D5170;
+
+		&:hover {
+			text-decoration: none;
+			color: #466C8C;
+		}
+	}
+
+	a.href {
+		color: #226199;
+
+		&:hover {
+			border-bottom: 1px dashed #3F4245;
+			text-decoration: none;
+		}
+	}
+
+	.ink-label {
+		font-weight: normal;
+		.info {
+			background-color: #297CC4;
+		}
+	}
+
+	.bookmark-actions a:hover {
+		text-decoration: none;
+
+		.ink-label.warning {
+			background-color: #FCB84C;
+		}
+		.ink-label.info {
+			background-color: #1C5C9C;
+		}
+	}
+}
+
+div.bookmark {
+	margin-top: 0.8em;
+	border-radius: 5px;
+	padding: 0.2em 0.5em;
+}
+div.bookmark:hover {
+	background-color: #ededed;
+}
+
+a.bookmark-owner a {
+	color: #7088B5;
+}
+a.bookmark-owner:hover {
+	text-decoration: none;
+}
+
+.bookmark-tags a:hover {
+	text-decoration: none;
+
+	.ink-label.info {
+		background-color: #175B96;
+		font-weight: normal;
+	}
+}
+
+// *** MISC ***
+.button-small {
+	font-size: 0.9em;
+	padding: 0;
+	// font-weight: normal;
+	// margin: 2px;
+	// padding: 4px 9px;
+}
+
+
+// *** POPUP ***
+.popup-header a {
+
+	color: #344F69;
+
+	&:hover {
+		text-decoration: none;
+	}
+}

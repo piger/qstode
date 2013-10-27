@@ -1,0 +1,12 @@
+{% extends "_base_page.html" %}
+{% block title %}{% trans %}Administration: index{% endtrans %}{% endblock %}
+
+{% block content %}
+
+  <h3>{{ _('Administration') }}</h3>
+
+  <ul>
+	<li><a href="{{ url_for('admin_users') }}">{{ _('User list') }}</a></li>
+	<li><a href="{{ url_for('admin_create_user') }}">{{ _('Create new user') }}</a></li>
+  </ul>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% macro bookmark_form(form) -%}
+
+  <fieldset>
+
+    <!-- URL -->
+    <div class="control-group column-group horizontal-gutters validation{%- if form.url.errors %} error{%- endif %}">
+      {{ form.url.label(class="large-10 content-right") }}
+
+      <div class="control large-90 append-symbol">
+        <span>
+          {{ form.url(autocomplete="off", placeholder="http://www.example.com") }}
+          <i class="icon-link"></i>
+        </span>
+
+        {% for error in form.url.errors %}
+	      <p class="tip">{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- title -->
+    <div class="control-group column-group horizontal-gutters validation{%- if form.title.errors %} error{%- endif %}">
+      {{ form.title.label(class="large-10 content-right") }}
+
+      <div class="control large-90 append-symbol">
+        <span>
+          {{ form.title(autocomplete="off", placeholder=_("Title of the bookmark")) }}
+          <i class="icon-edit"></i>
+        </span>
+
+        {% for error in form.title.errors %}
+	      <p class="tip">{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- tags -->
+    <div class="control-group column-group horizontal-gutters validation{%- if form.tags.errors %} error{%- endif %}">
+      {{ form.tags.label(class="large-10 content-right") }}
+
+      <div class="control append-symbol large-90">
+        <span>
+	      {{ form.tags(size="40", autocomplete="off", placeholder=_("A comma-separated list of tags")) }}
+
+          <i class="icon-tags"></i>
+        </span>
+
+        {% for error in form.tags.errors %}
+	      <p class="tip">{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- notes -->
+    <div class="control-group column-group horizontal-gutters validation{%- if form.notes.errors %} error{%- endif %}">
+      {{ form.notes.label(class="large-10 content-right") }}
+
+      <div class="control large-90">
+        {{ form.notes(class='input-xlarge', rows=10, autocomplete="off", placeholder=_("Select some text from the bookmarked page and it will appear here, or write a note.")) }}
+
+        {% for error in form.notes.errors %}
+	      <p class="tip">{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- private -->
+    <div class="control-group column-group horizontal-gutters {% if form.private.errors %}error{% endif %}">
+      {{ form.private.label(class="large-10 content-right") }}
+
+      <div class="control large-20">
+            {{ form.private }}
+      </div>
+
+    </div>
+
+  </fieldset>
+
+{%- endmacro %}

@@ -1,0 +1,36 @@
+{% extends "_base.html" %}
+{% from "_post_macros.html" import bookmark_form %}
+{% block title %}{{ _('Post a new bookmark') }}{% endblock %}
+
+{% block topbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block page %}
+
+  <h3 class="popup-header"><a href="{{ url_for('index') }}">QStode</a></h3>
+
+  <form action="{{ url_for('post_bookmark') }}" method="post" class="ink-form">
+	{{ form.hidden_tag() }}
+
+	{{ bookmark_form(form) }}
+
+	<div class="control-group">
+	  <div class="control">
+		<button type="submit" class="ink-button blue">{{ _('Save') }}</button>
+		<button type="button" class="ink-button" onClick="window.close();">{{ _('Cancel') }}</button>
+
+	  </div><!-- /.control -->
+	</div><!-- /.control-group -->
+
+  </form>
+
+{% endblock %}
+
+{% block extrajs %}
+  <script src="{{ url_for('static', filename="js/post.js") }}" type="text/javascript"></script>
+
+  {% if g.lang == "it" %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.ui.datepicker-it.min.js') }}"></script>
+  {% endif %}
+
+{% endblock %}

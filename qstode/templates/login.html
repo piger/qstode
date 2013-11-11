@@ -30,6 +30,15 @@
 	    </div>
 	  </div>
 
+	  <div class="control-group">
+		<ul class="control unstyled">
+		  <li>
+			{{ form.remember_me() }}
+			{{ form.remember_me.label() }}
+		  </li>
+		</ul>
+	  </div>
+
 	  {% if login_failed %}
         <div class="control-group validation error">
 	      <p class="tip"><span class="ink-label error">{% trans %}ERROR{% endtrans %}</span> {% trans %}Authentication failed!{% endtrans %}</p>

@@ -48,15 +48,14 @@ def login():
     login_failed = False
 
     if form.validate_on_submit():
-        email = form.email.data
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user and user.active and user.check_password(form.password.data):
-            login_user(user, remember=True)
+            login_user(user, remember=form.remember_me.data)
             flash(gettext(u'Successfully logged in as %(user)s', user=user.email), "success")
             return form.redirect('index')
 
         login_failed = True
-        app.logger.info("Failed login from %s" % (email,))
+        app.logger.info("Failed login from %s" % form.email.data)
 
     return render_template('login.html', form=form, login_failed=login_failed)
 

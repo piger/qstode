@@ -11,7 +11,7 @@
 import re
 from flask_wtf import Form
 from flask_wtf.recaptcha import RecaptchaField
-from wtforms import TextField, PasswordField, ValidationError
+from wtforms import TextField, PasswordField, ValidationError, BooleanField
 from wtforms.validators import (DataRequired, Email, EqualTo, Length, Regexp,
                                 Optional)
 from flask_wtf.html5 import EmailField
@@ -38,6 +38,7 @@ def unique_email(form, field):
 class LoginForm(RedirectForm):
     email = EmailField(_(u'Email'), validators=[DataRequired(), Email()])
     password = PasswordField(_(u'Password'), validators=[DataRequired()])
+    remember_me = BooleanField(_(u'Remember me'))
 
 class PasswordResetForm(Form):
     email = EmailField(_(u'Email'), validators=[DataRequired(), Email()])

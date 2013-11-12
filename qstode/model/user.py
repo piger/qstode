@@ -8,13 +8,13 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+import os
 import hashlib
 from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import (generate_password_hash, check_password_hash,
                                safe_str_cmp)
 from qstode.app import db
-from qstode.utils import random_token
 
 
 watched_users = db.Table(
@@ -94,7 +94,7 @@ class ResetToken(db.Model):
         if token is not None:
             self.token = token
         else:
-            self.token = random_token()
+            self.token = hashlib.sha1(os.urandom(20)).hexdigest()
         if created_at is not None:
             self.created_at = created_at
         else:

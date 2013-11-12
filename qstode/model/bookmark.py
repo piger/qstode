@@ -158,14 +158,12 @@ class Tag(db.Model):
         for the top `limit` popular Tags.
         """
 
-        query = db.session.query(Tag, func.count(Tag.id).label('tot')).\
+        tags = db.session.query(Tag, func.count(Tag.id).label('total')).\
                 join('bookmarks').\
                 filter(Bookmark.private == False).\
                 group_by(Tag.id).\
-                order_by(desc('tot')).\
+                order_by('total DESC').\
                 limit(limit)
-
-        tags = query.all()
 
         if len(tags) < limit:
             return []
@@ -192,24 +190,20 @@ class Tag(db.Model):
         return tag_cloud_weighted
 
     @classmethod
-    def taglist(cls, limit=20):
+    def taglist(cls, max_results=20):
         """
         Returns a list of tuples (Tag object, total count) for the most popular
         tags.
         """
 
-        q = db.session.query(
-            cls,
-            func.count(bookmark_tags.c.bookmark_id).label('total')
-        ).outerjoin(
-            bookmark_tags
-        ).group_by(
-            cls
-        ).order_by(
-            'total DESC'
-        ).limit(limit)
+        count = func.count(bookmark_tags.c.bookmark_id).label('total')
+        query = db.session.query(cls, count).\
+                outerjoin(bookmark_tags).\
+                group_by(cls).\
+                order_by('total DESC').\
+                limit(max_results)
 
-        return q.all()
+        return query.all()
 
     def __repr__(self):
         return "<Tag(%r)>" % self.name
@@ -262,30 +256,55 @@ class Bookmark(db.Model):
     notes = db.Column(db.String(2500))
 
     def __init__(self, title, url, private=False, creation_date=None,
-                 last_modified=None, notes=None,
+                 last_modified=None, notes=u'',
                  user=None, tags=None):
         self.title = title
         self.url = url
         self.private = private
         if creation_date is not None:
             self.creation_date = creation_date
+        else:
+            self.creation_date = datetime.utcnow()
         if last_modified is not None:
             self.last_modified = last_modified
+        else:
+            self.last_modified = self.creation_date
         self.notes = notes
         if user is not None:
             self.user = user
         if tags is not None:
             self.tags.extend(tags)
 
-    def to_dict(self):
-        return {'title': self.title,
-                'private': self.private,
-                'creation_date': self.creation_date.isoformat(),
-                'last_modified': self.last_modified.isoformat(),
-                'notes': self.notes,
-                'url': self.href,
-                'tags': [tag.name for tag in self.tags],
-                'id': self.id}
+    @classmethod
+    def create(cls, data):
+        """Helper for creating new Bookmark objects.
+
+        :param data: a dict containing the following items:
+
+        - url: the bookmark URL (e.g. http://www.example.com/)
+        - title: a unicode string with the bookmark title
+        - notes: a unicode string with the bookmark notes
+        - tags: a list of unicode strings with the bookmark tags
+        - user: a `model.User` object with the owner of the bookmark
+        - private: an optional boolean value to make the bookmark private
+
+        :returns: the bookmark just created
+        """
+        url = Url.get_or_create(data.get('url'))
+
+        bookmark = Bookmark(title=data.get('title'),
+                            url=url,
+                            private=data.get("private", False),
+                            creation_date=datetime.utcnow(),
+                            notes=data.get('notes'))
+                     
+        bookmark.user = data.get('user')
+        for tag in Tag.get_or_create_many(data.get('tags')):
+            bookmark.tags.append(tag)
+            
+        db.session.add(bookmark)
+        db.session.commit()
+        return bookmark
 
     @classmethod
     def get_public(cls):
@@ -357,52 +376,37 @@ class Bookmark(db.Model):
 
     @classmethod
     def submit_by_day(cls, days=30):
-        result = []
         date_limit = datetime.now() - timedelta(days)
 
-        # workaround per supportare MySQL, PostgreSQL e SQLite.
-        # La funzione che mi serve e' `to_days` in MySQL e l'equivalente piu'
-        # vicino in SQLite e' `julianday`, ma serve anche un CAST().
+        # multi-database support (MySQL, PostgreSQL, SQLite) for date conversion
         driver_name = db.session.get_bind().url.drivername
         if driver_name == 'sqlite':
-            fn = cast(func.julianday(cls.creation_date), db.Integer).label('day')
+            fn = cast(func.julianday(cls.creation_date), db.Integer)
         elif driver_name == 'postgresql':
-            fn = cast(cls.creation_date, sqlalchemy.types.Date).label('day')
+            fn = cast(cls.creation_date, sqlalchemy.types.Date)
         else:
-            fn = func.to_days(cls.creation_date).label('day')
+            fn = func.to_days(cls.creation_date)
 
-        q = db.session.query(
-            fn, func.count('*').label('count')
+        query = db.session.query(
+            fn.label('day'), func.count('*').label('count')
         ).filter(
             cls.creation_date > date_limit
-        ).group_by('day').order_by('day asc')
+        ).group_by('day').order_by('day ASC')
 
-        for row in q:
-            result.append(row.count)
+        results = [row.count for row in query.all()]
+        return results
 
-        return result
-
-    @classmethod
-    def create(cls, data):
-        user = data["user"]
-        url = Url.get_or_create(data["url"])
-
-        b = Bookmark(title=data["title"],
-                     url=url,
-                     private=data.get("private", False),
-                     creation_date=datetime.utcnow(),
-                     notes=data["notes"])
-                     
-        b.user = user
-        tag_names = data["tags"]
-        for tag in Tag.get_or_create_many(tag_names):
-            b.tags.append(tag)
-            
-        db.session.add(b)
-        db.session.commit()
-        return b
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'url': self.href,
+            'title': self.title,
+            'notes': self.notes,
+            'tags': [tag.name for tag in self.tags],
+            'private': self.private,
+            'creation_date': self.creation_date.isoformat(),
+            'last_modified': self.last_modified.isoformat(),
+        }
 
     def __repr__(self):
-        return '<Bookmark(title=%r, url=%r)>' % (
-            self.title, self.url
-        )
+        return '<Bookmark(title=%r, url=%r)>' % (self.title, self.url)

@@ -22,6 +22,7 @@ import qstode.views
 import qstode.model.user
 from qstode.model.user import User
 import qstode.model.bookmark
+from qstode.model.bookmark import Bookmark
 
 # import all Flask-scripts
 # import qstode.cli.importer
@@ -118,6 +119,16 @@ def run_wsgi(args):
     setup_logging(args)
     return application
 
+def run_reindex(args):
+    """Re-index the search engine database"""
+    application = create_app()
+
+    with application.app_context():
+        writer = whoosh_searcher.get_async_writer()
+        for bookmark in Bookmark.query.all():
+            whoosh_searcher.add_bookmark(bookmark, writer)
+        writer.commit()
+
 def main():
     """Command line entry point"""
 
@@ -136,6 +147,10 @@ def main():
 
     p_shell = subparsers.add_parser('shell', help="Run a python shell")
     p_shell.set_defaults(func=run_shell)
+
+    p_reindex = subparsers.add_parser(
+        'reindex', help="Re-index the search engine database")
+    p_reindex.set_defaults(func=run_reindex)
 
     args = parser.parse_args()
 

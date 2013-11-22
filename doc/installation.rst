@@ -20,8 +20,29 @@ If you are in a hurry all you need to know is that `virtualenv`_
 allow you to keep a separate *Python environment* with specific
 versions of libraries and packages.
 
+Ubuntu font
+-----------
+
+The InK framework uses the `Ubuntu Font` which must be manually
+downloaded and extracted into `qstode-src-x.y.z/qstode/static/font`.
+
+QStode Installation
+-------------------
+
+You must create a configuration file which by default is located in
+`/etc/qstode/web_config.py` and make sure you specify a valid database
+URI.
+
+Create the database tables and default **admin** user::
+
+   qstode -c config.py setup
+
+A test server can be run with: ::
+
+   qstode -c config.py -D server
+
 MySQL
------
+'''''
 
 QStode need to store data in a MySQL database with **UTF-8** character
 encoding; an example database can be created running the following
@@ -33,20 +54,33 @@ commands: ::
   mysql> grant all privileges on qstode.* to 'qstode'@'localhost';
   mysql> flush privileges;
 
-Ubuntu font
-------------------------
-
-The InK framework uses the `Ubuntu Font` which must be manually
-downloaded and extracted into `qstode-src-x.y.z/qstode/static/font`.
 
 System-Wide Installation
-------------------------
+''''''''''''''''''''''''
 
 This kind of installation is unsupported at the moment, use at your
 own risk!
 
-uWSGI
------
+Example Test Installation
+'''''''''''''''''''''''''
+
+Here we describe an example **test** installation within a virtualenv::
+
+   mkdir -p /srv/www/qstode /etc/qstode
+   cd /srv/www/qstode
+   virtualenv env
+   source env/bin/activate
+   git clone http://git.spatof.org/qstode.git
+   cd qstode
+   python setup.py develop
+   cp flask_config_sample.py /etc/qstode/web_config.py
+   qstode -c /etc/qstode/web_config.py setup
+   qstode -c /etc/qstode/web_config.py -D server
+
+Now you have a test server running on http://127.0.0.1:5000
+
+Deployment with uWSGI
+'''''''''''''''''''''
 
 A configuration file to run QStode with `uWSGI`_:
 
@@ -55,8 +89,8 @@ A configuration file to run QStode with `uWSGI`_:
    [uwsgi]
    plugin = python
    virtualenv = /path/to/qsto.de/env
-   module = qstode.guni
-   callable = application
+   module = qstode.main
+   callable = run_wsgi
    stats = 127.0.0.1:9191
    env = APP_CONFIG=/etc/qstode/web_config.py
    threads = 4
@@ -74,7 +108,7 @@ A sample configuration for nginx: ::
 
 	  server_name example.com;
 
-	  root /srv/www/qsto.de/htdocs;
+	  root /srv/www/qstode/htdocs;
 
 	  location /static/ {
 		  root /path/to/qstode-src-x.y.z/qstode/;
@@ -94,21 +128,6 @@ A sample configuration for nginx: ::
 	  }
   }
 
-QStode Installation
--------------------
-
-You must create a configuration file which by default is located in
-`/etc/qstode/web_config.py` and make sure you specify a valid database
-URI.
-
-Create the database tables and default **admin** user::
-
-   qstode -c config.py setup
-
-A test server can be run with: ::
-
-   qstode -c config.py -D server
-
 Migration and Backup
 ''''''''''''''''''''
 
@@ -124,21 +143,6 @@ After an import you must also recreate the Whoosh index; at the moment
 the best way is to delete the existing Whoosh directory and run: ::
 
    qstode-index -c /path/to/config.py
-
-Example Installation
-''''''''''''''''''''
-
-Here we describe an example installation: ::
-
-   mkdir -p /srv/www/qsto.de /etc/qstode
-   cd /srv/www/qsto.de
-   git clone http://git.spatof.org/qstode.git
-   cd qstode
-   cp flask_config_sample.py /etc/qstode/web_config.py
-   qstode -c /etc/qstode/web_config.py setup
-   qstode -c /etc/qstode/web_config.py -D server
-
-Now you have a test server running on http://127.0.0.1:5000
 
 
 .. _setuptools: https://pypi.python.org/pypi/setuptools

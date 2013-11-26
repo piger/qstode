@@ -8,13 +8,13 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
-from flask import url_for
+import wtforms
+from flask import url_for, g
 from mock import patch
-from wtforms import ValidationError
-from qstode.test import FlaskTestCase
-from qstode.model.user import User
-from qstode.forms.user import unique_username, unique_email
-from qstode import model
+from werkzeug.datastructures import MultiDict
+from .. import test
+from .. import model
+from .. import forms
 
 
 SAMPLE_DATA = {
@@ -26,37 +26,51 @@ SAMPLE_DATA = {
 }
 
 class FakeField(object):
+    """Fake form field, mocks a wtforms.Field"""
+
     def __init__(self, data):
         self.data = data
 
-class ValidatorsTest(FlaskTestCase):
+
+class ValidatorsTest(test.FlaskTestCase):
     def setUp(self):
         super(ValidatorsTest, self).setUp()
         self._load_data([
-            User(u'pippo', 'pippo@example.com', 'secret')
+            model.User(u'pippo', 'pippo@example.com', 'secret')
         ])
 
     def test_unique_username(self):
+        """Failed validation: unique username"""
+
         field = FakeField(u'pippo')
-        self.assertRaises(ValidationError, unique_username, None, field)
+        self.assertRaises(wtforms.ValidationError,
+                          forms.unique_username, None, field)
 
     def test_unique_email(self):
+        """Failed validation: unique email address"""
+
         field = FakeField(u'pippo@example.com')
-        self.assertRaises(ValidationError, unique_email, None, field)
+        self.assertRaises(wtforms.ValidationError,
+                          forms.unique_email, None, field)
 
     def test_unique_username_false(self):
+        """Validation: unique username"""
+
         field = FakeField(u'charlie root')
-        self.assertIsNone(unique_username(None, field))
+        self.assertIsNone(forms.unique_username(None, field))
 
     def test_unique_email_false(self):
-        field = FakeField(u'charlie@root.com')
-        self.assertIsNone(unique_email(None, field))
+        """Validation: unique email address"""
 
-class BookmarkFormBaseTest(FlaskTestCase):
+        field = FakeField(u'charlie@root.com')
+        self.assertIsNone(forms.unique_email(None, field))
+
+
+class BookmarkFormBaseTest(test.FlaskTestCase):
     def setUp(self):
         super(BookmarkFormBaseTest, self).setUp()
         self._load_data([
-            User(u'pippo', 'pippo@example.com', 'secret')
+            model.User(u'pippo', 'pippo@example.com', 'secret')
         ])
 
     def _login(self):
@@ -66,10 +80,13 @@ class BookmarkFormBaseTest(FlaskTestCase):
         }, follow_redirects=False)
         self.assert_redirects(rv, url_for('index'))
 
+
 class BookmarkFormTest(BookmarkFormBaseTest):
 
     @patch('qstode.app.whoosh_searcher.add_bookmark')
     def test_submit_bookmark(self, mock_add_bookmark):
+        """Bookmark form submission"""
+
         self._login()
 
         rv = self.client.post('/add', data=SAMPLE_DATA)
@@ -82,6 +99,8 @@ class BookmarkFormTest(BookmarkFormBaseTest):
         self.assertEquals(b.href, SAMPLE_DATA['url'])
 
     def test_missing_fields(self):
+        """Failed validation of Bookmark submission with missing fields"""
+
         self._login()
         for field in ('tags', 'title', 'url'):
             data = SAMPLE_DATA.copy()
@@ -91,9 +110,26 @@ class BookmarkFormTest(BookmarkFormBaseTest):
             res = "field is required" in rv.data or "Invalid URL" in rv.data
             self.assertTrue(res, rv.data)
 
+
 class TagListTest(BookmarkFormBaseTest):
+    def test_empty_values(self):
+        """Validation of empty values as tag list (i.e. ",,,")"""
+
+        class DogForm(wtforms.Form):
+            tags = forms.TagListField()
+            
+        with self.app.test_request_context():
+            data = MultiDict([
+                ("tags", u"fast, lazy, , ,,,"),
+            ])
+            form = DogForm(data)
+            self.assertTrue(form.validate())
+            self.assertEquals(form.tags.data, [u'fast', u'lazy'])
+
     @patch('qstode.app.whoosh_searcher.add_bookmark')
     def test_taglist_duplicates(self, mock_add_bookmark):
+        """Duplicate and mixed-case handling of TagList field"""
+
         self._login()
         rv = self.client.post('/add', data={
             'title': u'Un titolo',
@@ -113,6 +149,8 @@ class TagListTest(BookmarkFormBaseTest):
 
     @patch('qstode.app.whoosh_searcher.add_bookmark')
     def test_length_validator_exceed(self, mock_add_bookmark):
+        """Validation of maximum number of tags for TagList field"""
+
         self._login()
         data = SAMPLE_DATA.copy()
         tags = u', '.join([u"tag-%d" % i for i in xrange(51)])
@@ -124,6 +162,8 @@ class TagListTest(BookmarkFormBaseTest):
 
     @patch('qstode.app.whoosh_searcher.add_bookmark')
     def test_length_validator_correct(self, mock_add_bookmark):
+        """Validation of Bookmark submission"""
+
         self._login()
         data = SAMPLE_DATA.copy()
         tags = u', '.join([u"tag-%d" % i for i in xrange(49)])
@@ -131,3 +171,68 @@ class TagListTest(BookmarkFormBaseTest):
         rv = self.client.post('/add', data=data)
         self.assertTrue(rv.status_code in (301, 302), "Got %r instead (%r)" % (rv.status_code, rv.data))
         self.assert_redirects(rv, url_for('index'))
+
+
+class LoginFormTest(test.FlaskTestCase):
+    """LoginForm and RedirectForm unit testing"""
+
+    def test_empty_form(self):
+        """Validation of a form with empty fields"""
+
+        with self.app.test_request_context():
+            g.lang = "en"
+            form = forms.LoginForm()
+            self.assertFalse(form.validate())
+
+    def test_invalid_email(self):
+        """Validation of a form with an invalid email field"""
+
+        with self.app.test_request_context():
+            g.lang = "en"
+
+            data = MultiDict([
+                ('email', u'user'),
+                ('password', u'secret'),
+            ])
+            form = forms.LoginForm(data)
+            self.assertFalse(form.validate())
+
+    def test_required_fields(self):
+        """Validation of required fields"""
+        with self.app.test_request_context():
+            g.lang = "en"
+
+            data = MultiDict([
+                ('email', u'user@example.com'),
+                ('password', u'secret'),
+            ])
+            form = forms.LoginForm(data)
+            self.assertTrue(form.validate())
+
+    def test_tampered_redirect(self):
+        """Do not follow redirects to external URLs after login"""
+
+        self._load_data([
+            model.User(u'pippo', 'pippo@example.com', 'secret')
+        ])
+
+        rv = self.client.post('/login', data={
+            "email": u"pippo@example.com",
+            "password": "secret",
+            "next": "http://www.evil.com",
+        }, follow_redirects=False)
+        self.assert_redirects(rv, url_for('index'))
+
+    def test_redirect(self):
+        """Allow internal redirection after login"""
+
+        self._load_data([
+            model.User(u'pippo', 'pippo@example.com', 'secret')
+        ])
+
+        rv = self.client.post('/login', data={
+            "email": u"pippo@example.com",
+            "password": "secret",
+            "next": "/about",
+        }, follow_redirects=False)
+        self.assert_redirects(rv, url_for('about'))

@@ -28,9 +28,9 @@ class TagListField(Field):
 
     widget = TextInput()
 
-    def __init__(self, label='', validators=None, remove_duplicates=True,
+    def __init__(self, label='', _validators=None, remove_duplicates=True,
                  **kwargs):
-        super(TagListField, self).__init__(label, validators, **kwargs)
+        super(TagListField, self).__init__(label, _validators, **kwargs)
         self.remove_duplicates = remove_duplicates
 
     def _value(self):
@@ -45,13 +45,17 @@ class TagListField(Field):
         else:
             self.data = []
 
+        # remove empty values
+        self.data = [x for x in self.data if x]
+
         if self.remove_duplicates:
             self.data = list(self._remove_duplicates(self.data))
 
     @classmethod
     def _remove_duplicates(cls, seq):
-        d = {u'': True}
+        """Remove duplicates in a case insensitive, but case preserving manner"""
 
+        d = {}
         for item in seq:
             if item.lower() not in d:
                 d[item.lower()] = True

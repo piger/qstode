@@ -8,12 +8,14 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+import sys
 import os
 import logging
 import logging.handlers
 import argparse
 import jinja2
 from qstode.app import app, login_manager, oid, whoosh_searcher, db
+from . import exc
 
 # import all views
 import qstode.views
@@ -58,10 +60,14 @@ def create_app(cfg=None):
             app.jinja_loader])
         app.jinja_loader = tpl_loader
 
-    db.init_app(app)
-    oid.init_app(app)
-    login_manager.init_app(app)
-    whoosh_searcher.init_app(app)
+    try:
+        db.init_app(app)
+        oid.init_app(app)
+        login_manager.init_app(app)
+        whoosh_searcher.init_app(app)
+    except exc.InitializationError, ex:
+        sys.stderr.write("Initialization error: %s\n" % str(ex))
+        sys.exit(1)
 
     # Register our public access handler, right *AFTER* flask-login
     app.before_request(qstode.views.user.public_access_handler)

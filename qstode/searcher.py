@@ -19,14 +19,17 @@ import os
 from whoosh.fields import ID, TEXT, KEYWORD, DATETIME, Schema
 from whoosh.analysis import RegexTokenizer, LowercaseFilter, CharsetFilter
 from whoosh.support.charset import accent_map
-from whoosh.index import create_in, open_dir
+from whoosh.index import create_in, open_dir, exists_in
 from whoosh.writing import AsyncWriter
 from whoosh.qparser import MultifieldParser
 from whoosh.sorting import Facets
+from . import exc
 
 
 def generate_schema():
-    text_analyzer = RegexTokenizer() | LowercaseFilter() | CharsetFilter(accent_map)
+    text_analyzer = RegexTokenizer() \
+                    | LowercaseFilter() \
+                    | CharsetFilter(accent_map)
 
     schema = Schema(id=ID(stored=True, unique=True),
                     title=TEXT(stored=False, analyzer=text_analyzer),
@@ -37,12 +40,10 @@ def generate_schema():
 
 
 class WhooshSearcher(object):
-    def __init__(self, index_dir=None):
+    def __init__(self, app=None, index_dir=None):
+        self.app = app
         self.index_dir = index_dir
         self._ix = None
-
-    def init_app(self, app):
-        self.index_dir = app.config["WHOOSH_INDEX_PATH"]
 
     @property
     def ix(self):
@@ -50,20 +51,32 @@ class WhooshSearcher(object):
             self._ix = self._open_index()
         return self._ix
 
+    def init_app(self, app):
+        """Initialize module and checks if the index exists"""
+
+        self.app = app
+        if not 'WHOOSH_INDEX_PATH' in self.app.config:
+            raise exc.InitializationError("You must set the WHOOSH_INDEX_PATH option in the configuration")
+        self.index_dir = self.app.config["WHOOSH_INDEX_PATH"]
+        if not exists_in(self.index_dir):
+            self.setup_index()
+
+    def setup_index(self):
+        """Create the index directory"""
+
+        if not os.path.exists(self.index_dir):
+            os.mkdir(self.index_dir)
+        schema = generate_schema()
+        self._ix = create_in(self.index_dir, schema)
+
+    def _open_index(self):
+        ix = open_dir(self.index_dir)
+        return ix
+
     def get_async_writer(self):
         """Return an AsyncWriter; NOTE that we NEED thread support (i.e when
         you're running in uwsgi"""
         return AsyncWriter(self.ix)
-
-    def _open_index(self):
-        if not os.path.exists(self.index_dir):
-            os.mkdir(self.index_dir)
-            schema = generate_schema()
-            ix = create_in(self.index_dir, schema)
-        else:
-            ix = open_dir(self.index_dir)
-
-        return ix
 
     def add_bookmark(self, bookmark, writer=None):
         doc = {

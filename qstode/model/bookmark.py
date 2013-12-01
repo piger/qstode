@@ -389,10 +389,10 @@ class Bookmark(db.Model):
         date_limit = datetime.now() - timedelta(days)
 
         # multi-database support (MySQL, PostgreSQL, SQLite) for date conversion
-        driver_name = db.session.get_bind().url.drivername
-        if driver_name == 'sqlite':
+        driver = db.engine.driver
+        if driver == 'sqlite':
             fn = cast(func.julianday(cls.creation_date), db.Integer)
-        elif driver_name == 'postgresql':
+        elif driver == 'postgresql':
             fn = cast(cls.creation_date, sqlalchemy.types.Date)
         else:
             fn = func.to_days(cls.creation_date)

@@ -27,6 +27,8 @@ from . import exc
 
 
 def generate_schema():
+    """Generates the search engine schema"""
+
     text_analyzer = RegexTokenizer() \
                     | LowercaseFilter() \
                     | CharsetFilter(accent_map)
@@ -38,8 +40,22 @@ def generate_schema():
                     date=DATETIME(stored=False))
     return schema
 
+def create_document(bookmark):
+    """Creates a Document (a dict) for the search engine"""
+
+    doc = {
+        'id': unicode(bookmark.id),
+        'title': bookmark.title or u"",
+        'notes': bookmark.notes or u"",
+        'tags': u", ".join([tag.name for tag in bookmark.tags]),
+    }
+    return doc
+
 
 class WhooshSearcher(object):
+
+    search_fields = ('notes', 'title', 'tags')
+
     def __init__(self, app=None, index_dir=None):
         self.app = app
         self.index_dir = index_dir
@@ -78,42 +94,39 @@ class WhooshSearcher(object):
         you're running in uwsgi"""
         return AsyncWriter(self.ix)
 
+
     def add_bookmark(self, bookmark, writer=None):
-        doc = {
-            'id': unicode(bookmark.id),
-            'tags': u", ".join([t.name for t in bookmark.tags]),
-            'title': bookmark.title or u'',
-            'notes': bookmark.notes or u'',
-        }
+        document = create_document(bookmark)
         if writer is None:
             writer = self.get_async_writer()
-            writer.update_document(**doc)
+            writer.update_document(**document)
             writer.commit()
         else:
-            writer.update_document(**doc)
+            writer.update_document(**document)
 
     def update_bookmark(self, bookmark, writer=None):
         self.add_bookmark(bookmark, writer)
         
     def delete_bookmark(self, bookmark_id, writer=None):
-        bookmark_id = unicode(bookmark_id)
+        _id = unicode(bookmark_id)
 
         if writer is None:
             writer = self.get_async_writer()
-            writer.delete_by_term("id", bookmark_id)
+            writer.delete_by_term("id", _id)
             writer.commit()
         else:
-            writer.delete_by_term("id", bookmark_id)
+            writer.delete_by_term("id", _id)
 
-    def search(self, query, page=1, page_len=10,
-               fields=('notes', 'title', 'tags')):
-        """Perform a search.
+    def search(self, query, page=1, page_len=10, fields=None):
+        """Returns the results of a search engine query ordered by
+        Whoosh default ordering (?).
 
-        :return: a list of bookmark id
-        :rtype: list of ints
+        :returns: a list of bookmark id (int)
         """
-        results = []
+        if fields is None:
+            fields = tuple(self.search_fields)
 
+        results = None
         with self.ix.searcher() as searcher:
             parser = MultifieldParser(fields, self.ix.schema)
             whoosh_query = parser.parse(query)
@@ -124,6 +137,6 @@ class WhooshSearcher(object):
             search_results = searcher.search_page(whoosh_query, page,
                                                   pagelen=page_len,
                                                   groupedby=facets)
-            results.extend([int(result['id']) for result in search_results])
+            results = [int(result['id']) for result in search_results]
 
-        return results
+        return results or []

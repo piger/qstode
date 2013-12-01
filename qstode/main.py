@@ -14,6 +14,8 @@ import logging
 import logging.handlers
 import argparse
 import jinja2
+from alembic.config import Config as AlembicConfig
+import alembic
 from qstode.app import app, login_manager, oid, whoosh_searcher, db
 from . import exc
 
@@ -74,6 +76,12 @@ def create_app(cfg=None):
 
     return app
 
+def init_alembic(config_file='alembic.ini'):
+    """Initialize Alembic migrations"""
+
+    cfg = AlembicConfig(config_file)
+    alembic.command.stamp(cfg, "head")
+
 def run_shell(args):
     """Run a python shell
 
@@ -110,6 +118,7 @@ def run_setup(args):
     with _app.app_context():
         print "Creating DB schema..."
         db.create_all()
+        init_alembic()
 
         if User.query.filter_by(admin=True).first() is None:
             print "Creating admin user..."

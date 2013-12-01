@@ -370,8 +370,18 @@ class Bookmark(db.Model):
 
     @classmethod
     def by_ids(cls, ids):
-        query = cls.get_public().filter(cls.id.in_(ids)).\
-                order_by(cls.creation_date.desc())
+        """Returns a list of Bookmarks matching the IDs in `ids`;
+        in MySQL the returned list is ordered the same as `ids`.
+        """
+        # Keep the order from Whoosh with a MySQL specific hack:
+        # order_by FIELD() function.
+        # http://dev.mysql.com/doc/refman/5.0/en/string-functions.html#function_field
+        if db.engine.driver.startswith('mysql'):
+            query = cls.get_public().filter(cls.id.in_(ids)).\
+                    order_by(func.field(cls.id, *ids))
+        else:
+            query = cls.get_public().filter(cls.id.in_(ids)).\
+                    order_by(cls.creation_date.desc())
         return query
 
     @classmethod

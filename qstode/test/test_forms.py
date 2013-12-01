@@ -236,3 +236,31 @@ class LoginFormTest(test.FlaskTestCase):
             "next": "/about",
         }, follow_redirects=False)
         self.assert_redirects(rv, url_for('about'))
+
+class PasswordChangeFormTest(test.FlaskTestCase):
+    def test_failed_validation(self):
+        with self.app.test_request_context():
+            g.lang = "en"
+            data = MultiDict([
+                ('password', u''),
+                ('password_confirm', u'')])
+            form = forms.PasswordChangeForm(data)
+            self.assertFalse(form.validate())
+
+    def test_successful_validation(self):
+        with self.app.test_request_context():
+            g.lang = "en"
+            data = MultiDict([
+                ('password', u'abcd1234'),
+                ('password_confirm', u'abcd1234')])
+            form = forms.PasswordChangeForm(data)
+            self.assertTrue(form.validate())
+
+    def test_short_password(self):
+        with self.app.test_request_context():
+            g.lang = "en"
+            data = MultiDict([
+                ('password', u'abcd'),
+                ('password_confirm', u'abcd')])
+            form = forms.PasswordChangeForm(data)
+            self.assertFalse(form.validate())

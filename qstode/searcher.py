@@ -39,8 +39,7 @@ def generate_schema():
     schema = Schema(id=ID(stored=True, unique=True),
                     title=TEXT(stored=False, analyzer=text_analyzer),
                     tags=KEYWORD(stored=False, lowercase=True, commas=True),
-                    notes=TEXT(stored=False, analyzer=text_analyzer),
-                    date=DATETIME(stored=False))
+                    notes=TEXT(stored=False, analyzer=text_analyzer))
     return schema
 
 def create_document(bookmark):

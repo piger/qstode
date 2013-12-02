@@ -13,7 +13,7 @@
       </div>
 
       <div class="large-10 small content-right">
-        <time datetime="{{ bookmark.creation_date|datetimeformat("yyyy-MM-dd'T'H:mm:sszzz") }}"><i class="icon-calendar"></i> {% trans quando=bookmark.creation_date|timesince %}added {{ quando }}{% endtrans %}</time>
+        <time datetime="{{ bookmark.created_on|datetimeformat("yyyy-MM-dd'T'H:mm:sszzz") }}"><i class="icon-calendar"></i> {% trans quando=bookmark.created_on|timesince %}added {{ quando }}{% endtrans %}</time>
       </div>
     </div>
 

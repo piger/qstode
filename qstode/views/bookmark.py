@@ -19,10 +19,11 @@ from flask_babel import gettext
 from flask_sqlalchemy import get_debug_queries, Pagination
 from werkzeug.contrib.atom import AtomFeed
 
-from qstode.app import app, whoosh_searcher, db
+from qstode.app import app, whoosh_searcher
 from qstode import forms
 from qstode import model
 from qstode import settings
+from qstode import db
 
 
 # robots.txt
@@ -52,7 +53,7 @@ def page_not_found(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    db.session.rollback()
+    db.Session.rollback()
     return render_template("500.html"), 500
 
 @app.errorhandler(403)
@@ -129,7 +130,7 @@ def post_bookmark():
     form = forms.BookmarkForm(request.form, url=url, title=title, notes=notes)
     if form.validate_on_submit():
         bookmark = form.create_bookmark(current_user)
-        db.session.refresh(bookmark)
+        db.Session.refresh(bookmark)
         whoosh_searcher.add_bookmark(bookmark)
         return redirect(url_for('close_popup'))
 
@@ -148,7 +149,7 @@ def add():
     if form.validate_on_submit():
         bookmark = form.create_bookmark(current_user)
 
-        db.session.refresh(bookmark)
+        db.Session.refresh(bookmark)
         whoosh_searcher.add_bookmark(bookmark)
 
         flash(gettext(u"Bookmark added!"), "success")
@@ -194,10 +195,10 @@ def edit_bookmark(bId):
 
         bookmark.notes = form.notes.data
 
-        db.session.commit()
+        db.Session.commit()
         flash(gettext(u"Bookmark modified"), 'success')
 
-        db.session.refresh(bookmark)
+        db.Session.refresh(bookmark)
         whoosh_searcher.update_bookmark(bookmark)
 
         return form.redirect('index')
@@ -216,8 +217,8 @@ def delete_bookmark(bId):
 
     if form.validate_on_submit():
         bk_id = bookmark.id
-        db.session.delete(bookmark)
-        db.session.commit()
+        db.Session.delete(bookmark)
+        db.Session.commit()
 
         whoosh_searcher.delete_bookmark(bk_id)
 
@@ -321,8 +322,8 @@ def feed_recent():
                  content_type='text',
                  author=bookmark.user.username,
                  url=bookmark.href,
-                 updated=bookmark.last_modified,
-                 published=bookmark.creation_date,
+                 updated=bookmark.modified_on,
+                 published=bookmark.created_on,
                  id=item_id)
 
     return feed.get_response()

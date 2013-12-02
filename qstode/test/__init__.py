@@ -3,8 +3,8 @@ import os
 import tempfile
 import shutil
 from flask_testing import TestCase
-from qstode.app import db
 from qstode import main
+from qstode import db
 
 
 class FlaskTestCase(TestCase):
@@ -34,11 +34,11 @@ class FlaskTestCase(TestCase):
         db.create_all()
 
     def tearDown(self):
-        db.session.remove()
+        db.Session.remove()
         db.drop_all()
         shutil.rmtree(self.tmp_dir)
 
     def _load_data(self, data):
         for item in data:
-            db.session.add(item)
-        db.session.commit()
+            db.Session.add(item)
+        db.Session.commit()

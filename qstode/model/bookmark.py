@@ -10,23 +10,24 @@
 """
 import math
 from datetime import datetime, timedelta
-from sqlalchemy import (desc, func, select, and_,
-                        not_, or_, cast, distinct)
 import sqlalchemy.types
+from sqlalchemy import desc, func, select, and_, not_, or_, cast, distinct
+from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Boolean
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 from flask_login import current_user
-from qstode.app import db
+from .. import db
 
 
-bookmark_tags = db.Table(
-    'bookmark_tags',
-    db.Column('bookmark_id', db.Integer, db.ForeignKey('bookmark.id'),
+bookmark_tags = Table(
+    'bookmark_tags', db.Base.metadata,
+    Column('bookmark_id', Integer, ForeignKey('bookmarks.id'),
            primary_key=True),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'),
-           primary_key=True),
-)
+    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True))
 
-class Tag(db.Model):
+
+class Tag(db.Base):
     """This seemingly harmless class describes the `Tag` model that is the
     most important piece of this application; tag names are stored treated
     always lowercase because otherwise it would be a mess.
@@ -47,8 +48,10 @@ class Tag(db.Model):
     # Uncomment this line to enable the "right" collation for tag names.
     # __table_args__ = {'mysql_collate': 'utf8_bin'}
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(35), nullable=False, index=True, unique=True)
+    __tablename__ = 'tags'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(35), nullable=False, index=True, unique=True)
 
     def __init__(self, name):
         """Create a new Tag, enforcing a lowercase name"""
@@ -109,7 +112,7 @@ class Tag(db.Model):
         ).group_by(bookmark_tags.c.tag_id).\
                 order_by(desc('tot')).limit(limit)
 
-        related_tags = db.session.execute(outer_w).fetchall()
+        related_tags = db.Session.execute(outer_w).fetchall()
 
         return related_tags
 
@@ -158,7 +161,7 @@ class Tag(db.Model):
         for the top `limit` popular Tags.
         """
 
-        tags = db.session.query(Tag, func.count(Tag.id).label('total')).\
+        tags = db.Session.query(Tag, func.count(Tag.id).label('total')).\
                 join('bookmarks').\
                 filter(Bookmark.private == False).\
                 group_by(Tag.id).\
@@ -197,7 +200,7 @@ class Tag(db.Model):
         """
 
         count = func.count(bookmark_tags.c.bookmark_id).label('total')
-        query = db.session.query(cls, count).\
+        query = db.Session.query(cls, count).\
                 outerjoin(bookmark_tags).\
                 group_by(cls).\
                 order_by('total DESC').\
@@ -209,26 +212,25 @@ class Tag(db.Model):
         return "<Tag(%r)>" % self.name
 
 
-class Url(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(2000), nullable=False)
+class Link(db.Base):
+    __tablename__ = 'links'
+
+    id = Column(Integer, primary_key=True)
+    href = Column(String(2000), nullable=False)
 
     @classmethod
-    def get_or_create(cls, url):
-        result = cls.query.filter_by(url=url).first()
+    def get_or_create(cls, href):
+        result = cls.query.filter_by(href=href).first()
         if result is None:
-            return cls(url)
+            return cls(href=href)
         else:
             return result
 
-    def __init__(self, url):
-        self.url = url
-
     def __repr__(self):
-        return '<URL(%r)>' % self.url
+        return "<Link(href={})>".format(self.href)
 
 
-class Bookmark(db.Model):
+class Bookmark(db.Base):
     """A bookmark element in the archive. It has several properties and
     related tables (URL, Cateory, Tag, etc.).
 
@@ -238,42 +240,35 @@ class Bookmark(db.Model):
     timezone in the view.
     """
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(300), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
-    url = db.relationship("Url", lazy='joined', backref=db.backref('bookmarks'))
-    url_id = db.Column(db.Integer, db.ForeignKey('url.id'))
-    href = association_proxy('url', 'url')
-    private = db.Column(db.Boolean, default=False)
+    __tablename__ = 'bookmarks'
 
-    creation_date = db.Column(db.DateTime(), default=datetime.utcnow)
-    last_modified = db.Column(db.DateTime(), default=datetime.utcnow,
+    id = Column(Integer, primary_key=True)
+    title = Column(String(300), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), index=True)
+    link = relationship("Link", lazy='joined', backref=backref('bookmarks'))
+    link_id = Column(Integer, ForeignKey('links.id'))
+    href = association_proxy('link', 'href')
+    private = Column(Boolean, default=False)
+
+    created_on = Column(DateTime, default=datetime.utcnow)
+    modified_on = Column(DateTime, default=datetime.utcnow,
                            onupdate=datetime.utcnow)
+    indexed_on = Column(DateTime)
 
-    tags = db.relationship('Tag', secondary=bookmark_tags,
-                           backref=db.backref('bookmarks', lazy='dynamic'),
+    tags = relationship('Tag', secondary=bookmark_tags,
+                           backref=backref('bookmarks', lazy='dynamic'),
                            order_by="Tag.name", lazy='subquery')
-    notes = db.Column(db.String(2500))
+    notes = Column(String(2500))
 
-    def __init__(self, title, url, private=False, creation_date=None,
-                 last_modified=None, notes=u'',
-                 user=None, tags=None):
+    def __init__(self, title, private=False, created_on=None,
+                 modified_on=None, notes=None):
         self.title = title
-        self.url = url
         self.private = private
-        if creation_date is not None:
-            self.creation_date = creation_date
-        else:
-            self.creation_date = datetime.utcnow()
-        if last_modified is not None:
-            self.last_modified = last_modified
-        else:
-            self.last_modified = self.creation_date
-        self.notes = notes
-        if user is not None:
-            self.user = user
-        if tags is not None:
-            self.tags.extend(tags)
+        if created_on is not None:
+            self.created_on = created_on
+        if modified_on is not None:
+            self.modified_on = modified_on
+        self.notes = notes or u""
 
     @classmethod
     def create(cls, data):
@@ -290,20 +285,17 @@ class Bookmark(db.Model):
 
         :returns: the bookmark just created
         """
-        url = Url.get_or_create(data.get('url'))
-
+        link = Link.get_or_create(data.get('url'))
         bookmark = Bookmark(title=data.get('title'),
-                            url=url,
                             private=data.get("private", False),
-                            creation_date=datetime.utcnow(),
                             notes=data.get('notes'))
-                     
+        bookmark.link = link
         bookmark.user = data.get('user')
         for tag in Tag.get_or_create_many(data.get('tags')):
             bookmark.tags.append(tag)
             
-        db.session.add(bookmark)
-        db.session.commit()
+        db.Session.add(bookmark)
+        db.Session.commit()
         return bookmark
 
     @classmethod
@@ -321,7 +313,7 @@ class Bookmark(db.Model):
     @classmethod
     def get_latest(cls):
         query = cls.get_public().\
-            order_by(cls.creation_date.desc())
+            order_by(cls.created_on.desc())
         return query
 
     @classmethod
@@ -329,7 +321,7 @@ class Bookmark(db.Model):
         where = (cls.user_id == userid)
         if not include_private:
             where = where & (cls.private == False)
-        return cls.query.filter(where).order_by(cls.creation_date.desc())
+        return cls.query.filter(where).order_by(cls.created_on.desc())
 
     @classmethod
     def by_tags(cls, tags, exclude=None):
@@ -344,14 +336,14 @@ class Bookmark(db.Model):
                 filter(Tag.name.in_(tags)).\
                 group_by(cls.id).\
                 having(func.count(cls.id) == len(tags)).\
-                order_by(cls.creation_date.desc())
+                order_by(cls.created_on.desc())
 
-        exclude_query = db.session.query(bookmark_tags.c.bookmark_id).\
+        exclude_query = db.Session.query(bookmark_tags.c.bookmark_id).\
                         join(Tag).\
                         filter(Tag.name.in_(exclude)).\
                         subquery('exclude')
 
-        include_query = db.session.query(bookmark_tags.c.bookmark_id).\
+        include_query = db.Session.query(bookmark_tags.c.bookmark_id).\
                         join(Tag).\
                         filter(Tag.name.in_(tags)).\
                         group_by(bookmark_tags.c.bookmark_id).\
@@ -360,11 +352,11 @@ class Bookmark(db.Model):
 
         query = cls.get_public().\
                 outerjoin(exclude_query,
-                          Bookmark.id == exclude_query.c.bookmark_id).\
+                          cls.id == exclude_query.c.bookmark_id).\
                 join(include_query,
-                     Bookmark.id == include_query.c.bookmark_id).\
+                     cls.id == include_query.c.bookmark_id).\
                 filter(exclude_query.c.bookmark_id == None).\
-                order_by(cls.creation_date.desc())
+                order_by(cls.created_on.desc())
 
         return query
 
@@ -376,12 +368,13 @@ class Bookmark(db.Model):
         # Keep the order from Whoosh with a MySQL specific hack:
         # order_by FIELD() function.
         # http://dev.mysql.com/doc/refman/5.0/en/string-functions.html#function_field
-        if db.engine.driver.startswith('mysql'):
+        engine = db.Session.get_bind()
+        if engine.driver.startswith('mysql'):
             query = cls.get_public().filter(cls.id.in_(ids)).\
                     order_by(func.field(cls.id, *ids))
         else:
             query = cls.get_public().filter(cls.id.in_(ids)).\
-                    order_by(cls.creation_date.desc())
+                    order_by(cls.created_on.desc())
         return query
 
     @classmethod
@@ -389,18 +382,18 @@ class Bookmark(db.Model):
         date_limit = datetime.now() - timedelta(days)
 
         # multi-database support (MySQL, PostgreSQL, SQLite) for date conversion
-        driver = db.engine.driver
-        if driver == 'sqlite':
-            fn = cast(func.julianday(cls.creation_date), db.Integer)
-        elif driver == 'postgresql':
-            fn = cast(cls.creation_date, sqlalchemy.types.Date)
+        engine = db.Session.get_bind()
+        if engine.driver == 'sqlite':
+            fn = cast(func.julianday(cls.created_on), Integer)
+        elif engine.driver == 'postgresql':
+            fn = cast(cls.created_on, sqlalchemy.types.Date)
         else:
-            fn = func.to_days(cls.creation_date)
+            fn = func.to_days(cls.created_on)
 
-        query = db.session.query(
+        query = db.Session.query(
             fn.label('day'), func.count('*').label('count')
         ).filter(
-            cls.creation_date > date_limit
+            cls.created_on > date_limit
         ).group_by('day').order_by('day ASC')
 
         results = [row.count for row in query.all()]
@@ -414,9 +407,10 @@ class Bookmark(db.Model):
             'notes': self.notes,
             'tags': [tag.name for tag in self.tags],
             'private': self.private,
-            'creation_date': self.creation_date.isoformat(),
-            'last_modified': self.last_modified.isoformat(),
+            'created_on': self.created_on.isoformat(),
+            'modified_on': self.modified_on.isoformat(),
         }
 
     def __repr__(self):
-        return '<Bookmark(title=%r, url=%r)>' % (self.title, self.url)
+        return "<Bookmark(title={0}, created_on={1}, private={2}".format(
+            self.title, self.created_on, self.private)

@@ -28,7 +28,6 @@ setup(
         'Flask-Babel',
         'Flask-Login',
         'Flask-OpenID',
-        'Flask-SQLAlchemy',
         'Flask-WTF',
         'SQLAlchemy<0.9',
         'WTForms',

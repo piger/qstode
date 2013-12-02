@@ -5,7 +5,7 @@ Do Not Edit! -->
 <Title>Bookmarks</Title>
 <H1>Bookmarks</H1>
 <DL><p>{% for bookmark in bookmarks %}
-<DT><A HREF="{{ bookmark.href }}" ADD_DATE="{{ bookmark.creation_date|ts_to_unix }}" LAST_MODIFIED="{{ bookmark.last_modified|ts_to_unix }}" PRIVATE="{{ bookmark.private|int }}" TAGS="{{ bookmark.tags|join(',', attribute='name') }}">{{ bookmark.title | e }}</A>
+<DT><A HREF="{{ bookmark.href }}" ADD_DATE="{{ bookmark.created_on|ts_to_unix }}" LAST_MODIFIED="{{ bookmark.modified_on|ts_to_unix }}" PRIVATE="{{ bookmark.private|int }}" TAGS="{{ bookmark.tags|join(',', attribute='name') }}">{{ bookmark.title | e }}</A>
 {%- if bookmark.notes %}
 <DD>{{ bookmark.notes | e }}{% endif -%}
 {% endfor %}

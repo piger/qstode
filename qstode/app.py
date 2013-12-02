@@ -13,9 +13,8 @@ from flask import Flask, request, redirect, g, session
 from flask_babel import Babel
 from flask_login import LoginManager
 from flask_openid import OpenID
-from flask_sqlalchemy import SQLAlchemy
-from qstode.searcher import WhooshSearcher
-
+from . import searcher
+from . import db
 
 app = Flask('qstode')
 
@@ -29,10 +28,9 @@ app.config['SUPPORTED_LANGUAGES_ISO'] = [
 
 
 babel = Babel(app)
-db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = "login"
-whoosh_searcher = WhooshSearcher()
+whoosh_searcher = searcher.WhooshSearcher()
 oid = OpenID()
 
 
@@ -65,3 +63,7 @@ def ssl_required(fn):
             return redirect(request.url.replace("http://", "https://"))
         return fn(*args, **kwargs)
     return decorated_view
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.Session.remove()

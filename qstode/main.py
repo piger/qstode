@@ -14,19 +14,15 @@ import logging
 import logging.handlers
 import argparse
 import jinja2
-from alembic.config import Config as AlembicConfig
 import alembic
-from qstode.app import app, login_manager, oid, whoosh_searcher, db
+from alembic.config import Config as AlembicConfig
+from qstode.app import app, login_manager, oid, whoosh_searcher
 from . import exc
+from . import db
 
-# import all views
-import qstode.views
-
-# import all models
-import qstode.model.user
-from qstode.model.user import User
-import qstode.model.bookmark
-from qstode.model.bookmark import Bookmark
+# import all views and models
+from . import views
+from . import model
 
 # import all Flask-scripts
 # import qstode.cli.importer
@@ -44,6 +40,7 @@ def setup_logging(args):
     root_logger.setLevel(level)
     syslog_handler = logging.handlers.SysLogHandler(address=syslog_device)
     root_logger.addHandler(syslog_handler)
+
 
 def create_app(cfg=None):
     """Configure the Flask application object and run initialization tasks
@@ -63,7 +60,7 @@ def create_app(cfg=None):
         app.jinja_loader = tpl_loader
 
     try:
-        db.init_app(app)
+        db.init_db(app.config['SQLALCHEMY_DATABASE_URI'], app)
         oid.init_app(app)
         login_manager.init_app(app)
         whoosh_searcher.init_app(app)
@@ -72,15 +69,10 @@ def create_app(cfg=None):
         sys.exit(1)
 
     # Register our public access handler, right *AFTER* flask-login
-    app.before_request(qstode.views.user.public_access_handler)
+    app.before_request(views.user.public_access_handler)
 
     return app
 
-def init_alembic(config_file='alembic.ini'):
-    """Initialize Alembic migrations"""
-
-    cfg = AlembicConfig(config_file)
-    alembic.command.stamp(cfg, "head")
 
 def run_shell(args):
     """Run a python shell
@@ -92,9 +84,8 @@ def run_shell(args):
             print User.query.filter_by(username=u'charlie')
     """
 
-    from qstode.app import db
-    from qstode.model.user import User
-    from qstode.model.bookmark import Tag, Url, Bookmark
+    from qstode import db
+    from qstode import model
 
     create_app()
     try:
@@ -105,27 +96,28 @@ def run_shell(args):
         shell = code.InteractiveConsole(locals=locals())
         shell.interact()
 
+
 def run_server(args):
     """Run a local version with werkzeug"""
 
     create_app().run(host=args.host, port=args.port, debug=args.debug)
 
+
 def run_setup(args):
     """Initialize QSTode: create DB schema and admin user"""
 
-    _app = create_app()
+    application = create_app()
 
-    with _app.app_context():
-        print "Creating DB schema..."
-        db.create_all()
-        init_alembic()
+    print "Creating DB schema..."
+    db.create_all(enable_alembic=True)
 
-        if User.query.filter_by(admin=True).first() is None:
-            print "Creating admin user..."
-            admin_user = User('admin', 'admin@example.com', 'admin',
-                              admin=True)
-            db.session.add(admin_user)
-            db.session.commit()
+    if model.User.query.filter_by(admin=True).first() is None:
+        print "Creating admin user..."
+        admin_user = model.User('admin', 'admin@example.com', 'admin',
+                                admin=True)
+        db.Session.add(admin_user)
+        db.Session.commit()
+
 
 def run_wsgi(args):
     """WSGI entry point"""
@@ -134,15 +126,16 @@ def run_wsgi(args):
     setup_logging(args)
     return application
 
+
 def run_reindex(args):
     """Re-index the search engine database"""
     application = create_app()
 
-    with application.app_context():
-        writer = whoosh_searcher.get_async_writer()
-        for bookmark in Bookmark.query.all():
-            whoosh_searcher.add_bookmark(bookmark, writer)
-        writer.commit()
+    writer = whoosh_searcher.get_async_writer()
+    for bookmark in model.Bookmark.query.all():
+        whoosh_searcher.add_bookmark(bookmark, writer)
+    writer.commit()
+
 
 def main():
     """Command line entry point"""

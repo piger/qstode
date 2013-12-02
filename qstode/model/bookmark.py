@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 import sqlalchemy.types
 from sqlalchemy import desc, func, select, and_, not_, or_, cast, distinct
 from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
-from sqlalchemy import Boolean
+from sqlalchemy import Boolean, event
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 from flask_login import current_user
@@ -22,10 +22,17 @@ from .. import db
 
 bookmark_tags = Table(
     'bookmark_tags', db.Base.metadata,
-    Column('bookmark_id', Integer, ForeignKey('bookmarks.id'),
+    Column('bookmark_id', Integer, ForeignKey('bookmarks.id', ondelete='cascade'),
            primary_key=True),
-    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True))
+    Column('tag_id', Integer, ForeignKey('tags.id', ondelete='cascade'), primary_key=True))
 
+
+# http://stackoverflow.com/questions/9234082/setting-delete-orphan-on-sqlalchemy-relationship-causes-assertionerror-this-att
+@event.listens_for(db.Session, 'after_flush')
+def delete_tag_orphans(session, ctx):
+    session.query(Tag).\
+        filter(~Tag.bookmarks.any()).\
+        delete(synchronize_session=False)
 
 class Tag(db.Base):
     """This seemingly harmless class describes the `Tag` model that is the
@@ -252,12 +259,12 @@ class Bookmark(db.Base):
 
     created_on = Column(DateTime, default=datetime.utcnow)
     modified_on = Column(DateTime, default=datetime.utcnow,
-                           onupdate=datetime.utcnow)
+                         onupdate=datetime.utcnow)
     indexed_on = Column(DateTime)
 
     tags = relationship('Tag', secondary=bookmark_tags,
-                           backref=backref('bookmarks', lazy='dynamic'),
-                           order_by="Tag.name", lazy='subquery')
+                        backref=backref('bookmarks', lazy='dynamic'),
+                        order_by="Tag.name", lazy='subquery')
     notes = Column(String(2500))
 
     def __init__(self, title, private=False, created_on=None,

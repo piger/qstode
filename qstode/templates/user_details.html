@@ -6,10 +6,6 @@
 
   <h3>{% trans %}User profile{% endtrans %}</h3>
 
-  {% autoescape false %}
-    <p>{{ _("If your email account is hosted at %(gmail)s you can try to enable the OpenID login by clicking %(openid_login)s.", gmail='<a href="https://www.gmail.com">Gmail</a>', openid_login="<a class='btn btn-mini btn-info' href='%s'>%s</a>" % (url_for('glogin'), _('here'))) }}</p>
-  {% endautoescape %}
-
   <p>{% trans email=current_user.email %}Your email address is: <em>{{ email }}</em>{% endtrans %}</p>
 
   <div class="column-group">

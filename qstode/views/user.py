@@ -8,14 +8,12 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
-import os
 from urlparse import urljoin
 from flask import session, request, redirect, flash, render_template, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from flask_openid import COMMON_PROVIDERS
 from flask_babel import gettext
 from sqlalchemy.orm import joinedload
-from qstode.app import app, login_manager, oid
+from qstode.app import app, login_manager
 from qstode.mailer import Mailer
 from qstode import db
 from qstode import model
@@ -155,87 +153,6 @@ def reset_password(token):
 
     return render_template('request_reset_change.html', form=form)
 
-@app.route("/glogin")
-@oid.loginhandler
-def glogin():
-    """Login a user with OpenID (Only Google is supported at the moment);
-    if a user is already logged in we update his profile with the current
-    OpenID token.
-
-    WARNING: ALPHA VERSION
-    """
-    openid_url = COMMON_PROVIDERS["google"]
-    return oid.try_login(openid_url, ask_for=["email", "fullname", "nickname"])
-
-@oid.after_login
-def create_or_login(resp):
-    """Registers a new user or performs authentication with OpenID.
-
-    WARNING: ALPHA VERSION
-
-    If an authenticated users requests this page the application will
-    update his profile with the current OpenID token; at the moment
-    the application *DOESN'T* check if the email address of a user
-    is equal to this OpenID email address!
-    """
-    if current_user.is_authenticated():
-        current_user.openid = resp.identity_url
-        db.Session.commit()
-        flash(gettext(u"OpenID profile updated!"), "info")
-        return redirect(url_for("index"))
-
-    # Searches for a registered user with a corresponding OpenID token
-    # If the user isn't found the application redirects him to the
-    # registration page
-    user = model.User.query.filter_by(openid=resp.identity_url).first()
-    if user is not None and user.active:
-        login_user(user, remember=True)
-        flash(gettext(u'Successfully logged in as %(user)s', user=user.email), "success")
-        return redirect(oid.get_next_url())
-    else:
-        session["openid"] = resp.identity_url
-        return redirect(url_for("create_profile", next=oid.get_next_url(),
-                                name=resp.fullname or resp.nickname,
-                                email=resp.email))
-
-@app.route("/create_profile", methods=["GET", "POST"])
-def create_profile():
-    """Registers a new user with OpenID
-
-    WARNING: ALPHA VERSION
-
-    New user created from this page are *DISABLED* by default and must
-    be "approved" by an administrator.
-    """
-
-    if "openid" not in session:
-        return redirect(url_for("index"))
-
-    email = request.args.get("email")
-
-    form = forms.CreateProfileForm(email=email)
-    if form.validate_on_submit():
-        password = os.urandom(24)
-        user = model.User(form.username.data, form.email.data, password,
-                          openid=session["openid"])
-        user.active = False
-        db.Session.add(user)
-        db.Session.commit()
-
-        # db.session.refresh(user)
-
-        # login_user(user)
-        #flash(u'Successfully logged in as %s' % user.email, "success")
-        #session.permanent = True
-
-        #return redirect(oid.get_next_url())
-
-        session.pop("openid", None)
-        flash(gettext(u"User registered, now you must wait for an admin approval"), "info")
-        return redirect(url_for("index"))
-
-    return render_template("create_profile.html", next_url=oid.get_next_url(),
-                           form=form)
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():

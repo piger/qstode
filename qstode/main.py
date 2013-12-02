@@ -16,7 +16,7 @@ import argparse
 import jinja2
 import alembic
 from alembic.config import Config as AlembicConfig
-from qstode.app import app, login_manager, oid, whoosh_searcher
+from qstode.app import app, login_manager, whoosh_searcher
 from . import exc
 from . import db
 
@@ -61,7 +61,6 @@ def create_app(cfg=None):
 
     try:
         db.init_db(app.config['SQLALCHEMY_DATABASE_URI'], app)
-        oid.init_app(app)
         login_manager.init_app(app)
         whoosh_searcher.init_app(app)
     except exc.InitializationError, ex:

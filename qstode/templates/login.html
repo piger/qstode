@@ -50,8 +50,6 @@
 
     {% autoescape false %}
 	  <p>{{ _('Forgot your password? You can request a %(reset)s!', reset='<a href="%s">%s</a>' % (url_for('reset_request'), _('reset'))) }}</p>
-
-	  <p>{{ _("If you are lazy you could also try to sign on with %(google)s OpenID by clicking %(openid_login)s.", google="<a href='http://www.google.com'>Google</a>", openid_login="<a class='btn btn-mini btn-info' href='%s'>%s</a>" % (url_for('glogin'), _('here'))) }}</p>
     {% endautoescape %}
 
   </div>

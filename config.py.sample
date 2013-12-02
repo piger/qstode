@@ -34,9 +34,6 @@ MAIL_FROM = "qstode@example.com"
 # Whoosh
 WHOOSH_INDEX_PATH = ""
 
-# Flask-OpenID
-OPENID_FS_STORE_PATH = ""
-
 # Extra templates directory (Flask)
 # EXTRA_TEMPLATES = [
 #     "/path/to/directory",

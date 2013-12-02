@@ -59,3 +59,9 @@ RECAPTCHA_PRIVATE_KEY = ''
 
 # google favicon service
 USE_GOOGLE_FAVICON = True
+
+# Redis
+REDIS_HOST = 'localhost'
+# REDIS_PORT = 6379
+# REDIS_DB = 0
+# REDIS_PASSWORD = ''

@@ -39,6 +39,7 @@ setup(
         #'pytest==2.3.4',
         'pytz',
         'Whoosh',
+        'redis',
     ],
     setup_requires=[],
     zip_safe=False,

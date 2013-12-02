@@ -15,17 +15,16 @@ from flask_login import login_user, login_required, logout_user, current_user
 from flask_openid import COMMON_PROVIDERS
 from flask_babel import gettext
 from sqlalchemy.orm import joinedload
-from qstode.app import app, login_manager, oid, db
-from qstode.model.user import User, ResetToken
+from qstode.app import app, login_manager, oid
 from qstode.mailer import Mailer
-from qstode.forms import (LoginForm, UserDetailsForm, PasswordResetForm,
-                          PasswordChangeForm, CreateProfileForm,
-                          RegistrationForm)
+from qstode import db
+from qstode import model
+from qstode import forms
 
 
 @login_manager.user_loader
 def load_user(userid):
-    return User.query.get(userid)
+    return model.User.query.get(userid)
 
 
 @login_manager.unauthorized_handler
@@ -44,11 +43,11 @@ def login():
     if current_user.is_authenticated():
         return redirect(url_for('index'))
 
-    form = LoginForm()
+    form = forms.LoginForm()
     login_failed = False
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = model.User.query.filter_by(email=form.email.data).first()
         if user and user.active and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             flash(gettext(u'Successfully logged in as %(user)s', user=user.email), "success")
@@ -72,7 +71,7 @@ def logout():
 def user_details():
     """Edits personal user informations"""
 
-    form = UserDetailsForm(username=current_user.username)
+    form = forms.UserDetailsForm(username=current_user.username)
 
     if form.validate_on_submit():
         if form.username.data != current_user.username:
@@ -81,7 +80,7 @@ def user_details():
         if form.password.data:
             current_user.set_password(form.password.data)
 
-        db.session.commit()
+        db.Session.commit()
         flash(gettext(u"Profile successfully updated"), 'success')
         return redirect(url_for('user_details'))
 
@@ -92,10 +91,10 @@ def user_details():
 def reset_request():
     """Begins the password reset procedure"""
 
-    form = PasswordResetForm()
+    form = forms.PasswordResetForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(
+        user = model.User.query.filter_by(
             email=form.email.data
         ).options(
             joinedload('reset_token')
@@ -116,7 +115,7 @@ def reset_request():
             return render_template('request_reset_done.html',
                                    already_requested=True)
 
-        user.reset_token = ResetToken()
+        user.reset_token = model.ResetToken()
         token = user.reset_token.token
 
         reset_url = make_external(url_for('reset_password', token=token))
@@ -129,7 +128,7 @@ def reset_request():
         mailer = Mailer(reset_sender)
         result = mailer.send(user.email, "Password reset", msg_txt, msg_html)
 
-        db.session.commit()
+        db.Session.commit()
         return render_template('request_reset_done.html')
 
     return render_template('request_reset.html', form=form)
@@ -139,19 +138,19 @@ def reset_request():
 def reset_password(token):
     """Resets a user password if a valid token is provided"""
 
-    t = ResetToken.query.filter_by(
+    t = model.ResetToken.query.filter_by(
         token=token
     ).options(
         joinedload('user')
     ).first_or_404()
 
     user = t.user
-    form = PasswordChangeForm()
+    form = forms.PasswordChangeForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         app.logger.info("Password changed form reset for %s" % user.email)
-        db.session.delete(user.reset_token)
-        db.session.commit()
+        db.Session.delete(user.reset_token)
+        db.Session.commit()
         return render_template('reset_password_done.html')
 
     return render_template('request_reset_change.html', form=form)
@@ -181,14 +180,14 @@ def create_or_login(resp):
     """
     if current_user.is_authenticated():
         current_user.openid = resp.identity_url
-        db.session.commit()
+        db.Session.commit()
         flash(gettext(u"OpenID profile updated!"), "info")
         return redirect(url_for("index"))
 
     # Searches for a registered user with a corresponding OpenID token
     # If the user isn't found the application redirects him to the
     # registration page
-    user = User.query.filter_by(openid=resp.identity_url).first()
+    user = model.User.query.filter_by(openid=resp.identity_url).first()
     if user is not None and user.active:
         login_user(user, remember=True)
         flash(gettext(u'Successfully logged in as %(user)s', user=user.email), "success")
@@ -214,14 +213,14 @@ def create_profile():
 
     email = request.args.get("email")
 
-    form = CreateProfileForm(email=email)
+    form = forms.CreateProfileForm(email=email)
     if form.validate_on_submit():
         password = os.urandom(24)
-        user = User(form.username.data, form.email.data, password,
-                    openid=session["openid"])
+        user = model.User(form.username.data, form.email.data, password,
+                          openid=session["openid"])
         user.active = False
-        db.session.add(user)
-        db.session.commit()
+        db.Session.add(user)
+        db.Session.commit()
 
         # db.session.refresh(user)
 
@@ -240,13 +239,13 @@ def create_profile():
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():
-    form = RegistrationForm()
+    form = forms.RegistrationForm()
     registration_enabled = app.config.get('USER_REGISTRATION_ENABLED')
 
     if registration_enabled and form.validate_on_submit():
-        user = User(form.username.data, form.email.data, form.password.data)
-        db.session.add(user)
-        db.session.commit()
+        user = model.User(form.username.data, form.email.data, form.password.data)
+        db.Session.add(user)
+        db.Session.commit()
 
         return redirect(url_for('login'))
 

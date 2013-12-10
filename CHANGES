@@ -1,12 +1,27 @@
 QStode Changelog
 ================
 
+Version 0.1.20
+--------------
+
+This version was released mostly because ``0.1.19`` contained some ugly
+bugs.
+
+- Added ``backup`` and ``import`` command to backup and restore the
+  contents of the database to and from a *json* file.
+- Fixed an old issue related to orphan **Tag** objects in the
+  database.
+- Usual round of bug fixes.
+
 Version 0.1.19
 --------------
 
-(to be announced)
+QStode source code is now hosted on `GitHub`_!
 
-- Miscellaneous bug fixes in the admin section.
+- Miscellaneous bug fixes.
+- Code refactoring everywhere.
+- Removed some unused functionalities.
+- Prototype of a Redis based indexing daemon.
 
 Version 0.1.18
 --------------
@@ -28,3 +43,6 @@ Some new features and a pretty new theme.
 
 - Support for OpenID login with an existing account.
 - Better support for localization.
+
+
+.. _GitHub: https://github.com/piger/qstode

@@ -2,7 +2,7 @@ Installation
 ============
 
 QStode is a Python web application and depends on some external
-libraries which can be installed via `setuptools`; it will also need a
+libraries which can be installed via `setuptools`_; it will also need a
 web server capable of running WSGI applications.
 
 You will need Python 2.6 or higher to get started and you should make
@@ -23,32 +23,33 @@ versions of libraries and packages.
 Ubuntu font
 -----------
 
-The InK framework uses the `Ubuntu Font` which must be manually
-downloaded and extracted into `qstode-src-x.y.z/qstode/static/font`.
+The InK framework uses the `Ubuntu Font`_ which must be manually
+downloaded and extracted into ``qstode-src-x.y.z/qstode/static/font``.
 
 QStode Installation
 -------------------
 
 You must create a configuration file which by default is located in
-`/etc/qstode/web_config.py` and make sure you specify a valid database
+``/etc/qstode/web_config.py`` and make sure you specify a valid database
 URI.
 
 Create the database tables and default **admin** user::
 
-   qstode -c config.py setup
+   $ qstode -c config.py setup
 
-A test server can be run with: ::
+A test server can be run with::
 
-   qstode -c config.py -D server
+   $ qstode -c config.py -D server
 
 MySQL
 '''''
 
 QStode need to store data in a MySQL database with **UTF-8** character
 encoding; an example database can be created running the following
-commands: ::
+SQL commands: :
 
-  # mysql -u root -p
+.. code-block:: mysql
+
   mysql> create database qstode character set utf8 collate utf8_bin;
   mysql> create user 'qstode'@'localhost' identified by 'somepass';
   mysql> grant all privileges on qstode.* to 'qstode'@'localhost';
@@ -64,18 +65,20 @@ own risk!
 Example Test Installation
 '''''''''''''''''''''''''
 
-Here we describe an example **test** installation within a virtualenv::
+Here we describe an example **test** installation within a virtualenv:
 
-   mkdir -p /srv/www/qstode /etc/qstode
-   cd /srv/www/qstode
-   virtualenv env
-   source env/bin/activate
-   git clone https://github.com/piger/qstode.git
-   cd qstode
-   python setup.py develop
-   cp flask_config_sample.py /etc/qstode/web_config.py
-   qstode -c /etc/qstode/web_config.py setup
-   qstode -c /etc/qstode/web_config.py -D server
+.. code-block:: console
+
+   $ mkdir -p /srv/www/qstode /etc/qstode
+   $ cd /srv/www/qstode
+   $ virtualenv env
+   $ source env/bin/activate
+   $ git clone https://github.com/piger/qstode.git
+   $ cd qstode
+   $ python setup.py develop
+   $ cp flask_config_sample.py /etc/qstode/web_config.py
+   $ qstode -c /etc/qstode/web_config.py setup
+   $ qstode -c /etc/qstode/web_config.py -D server
 
 Now you have a test server running on http://127.0.0.1:5000
 
@@ -97,52 +100,56 @@ A configuration file to run QStode with `uWSGI`_:
    # fix a buffer size problem related to Flask-OpenID
    buffer-size = 10240
 
-A sample configuration for nginx: ::
+A sample configuration for nginx:
+
+.. code-block:: nginx
 
   upstream qstode_uwsgi {
-	  server unix:/run/uwsgi/app/qstode/socket;
+      server unix:/run/uwsgi/app/qstode/socket;
   }
 
   server {
-	  listen 80;
+      listen 80;
 
-	  server_name example.com;
+      server_name example.com;
 
-	  root /srv/www/qstode/htdocs;
+      root /srv/www/qstode/htdocs;
 
-	  location /static/ {
-		  root /path/to/qstode-src-x.y.z/qstode/;
-		  expires 15d;
-		  add_header Pragma public;
-		  add_header Cache-Control "public, must-revalidate, proxy-revalidate";
-	  }
+      location /static/ {
+          root /path/to/qstode-src-x.y.z/qstode/;
+          expires 15d;
+          add_header Pragma public;
+          add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+      }
 
-	  location / {
-		  try_files $uri $uri/ @proxy_to_app;
-	  }
+      location / {
+          try_files $uri $uri/ @proxy_to_app;
+      }
 
-	  location @proxy_to_app {
-		  uwsgi_pass qstode_uwsgi;
-		  uwsgi_param APP_CONFIG /etc/qstode/web_config.py;
-		  include uwsgi_params;
-	  }
+      location @proxy_to_app {
+          uwsgi_pass qstode_uwsgi;
+          uwsgi_param APP_CONFIG /etc/qstode/web_config.py;
+          include uwsgi_params;
+      }
   }
 
 Migration and Backup
 ''''''''''''''''''''
 
-You can backup all your data to a *JSON* file by running: ::
+You can backup all your data to a *JSON* file by running the
+``backup`` command::
 
-   qstode -c /path/to/config.py backup filename.json
+   $ qstode -c /path/to/config.py backup filename.json
 
-You can also import an existing backup by running: ::
+You can also import an existing backup by running the ``import`` command::
 
-   qstode -c /path/to/config.py import filename.json
+   $ qstode -c /path/to/config.py import filename.json
 
 After an import you must also recreate the Whoosh index; at the moment
-the best way is to delete the existing Whoosh directory and run: ::
+the best way is to delete any existing Whoosh directory and then index
+again all your content, running the ``reindex`` command::
 
-   qstode -c /path/to/config.py reindex
+   $ qstode -c /path/to/config.py reindex
 
 
 .. _setuptools: https://pypi.python.org/pypi/setuptools

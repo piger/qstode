@@ -1,10 +1,10 @@
 API
 ###
 
-JSON data formata
-=================
+JSON data format
+================
 
-A bookmark in QStode is contained in a JSON dictionary, for example:
+A bookmark in QStode is serialized to a JSON dictionary; for example:
 
 .. code-block:: json
 
@@ -26,36 +26,36 @@ A bookmark in QStode is contained in a JSON dictionary, for example:
      }
    }
 
-The dictionary fields are:
+The dictionary keys are:
 
 id
-    Internal ID of the bookmark
+    Internal ID of the bookmark.
 
 title
-    HTML title of the web page.
+    Title given to the bookmark by the owner.
 
 url
-    URL of the web page.
+    URL of the bookmarked item.
 
 tags
-    The list of tags related to the bookmark.
+    The list of tags assigned to the bookmark.
 
 notes
-    The optional notes field containing a sample text from the web page.
+    The optional notes field.
 
 private
-    Privacy status of the bookmark
+    Privacy status of the bookmark.
 
 content_date
-    The date (without timestamp) of the web page content
+    The date (without timestamp) of the web page content.
 
 creation_date
-    The timestamp of the bookmark creation
+    Date and time of the bookmark creation.
 
 last_modified
-    The timestamp of the last modification to the bookmark
+    Date and time of the last modification to the bookmark data.
 
-.. note:: All timestamp values are in UTC format!
+.. note:: All timestamps are in UTC format!
 
 API Endpoints
 =============

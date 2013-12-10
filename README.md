@@ -1,15 +1,15 @@
 # QStode
 
 QStode is a web application that allows registered users to store bookmarks
-(like the goold old del.icio.us) categorized by tags.
+(like the good old del.icio.us) categorized by tags.
 
 At the moment social functions (for example the subscription to other users
 bookmark feed) are missing.
 
 ## Project status
 
-QStode is mostly usable even if it still lacks some features and many
-things could be improved.
+QStode is mostly usable (read: it's **beta**) even if it still lacks
+some features and many things could be improved.
 
 Things to note:
 
@@ -19,19 +19,20 @@ Things to note:
   `AsyncWriter` that relies on threads and is not suitable for high
   work loads.
 
-- the included SQL query used to get *related tags* must not be used
-  as it's buggy and will cause a very high load on your database.
+- SQL query for *related tags* is broken and causes high load on MySQL :(
 
 - a MySQL database is suggested; PostgreSQL support is experimental/incomplete.
 
 ## Requirements
 
-- a recent Python interpreter; I'm using 2.7.x as the supported Python version
+- Python 2.6 or 2.7
 - a WSGI server: gunicorn, uwsgi, etc.
 - a web server with reverse proxy support
 
-The suggested setup involves the use of a *virtual environmen* created with
+The suggested setup involves the use of a *virtual environment* created with
 `virtualenv`.
+
+NOTE: You can also run QStode with the built in http server, but not on the open internet!
 
 ## Installation
 
@@ -39,7 +40,7 @@ Check out the `doc` directory.
 
 ## Author(s)
 
-QStode is written and maintened by Daniel Kertesz <daniel@spatof.org>.
+QStode is written and maintained by Daniel Kertesz <daniel@spatof.org>.
 
 ## License
 

@@ -144,13 +144,12 @@ class WhooshSearcher(object):
         """
 
         document = create_document(bookmark)
-        do_commit = writer and False or True
-
         if writer is None:
             writer = self.get_async_writer()
-        writer.update_document(**document)
-        if do_commit:
+            writer.update_document(**document)
             writer.commit()
+        else:
+            writer.update_document(**document)
 
     def update_bookmark(self, bookmark, writer=None):
         """Reindex a Bookmark"""
@@ -161,13 +160,13 @@ class WhooshSearcher(object):
         """Delete a Bookmark from the index"""
 
         _id = unicode(bookmark_id)
-        do_commit = writer and False or True
 
         if writer is None:
             writer = self.get_async_writer()
-        writer.delete_by_term('id', _id)
-        if do_commit:
+            writer.delete_by_term('id', _id)
             writer.commit()
+        else:
+            writer.delete_by_term('id', _id)
 
     def search(self, query, page=1, page_len=10, fields=None):
         """Returns the results of a search engine query ordered by

@@ -141,7 +141,7 @@ def post_bookmark():
     if form.validate_on_submit():
         bookmark = form.create_bookmark(current_user)
         db.Session.refresh(bookmark)
-        whoosh_searcher.push_add_bookmark(bookmark)
+        whoosh_searcher.add_bookmark(bookmark)
         return redirect(url_for('close_popup'))
 
     return render_template('post_popup.html', form=form, url_count=url_count)
@@ -161,7 +161,7 @@ def add():
         bookmark = form.create_bookmark(current_user)
 
         db.Session.refresh(bookmark)
-        whoosh_searcher.push_add_bookmark(bookmark)
+        whoosh_searcher.add_bookmark(bookmark)
 
         flash(gettext(u"Bookmark added!"), "success")
         return redirect(url_for('index'))
@@ -212,7 +212,7 @@ def edit_bookmark(bId):
         flash(gettext(u"Bookmark modified"), 'success')
 
         db.Session.refresh(bookmark)
-        whoosh_searcher.push_update_bookmark(bookmark)
+        whoosh_searcher.update_bookmark(bookmark)
 
         return form.redirect('index')
 
@@ -233,7 +233,7 @@ def delete_bookmark(bId):
         db.Session.delete(bookmark)
         db.Session.commit()
 
-        whoosh_searcher.push_delete_bookmark(bk_id)
+        whoosh_searcher.delete_bookmark(bk_id)
 
         flash(gettext("Bookmark deleted"), 'success')
         return form.redirect('index')

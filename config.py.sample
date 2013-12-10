@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
-# QStode web frontend configuration file.
+# SAMPLE CONFIGURATION FILE FOR QSTODE
+#
+# Please note: this file is a Python script.
+#
+# See http://qstode.readthedocs.org/en/latest/index.html to read more about
+# configuration parameters.
 
-# Run in DEBUG mode (Flask)
+# Run in DEBUG mode
 DEBUG = False
-
-# Show SQLAlchemy DEBUG logging
-SQLDEBUG = False
 
 # This must be kept SECRET, generated with:
 # python -c 'import os; print "%r" % os.urandom(24)'
 # or other means
 SECRET_KEY = 'secret'
 
-# Database URI
-SQLALCHEMY_DATABASE_URI = "postgresql://username:password@localhost:5432/dbname"
+# Database URI (format: driver-name://username:password@address[:port]/db-name)
+SQLALCHEMY_DATABASE_URI = "mysql://username:password@localhost/dbname"
+
+# Whoosh index directory
+WHOOSH_INDEX_PATH = "/var/lib/qstode"
 
 # Localization
 BABEL_DEFAULT_LOCALE = "it"
@@ -25,29 +30,20 @@ SMTP_PORT = 25
 MAIL_FROM = "qstode@example.com"
 
 # the domain for the session cookie. If this is not set, the cookie will be
-# valid for all subdomains of SERVER_NAME. (Flask)
+# valid for all subdomains of SERVER_NAME.
 # SESSION_COOKIE_DOMAIN = None
 
-# (Flask)
+# the name and port number of the server. Required for subdomain
+# support (e.g.: 'myapp.dev:5000').
 # SERVER_NAME = ""
 
-# Whoosh
-WHOOSH_INDEX_PATH = ""
-
-# Extra templates directory (Flask)
+# Extra templates directory
 # EXTRA_TEMPLATES = [
 #     "/path/to/directory",
 # ]
 
+# Enable or disable anonymous user registration
 USER_REGISTRATION_ENABLED = True
-
-SUPPORTED_LANGUAGES = [
-    ('en', 'English'),
-    ('it', 'Italiano'),
-]
-
-SUPPORTED_LANGUAGES_ISO = [
-    l[0] for l in SUPPORTED_LANGUAGES]
 
 # Recaptcha, for user registration
 RECAPTCHA_USE_SSL = False

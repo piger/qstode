@@ -91,7 +91,7 @@ def init_db(uri, app=None, create=False):
 
     options = { 'convert_unicode': True }
 
-    if app is not None and app.config.get('SQLDEBUG'):
+    if app is not None and app.config.get('DEBUG'):
         options['echo'] = True
 
     info = make_url(uri)

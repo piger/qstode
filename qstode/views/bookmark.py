@@ -32,6 +32,7 @@ def robotstxt():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'robots.txt', mimetype='text/plain')
 
+
 @app.context_processor
 def inject_globals():
     """Injects some useful variables in the jinja2 context"""
@@ -47,19 +48,23 @@ def inject_globals():
         debug_queries=get_debug_queries()
     )
 
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("404.html"), 404
+
 
 @app.errorhandler(500)
 def internal_error(error):
     db.Session.rollback()
     return render_template("500.html"), 500
 
+
 @app.errorhandler(403)
 def permission_denied(e):
     """Handle the 403 error code for permission protected pages"""
     return render_template("permission_denied.html"), 403
+
 
 @app.route('/', defaults={'page': 1})
 @app.route('/page/<int:page>')
@@ -67,6 +72,7 @@ def index(page):
     bookmarks = model.Bookmark.get_latest().paginate(page, settings.PER_PAGE)
 
     return render_template('index.html', bookmarks=bookmarks)
+
 
 @app.route('/about')
 def about():
@@ -79,10 +85,12 @@ def about():
 
     return render_template('about.html', data=data)
 
+
 @app.route('/help')
 def help():
     bookmarklet_url = request.url_root
     return render_template('help.html', bookmarklet_url=bookmarklet_url)
+
 
 @app.route('/tagged/<tags>/<int:page>')
 @app.route('/tagged/<tags>', defaults={'page': 1})
@@ -95,6 +103,7 @@ def tagged(tags, page):
 
     return render_template('tagged.html', bookmarks=bookmarks, tags=tags,
                            related=related)
+
 
 @app.route('/u/<username>/<int:page>')
 @app.route('/u/<username>', defaults={'page': 1})
@@ -113,6 +122,7 @@ def user_bookmarks(username, page):
 
     return render_template('user_bookmarks.html', bookmarks=results,
                            for_user=for_user)
+
 
 @app.route('/post', methods=['GET', 'POST'])
 @login_required
@@ -136,6 +146,7 @@ def post_bookmark():
 
     return render_template('post_popup.html', form=form, url_count=url_count)
 
+
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
@@ -157,10 +168,12 @@ def add():
 
     return render_template('post.html', form=form)
 
+
 @app.route('/close')
 @login_required
 def close_popup():
     return render_template('close.html')
+
 
 @app.route('/edit/<bId>', methods=['GET', 'POST'])
 @login_required
@@ -271,6 +284,7 @@ def advanced_search():
             
     return render_template('advanced_search.html', form=form)
 
+
 @app.route('/search_results/<query>')
 def search_results(query):
     page_len = 10
@@ -287,6 +301,7 @@ def search_results(query):
     except ValueError:
         abort(400)
 
+    # XXX pagination and Whoosh aren't working as indented :(
     if results:
         # we can use all() because the list of ids in `search_results`
         # was already paginated
@@ -296,6 +311,7 @@ def search_results(query):
 
     return render_template('search_results.html', bookmarks=pagination,
                            query=query)
+
 
 @app.route('/tagcloud')
 def tagcloud():
@@ -328,9 +344,10 @@ def feed_recent():
 
     return feed.get_response()
 
+
 @app.route('/export_bookmarks')
 @login_required
 def export_bookmarks():
-    bookmarks = model.Bookmark.by_user(current_user.id)
+    bookmarks = model.Bookmark.by_user(current_user.id, include_private=True)
     today = datetime.now()
     return render_template('_export.html', bookmarks=bookmarks, today=today)

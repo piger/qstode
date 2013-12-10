@@ -14,11 +14,11 @@ from setuptools import setup, find_packages
 
 setup(
     name="qstode",
-    version="0.1.19",
+    version="0.1.20",
     description="A web application serving as a tag based archive of links",
     author="Daniel Kertesz",
     author_email="daniel@spatof.org",
-    url="http://qsto.de",
+    url="https://github.com/piger/qstode",
     license="BSD",
     long_description=__doc__,
     install_requires=[
@@ -35,7 +35,6 @@ setup(
         #'MySQL-Python==1.2.4',
         'iso8601',
         #'mock==1.0.1',
-        #'pytest==2.3.4',
         'pytz',
         'Whoosh',
         'redis',
@@ -47,6 +46,7 @@ setup(
     entry_points={
         "console_scripts": [
             "qstode = qstode.main:main",
+            "qstode-indexer = qstode.search.server:main",
         ],
     },
 )

@@ -70,7 +70,7 @@ Here we describe an example **test** installation within a virtualenv::
    cd /srv/www/qstode
    virtualenv env
    source env/bin/activate
-   git clone http://git.spatof.org/qstode.git
+   git clone https://github.com/piger/qstode.git
    cd qstode
    python setup.py develop
    cp flask_config_sample.py /etc/qstode/web_config.py
@@ -88,7 +88,7 @@ A configuration file to run QStode with `uWSGI`_:
 
    [uwsgi]
    plugin = python
-   virtualenv = /path/to/qsto.de/env
+   virtualenv = /srv/www/qstode/env
    module = qstode.main
    callable = run_wsgi
    stats = 127.0.0.1:9191
@@ -133,16 +133,16 @@ Migration and Backup
 
 You can backup all your data to a *JSON* file by running: ::
 
-   qstode-backup -c /path/to/config.py filename.json
+   qstode -c /path/to/config.py backup filename.json
 
 You can also import an existing backup by running: ::
 
-   qstode-importer -c /path/to/config.py filename.json
+   qstode -c /path/to/config.py import filename.json
 
 After an import you must also recreate the Whoosh index; at the moment
 the best way is to delete the existing Whoosh directory and run: ::
 
-   qstode-index -c /path/to/config.py
+   qstode -c /path/to/config.py reindex
 
 
 .. _setuptools: https://pypi.python.org/pypi/setuptools

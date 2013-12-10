@@ -19,11 +19,6 @@ Things to note:
   `AsyncWriter` that relies on threads and is not suitable for high
   work loads.
 
-- OpenID registration is experimental because it needs more testing.
-
-- testing Python web applications is frustrating so there are few unit
-  tests.
-
 - the included SQL query used to get *related tags* must not be used
   as it's buggy and will cause a very high load on your database.
 

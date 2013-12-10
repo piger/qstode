@@ -19,6 +19,7 @@ from alembic.config import Config as AlembicConfig
 from qstode.app import app, login_manager, whoosh_searcher
 from . import exc
 from . import db
+from . import cli
 
 # import all views and models
 from . import views
@@ -126,6 +127,11 @@ def run_wsgi(args):
     return application
 
 
+def run_backup(args):
+    application = create_app()
+    cli.backup_db(args)
+
+
 def run_reindex(args):
     """Re-index the search engine database"""
     application = create_app()
@@ -154,6 +160,10 @@ def main():
 
     p_shell = subparsers.add_parser('shell', help="Run a python shell")
     p_shell.set_defaults(func=run_shell)
+
+    p_bkp = subparsers.add_parser('backup', help="Backup database to file")
+    p_bkp.add_argument('filename', help="Name of the backup file")
+    p_bkp.set_defaults(func=run_backup)
 
     p_reindex = subparsers.add_parser(
         'reindex', help="Re-index the search engine database")

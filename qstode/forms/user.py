@@ -30,18 +30,27 @@ username_re = re.compile(r'^[A-Za-z0-9_-]+$')
 
 
 def unique_username(form, field):
+    """Ensure the given username is unique in the database"""
+
     user = model.User.query.filter_by(username=field.data).first()
     if user is not None:
         raise ValidationError(_(u"Username already exists"))
 
+
 def unique_username_or_self(form, field):
+    """Ensure the given username is unique in the database or equal
+    to the current username of the user requesting the validation"""
+
     username = field.data
     if username != current_user.username:
         user = model.User.query.filter_by(username=username).first()
         if user is not None:
             raise ValidationError(_(u"Username already exists"))
 
+
 def unique_email(form, field):
+    """Ensure the given email address is unique in the database"""
+
     user = model.User.query.filter_by(email=field.data).first()
     if user is not None:
         raise ValidationError(_(u"E-mail already registered"))

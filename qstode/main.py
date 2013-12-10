@@ -20,6 +20,7 @@ from qstode.app import app, login_manager, whoosh_searcher
 from . import exc
 from . import db
 from . import cli
+from . import utils
 
 # import all views and models
 from . import views
@@ -112,8 +113,9 @@ def run_setup(args):
     db.create_all(enable_alembic=True)
 
     if model.User.query.filter_by(admin=True).first() is None:
-        print "Creating admin user..."
-        admin_user = model.User('admin', 'admin@example.com', 'admin',
+        admin_pw = utils.generate_password()
+        print "Creating 'admin' user with password '%s'" % admin_pw
+        admin_user = model.User('admin', 'root@localhost', admin_pw,
                                 admin=True)
         db.Session.add(admin_user)
         db.Session.commit()

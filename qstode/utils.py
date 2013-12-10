@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import math
+import random
 
 
 # Code by: Armin Ronacher, Daniel Neuhäuser.
@@ -101,3 +102,23 @@ class Pagination(object):
                     yield None
                 yield num
                 last = num
+
+
+def generate_password(length=8):
+    """
+    Generate a random password suitable to be typed using alternated hands.
+    """
+
+    rng = random.SystemRandom()
+    right_hand = '23456qwertasdfgzxcvbQWERTASDFGZXCVB'
+    left_hand = '789yuiophjknmYUIPHJKLNM'
+    first_hand = random.randint(0, 1)
+    pw = []
+
+    for i in xrange(length):
+        if (i + first_hand) % 2:
+            pw.append(rng.choice(left_hand))
+        else:
+            pw.append(rng.choice(right_hand))
+
+    return ''.join(pw)

@@ -104,6 +104,7 @@ def import_file(args):
                               password=DEFAULT_PASSWORD)
             user.created_at = _parse_date(user_data['created_at'])
             user.active = user_data.get('active', True)
+            db.Session.add(user)
 
         user.password = user_data['password']
 
@@ -138,10 +139,8 @@ def import_file(args):
                 tag = tag_cache.get_item(name)
                 bookmark.tags.append(tag)
 
-        user.bookmarks.append(bookmark)
-    users.append(user)
+            user.bookmarks.append(bookmark)
 
-    db.Session.add_all(users)
     db.Session.commit()
 
 

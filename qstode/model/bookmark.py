@@ -173,7 +173,7 @@ class Tag(db.Base):
                 filter(Bookmark.private == False).\
                 group_by(Tag.id).\
                 order_by('total DESC').\
-                limit(limit)
+                limit(limit).all()
 
         if len(tags) < limit:
             return []

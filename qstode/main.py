@@ -132,6 +132,11 @@ def run_backup(args):
     cli.backup_db(args)
 
 
+def run_import_file(args):
+    application = create_app()
+    cli.import_file(args)
+
+
 def run_reindex(args):
     """Re-index the search engine database"""
     application = create_app()
@@ -164,6 +169,10 @@ def main():
     p_bkp = subparsers.add_parser('backup', help="Backup database to file")
     p_bkp.add_argument('filename', help="Name of the backup file")
     p_bkp.set_defaults(func=run_backup)
+
+    p_import = subparsers.add_parser('import', help="Import a backup file")
+    p_import.add_argument('filename')
+    p_import.set_defaults(func=run_import_file)
 
     p_reindex = subparsers.add_parser(
         'reindex', help="Re-index the search engine database")

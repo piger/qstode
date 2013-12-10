@@ -225,6 +225,9 @@ class Link(db.Base):
     id = Column(Integer, primary_key=True)
     href = Column(String(2000), nullable=False)
 
+    def __init__(self, href):
+        self.href = href
+
     @classmethod
     def get_or_create(cls, href):
         result = cls.query.filter_by(href=href).first()

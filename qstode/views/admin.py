@@ -68,7 +68,7 @@ def admin_delete_user(id):
 
 @app.route('/admin/users/<int:id>', methods=['GET', 'POST'])
 @admin_required
-def admin_edit_user(email):
+def admin_edit_user(id):
     user = model.User.query.get_or_404(id)
 
     # Create the required form, populating with data from the selected

@@ -16,6 +16,7 @@
   </div><!--/control-group-->
 {%- endmacro %}
 
+
 {% macro render_actions(submit_label=None, cancel_label=None) -%}
   <div class="control-group">
     <div class="control">
@@ -24,6 +25,16 @@
     </div><!--/controls-->
   </div><!--/control-group-->
 {%- endmacro %}
+
+
+{% macro button_group() -%}
+  <div class="control-group">
+	<div class="control">
+	  {{ caller() }}
+	</div><!-- /.control -->
+  </div><!-- /.control-group -->
+{%- endmacro %}
+
 
 {% macro title_with_page(title) %}
   <h3>{{ title }}{%- if bookmarks and bookmarks.page > 1 %}<small> {{ _('Page:') }} {{ bookmarks.page }}</small>{% endif -%}</h3>

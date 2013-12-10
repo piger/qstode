@@ -62,5 +62,5 @@ class AdminUserDetailsForm(Form):
 
 
 class AdminModifyUserForm(AdminUserDetailsForm):
-    admin = BooleanField(_(u"Admin"))
+    admin = BooleanField(_(u"Admin"), default=False)
     active = BooleanField(_(u"Active"))

@@ -84,6 +84,7 @@ def admin_edit_user(id):
         user.active = form.active.data
         if form.password.data:
             user.set_password(form.password.data)
+        user.admin = form.admin.data
 
         user.email = form.email.data
         db.Session.commit()

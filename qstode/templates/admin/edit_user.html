@@ -19,7 +19,10 @@
 	  {{ h.render_checkbox(form.active) }}
 	  {{ h.render_checkbox(form.admin) }}
 
-	  {{ h.render_actions(_('Update')) }}
+	  {% call h.button_group() %}
+		<button type="submit" class="ink-button blue"><span class="icon-save"></span> {{ _("Update") }}</button>
+		<button type="button" onclick="location.href='{{ url_for('admin_users') }}';" class="ink-button">{{ _("Cancel") }}</a>
+	  {% endcall %}
 
 	</form>
   </div>

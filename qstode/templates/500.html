@@ -1,6 +1,10 @@
-{% extends "_base_page.html" %}
-{% block title %}{% trans %}Server Error{% endtrans %}{% endblock %}
+{% extends "_public_page.html" %}
+{% from "_form_helpers.html" import page_header %}
+{% set page_title = _("Server Error") %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
+
+  {{ page_header(page_title) }}
 
   <h3>{% trans %}An unexpected error has occurred{% endtrans %}</h3>
 

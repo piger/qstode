@@ -1,57 +1,30 @@
-{% if config.SQLDEBUG and debug_queries %}
+<div class="container">
+  <div class="row">
+	<div class="col-md-12">
 
-  <div id="sqla-debug" class="ink-grid">
-    <h5>SQL Debug</h5>
-    
-    {% for query in debug_queries %}
-	  <div class="debug-query">
-	    <div class="query-statement">
-		  <pre class="small">{{ query.statement }}</pre>
-	    </div><!-- /query-statement -->
+	  {% if config.SQLDEBUG and debug_queries %}
+		<div id="sqla-debug">
+		  <h5>SQL Debug</h5>
+		  
+		  {% for query in debug_queries %}
+			<div class="debug-query">
+			  <div class="query-statement">
+				<pre class="small">{{ query.statement }}</pre>
+			  </div><!-- /query-statement -->
 
-	    <div class="query-details">
-		  {% set duration = query.duration * 1000 %}
-		  <p>Duration: <strong>{{ duration|round(3) }}</strong> seconds, Parameters: <strong>{{ query.parameters }}</strong>, Context: <strong>{{ query.context }}</strong></p>
-	    </div><!-- /query-details-->
-	  </div><!-- /debug-query -->
-    {% endfor %}
+			  <div class="query-details">
+				{% set duration = query.duration * 1000 %}
+				<p>Duration: <strong>{{ duration|round(3) }}</strong> seconds, Parameters: <strong>{{ query.parameters }}</strong>, Context: <strong>{{ query.context }}</strong></p>
+			  </div><!-- /query-details-->
+			</div><!-- /debug-query -->
+		  {% endfor %}
+		</div>
+	  {% endif %}
 
+	  <footer>
+		<p><a href="https://github.com/piger/qstode" target="_blank">QStode</a> &copy; 2013 Daniel Kertesz</p>
+		<p>Source code is BSD licensed</p>
+	  </footer>
+	</div>
   </div>
-
-{% endif %}
-
-<footer class="footer">
-  <div class="ink-grid">
-    <div class="column-group">
-
-      <div class="large-70">
-        <nav class="ink-navigation">
-          <ul class="menu horizontal">
-            <li><a href="{{ url_for('about') }}">{{ _('About') }}</a></li>
-          </ul>
-        </nav>
-      </div>
-
-      <p><strong>Built with:</strong></p>
-
-      <div class="large-15">
-        <ul class="unstyled">
-          <li><a href="http://flask.pocoo.org/" target="_blank">Flask</a></li>
-          <li><a href="http://www.sqlalchemy.org/" target="_blank">SQLAlchemy</a></li>
-        </ul>
-      </div>
-
-      <div class="large-15">
-        <ul class="unstyled">
-          <li><a href="http://ink.sapo.pt/" target="_blank">InK</a></li>
-        </ul>
-      </div>
-
-    </div><!-- /.column-group -->
-  </div><!-- /.ink-grid -->
-
-  <!-- 
-    <p class="pull-right"><a href="#">{% trans %}Back to top{% endtrans %}</a></p>
-  -->
-  </div>
-</footer>
+</div>

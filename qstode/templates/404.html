@@ -1,8 +1,10 @@
-{% extends "_base_page.html" %}
-{% block title %}{% trans %}Page not found{% endtrans %}{% endblock %}
+{% extends "_public_page.html" %}
+{% from "_form_helpers.html" import page_header %}
+{% set page_title = _("404 - Page not found") %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
 
-  <h3>{% trans %}404 - Page not found{% endtrans %}</h3>
+  {{ page_header(page_title) }}
 
   <p>{% trans %}The page you requested could not be found and the server is sad about it.{% endtrans %}</p>
 

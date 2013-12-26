@@ -1,24 +1,25 @@
-{% extends "_base_page.html" %}
-{% from "_post_macros.html" import bookmark_form %}
+{% extends "_page.html" %}
+{% from "_form_helpers.html" import bookmark_form %}
 {% import "_form_helpers.html" as h %}
-{% block title %}Edit Bookmark{% endblock %}
+{% from "_form_helpers.html" import page_header %}
+{% set page_title = _("Edit bookmark") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Edit Bookmark') }}</h3>
+  {{ page_header(page_title) }}
 
-  <div></div>
+  <div class="row">
+	<div class="col-md-8">
+	  <form action="" method="post" role="form">
+		{{ form.hidden_tag() }}
 
-  <div class="large-60">
-    <form action="" method="post" class="ink-form">
-	  {{ form.hidden_tag() }}
+		{{ bookmark_form(form) }}
 
-	  {{ bookmark_form(form) }}
-
-	  {{ h.render_actions() }}
-    </form>
+		{{ h.render_actions() }}
+	  </form>
+	</div>
   </div>
-
 {% endblock %}
 
 {% block extrajs %}

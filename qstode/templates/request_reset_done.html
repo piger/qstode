@@ -1,9 +1,11 @@
-{% extends "_public_base_page.html" %}
+{% extends "_public_page.html" %}
 {% block title %}{{ _('Request a reset of your password') }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Password reset: sent') }}</h3>
+  <div class="page-title">
+	<h3>{{ _('Password reset: sent') }}</h3>
+  </div>
 
   {% if already_requested %}
     <p>{% trans %}A password reset process is already active for your account; check your email, especially your <strong>spam</strong> folder!{% endtrans %}</p>

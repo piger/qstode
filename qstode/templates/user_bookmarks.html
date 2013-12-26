@@ -1,7 +1,16 @@
-{% extends "page_with_bookmarks.html" %}
+{% extends "_page.html" %}
+{% from "_bookmark.html" import bookmarks_block %}
 {% block title %}{% trans username=for_user.username %}{{ username }}'s bookmarks{% endtrans %}{% endblock %}
-{% block page_top %}
+{% block content %}
 
-  <h3>{% trans username=for_user.username %}Bookmarks of <em>{{ username }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif -%}</h3>
+  <div class="page-title">
+	<h3>{% trans username=for_user.username %}Bookmarks of <em>{{ username }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif -%}</h3>
+  </div>
+
+  {% if bookmarks.items %}
+	{{ bookmarks_block(bookmarks) }}
+  {% else %}
+	<p>{% trans %}There isn't any bookmark yet!{% endtrans %}</p>
+  {% endif %}
 
 {% endblock %}

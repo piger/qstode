@@ -1,26 +1,30 @@
-{% extends "_base_page.html" %}
+{% extends "_page.html" %}
 {% import "_form_helpers.html" as h %}
 {% block title %}{% trans %}Administration: create new user{% endtrans %}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Administration: create new user') }}</h3>
+  <div class="page-title">
+	<h3>{{ _('Administration: create new user') }}</h3>
+  </div>
 
-  <div class="large-70">
+  <div class="row">
+	<div class="col-md-6">
 
-	<form action="" method="post" class="ink-form{%- if form.errors %} error{%- endif %}">
-	  {{ form.hidden_tag() }}
+	  <form action="" method="post" role="form">
+		{{ form.hidden_tag() }}
 
-	  {{ h.render_field(form.username) }}
-	  {{ h.render_field(form.email) }}
-	  {{ h.render_field(form.password) }}
+		{{ h.render_field(form.username) }}
+		{{ h.render_field(form.email) }}
+		{{ h.render_field(form.password) }}
 
-	  {{ h.render_checkbox(form.active) }}
-	  {{ h.render_checkbox(form.admin) }}
+		{{ h.render_checkbox(form.active) }}
+		{{ h.render_checkbox(form.admin) }}
 
-	  {{ h.render_actions() }}
+		{{ h.render_actions() }}
 
-	</form>
+	  </form>
+	</div>
   </div>
 
 {% endblock %}

@@ -1,16 +1,19 @@
-{% extends "_base_page.html" %}
+{% extends "_page.html" %}
 {% import "_form_helpers.html" as h %}
-{% block title %}{{ _('Profile') }}{% endblock %}
+{% set page_title = _("User profile") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <h3>{% trans %}User profile{% endtrans %}</h3>
+  <div class="page-title">
+	<h3>{{ page_title }}</h3>
+  </div>
 
   <p>{% trans email=current_user.email %}Your email address is: <em>{{ email }}</em>{% endtrans %}</p>
 
-  <div class="column-group">
-    <div class="large-50 push-center">
-      <form action="" method="post" class="ink-form">
+  <div class="row">
+	<div class="col-md-6">
+      <form action="" method="post" role="form">
 	    {{ form.hidden_tag() }}
 
         <fieldset>

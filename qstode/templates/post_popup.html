@@ -1,28 +1,35 @@
 {% extends "_base.html" %}
-{% from "_post_macros.html" import bookmark_form %}
+{% from "_form_helpers.html" import bookmark_form %}
 {% block title %}{{ _('Post a new bookmark') }}{% endblock %}
 
-{% block topbar %}{% endblock %}
-{% block footer %}{% endblock %}
+{% block head %}
+  {{ super() }}
+
+  <link href="{{ url_for('static', filename='css/popup.css') }}" rel="stylesheet">
+{% endblock %}
+
 
 {% block page %}
+  <div class="container">
+	<div class="row">
+	  <div class="col-md-12">
 
-  <h3 class="popup-header"><a href="{{ url_for('index') }}">QStode</a></h3>
+		<h3><a href="{{ url_for('index') }}">QStode</a></h3>
 
-  <form action="{{ url_for('post_bookmark') }}" method="post" class="ink-form">
-	{{ form.hidden_tag() }}
+		<form action="{{ url_for('post_bookmark') }}" method="post" role="form">
+		  {{ form.hidden_tag() }}
 
-	{{ bookmark_form(form) }}
+		  {{ bookmark_form(form) }}
 
-	<div class="control-group">
-	  <div class="control">
-		<button type="submit" class="ink-button blue">{{ _('Save') }}</button>
-		<button type="button" class="ink-button" onClick="window.close();">{{ _('Cancel') }}</button>
+		  <div class="form-group">
+			<button type="submit" class="btn btn-primary">{{ _('Save') }}</button>
+			<button type="button" class="btn btn-default" onClick="window.close();">{{ _('Cancel') }}</button>
 
-	  </div><!-- /.control -->
-	</div><!-- /.control-group -->
-
-  </form>
+		  </div>
+		</form>
+	  </div><!-- /.col -->
+	</div><!-- /.row -->
+  </div><!-- /.container -->
 
 {% endblock %}
 

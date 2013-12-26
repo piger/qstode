@@ -1,9 +1,11 @@
-{% extends "_base_page.html" %}
-{% block title %}{% trans %}Administration: index{% endtrans %}{% endblock %}
+{% extends "_page.html" %}
+{% from "_form_helpers.html" import page_header %}
+{% set page_title = _("Administration: index") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Administration') }}</h3>
+  {{ page_header(page_title) }}
 
   <ul>
 	<li><a href="{{ url_for('admin_users') }}">{{ _('User list') }}</a></li>

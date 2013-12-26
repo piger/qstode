@@ -1,57 +1,32 @@
-{% extends "_public_base_page.html" %}
+{% extends "_public_page.html" %}
 {% block title %}{% trans %}Sign on{% endtrans %}{% endblock %}
 
+{% block sidebar %}{% endblock %}
+
 {% block content %}
+  <form action="{{ url_for('login') }}" method="post" class="form-signin" role="form">
+	{{ form.hidden_tag() }}
 
-  <h3>{% trans %}Sign on{% endtrans %}</h3>
+	<h2 class="form-signin-heading">{{ _("Sign in") }}</h2>
 
-  <div class="large-50 push-center">
-    
-    <form action="{{ url_for('login') }}" method="post" class="ink-form spaced-form">
-	  {{ form.hidden_tag() }}
+	{{ form.email(class="form-control", placeholder=_('Email')) }}
+	{{ form.password(class="form-control") }}
+	<label class="checkbox">
+	  {{ form.remember_me() }}Remember me
+	</label>
 
-	  <div class="control-group validation required{%- if form.email.errors %} error{%- endif %}">
-	    <div class="control">
-	      {{ form.email(size=30, placeholder='Email') }}
+	{% if login_failed %}
+	  <span class="help-block">{{ _("Authentication failed!") }}</span>
+	{% endif %}
 
-	      {% for error in form.email.errors %}
-	        <p class="tip">{{ error }}</p>
-	      {% endfor %}
-	    </div>
-	  </div>
+	<button class="btn btn-lg btn-primary btn-block" type="submit">{{ _("Sign in") }}</button>
 
-	  <div class="control-group validation required{%- if form.password.errors %} error{%- endif %}">
-	    <div class="control">
-	      {{ form.password(size=30, placeholder='Password') }}
+	<hr>
 
-	      {% for error in form.password.errors %}
-	        <p class="tip">{{ error }}</p>
-	      {% endfor %}
-	    </div>
-	  </div>
-
-	  <div class="control-group">
-		<ul class="control unstyled">
-		  <li>
-			{{ form.remember_me() }}
-			{{ form.remember_me.label() }}
-		  </li>
-		</ul>
-	  </div>
-
-	  {% if login_failed %}
-        <div class="control-group validation error">
-	      <p class="tip"><span class="ink-label error">{% trans %}ERROR{% endtrans %}</span> {% trans %}Authentication failed!{% endtrans %}</p>
-        </div>
-	  {% endif %}
-
-	  <button class="ink-button blue" type="submit">{{ _('Sign in') }}</button>
-    </form>
-
-    {% autoescape false %}
+	{% autoescape false %}
 	  <p>{{ _('Forgot your password? You can request a %(reset)s!', reset='<a href="%s">%s</a>' % (url_for('reset_request'), _('reset'))) }}</p>
-    {% endautoescape %}
+	{% endautoescape %}
+	
+  </form>
 
-  </div>
-    
-{% endblock %}
+{% endblock content %}

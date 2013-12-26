@@ -1,29 +1,25 @@
-{% macro render_field(field, help=None) -%}
-  <div class="control-group validation {%- if field.errors %} error{%- endif %}">
-    {{ field.label() }}
+{%- macro render_field(field, help="") %}
+  <div class="form-group{%- if field.errors %} has-error{%- endif %}">
+	{{ field.label() }}
 
-    <div class="control">
-      {{ field(**kwargs) }}
+	{{ field(class_='form-control', **kwargs) }}
 
-      {%- for error in field.errors %}
-	    <p class="tip">{{ error }}</span>
-      {%- endfor %}
+	{% if help %}
+	  <p class="help-block">{{ help }}</p>
+	{% endif %}
 
-      {% if help %}
-        <p class="tip">{{ help }}</p>
-      {% endif %}
-    </div><!--/controls-->
-  </div><!--/control-group-->
+	{% for error in field.errors %}
+	  <p class="help-block">{{ error }}</p>
+	{% endfor %}
+  </div>
 {%- endmacro %}
 
 
-{% macro render_actions(submit_label=None, cancel_label=None) -%}
-  <div class="control-group">
-    <div class="control">
-      <button type="submit" class="ink-button blue">{{ submit_label or _('Save') }}</button>
-      <button type="button" class="ink-button">{{ cancel_label or _('Cancel') }}</button>
-    </div><!--/controls-->
-  </div><!--/control-group-->
+{%- macro render_actions(submit_label=None, cancel_label=None) %}
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">{{ submit_label or _('Save') }}</button>
+    <button type="button" class="btn btn-default">{{ cancel_label or _('Cancel') }}</button>
+  </div>
 {%- endmacro %}
 
 
@@ -40,20 +36,33 @@
   <h3>{{ title }}{%- if bookmarks and bookmarks.page > 1 %}<small> {{ _('Page:') }} {{ bookmarks.page }}</small>{% endif -%}</h3>
 {% endmacro %}
 
-{% macro render_checkbox(field, help=None) -%}
-  <div class="control-group column-group horizontal-gutters {% if field.errors %}error{% endif %}">
-	{{ field.label(class="large-20 content-right") }}
 
-	<div class="control large-30">
-      {{ field(**kwargs) }}
-
-      {%- for error in field.errors %}
-	    <p class="tip">{{ error }}</span>
-      {%- endfor %}
-
-      {% if help %}
-        <p class="tip">{{ help }}</p>
-      {% endif %}
+{%- macro render_checkbox(field) %}
+  <div class="form-group">
+	<div class="checkbox">
+	  <label>
+		{{ field(**kwargs) }}{{ field.label.text }}
+	  </label>
 	</div>
   </div>
+{%- endmacro %}
+
+
+{%- macro bookmark_form(form) %}
+  <fieldset>
+	{{ render_field(form.url, placeholder="http://www.example.com") }}
+	{{ render_field(form.title, placeholder=_("A title for this bookmark")) }}
+	{{ render_field(form.tags, placeholder="interesting, document, music, ...", help=_("A comma separated list of tags")) }}
+	{{ render_field(form.notes, placeholder=_("Write anything here"), help=_("Optional notes"), rows=6) }}
+	{{ render_checkbox(form.private) }}
+  </fieldset>
+{%- endmacro %}
+
+
+{%- macro page_header(page_title) %}
+  <div class="page-title">
+	<h3>{{ page_title }}</h3>
+  </div>
+
+  {% include "_messages.html" %}
 {%- endmacro %}

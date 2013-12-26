@@ -1,0 +1,22 @@
+{% extends "_base.html" %}
+{% block page %}
+
+  {% include "_navbar.html" %}
+
+  <div class="container" id="main-container">
+
+	<div class="row">
+	  <div class="col-lg-2 col-md-3 col-sm-3">
+		{% include "_sidebar.html" %}
+	  </div>
+
+	  <div class="col-lg-10 col-md-9 col-sm-9">
+		{% block content %}{% endblock %}
+	  </div>
+
+	</div><!-- /.row -->
+  </div><!-- /.container -->
+
+  {% include "footer.html" %}
+
+{% endblock page %}

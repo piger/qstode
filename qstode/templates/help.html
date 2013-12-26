@@ -1,9 +1,12 @@
-{% extends "_base_page.html" %}
-{% block title %}{{ _('Help Manual') }}{% endblock %}
+{% extends "_page.html" %}
+{% set page_title = _("Help Manual") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Help Manual') }}</h3>
+  <div class="page-title">
+	<h3>{{ page_title }}</h3>
+  </div>
 
   {% if not g.lang or g.lang == 'en'  %}
     {% include "help_en.html" %}

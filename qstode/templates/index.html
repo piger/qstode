@@ -1,7 +1,25 @@
-{% extends "page_with_bookmarks.html" %}
-{% from "_form_helpers.html" import title_with_page with context %}
-{% block title %}{{ _('Home') }}{% endblock %}
+{% extends "_page.html" %}
+{% from "_bookmark.html" import render_bookmark, render_pagination with context %}
+{% from "_form_helpers.html" import page_header %}
+{% set page_title = _("Latest bookmarks") %}
+{% block title %}{{ page_title }}{% endblock %}
 
-{% block page_top %}
-  {{ title_with_page(_('Latest bookmarks')) }}
+{% block content %}
+
+  {{ page_header(page_title) }}
+
+  {% for bookmark in bookmarks.items %}
+	{{ render_bookmark(bookmark) }}
+
+	{% if not loop.last %}
+	  <hr>
+	{% endif %}
+  {% endfor %}
+
+  {% if bookmarks.items %}
+	<div class="text-center">
+	  {{ render_pagination(bookmarks) }}
+	</div>
+  {% endif %}
+
 {% endblock %}

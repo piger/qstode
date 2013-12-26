@@ -1,9 +1,11 @@
-{% extends "_base_page.html" %}
+{% extends "_page.html" %}
 {% block title %}{{ _('About') }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('About QStode') }}</h3>
+  <div class="page-title">
+	<h3>{{ _('About QStode') }}</h3>
+  </div>
 
   <p>{{ trans }}
 	QStode is a web application that allows registered users to store bookmarks
@@ -21,6 +23,8 @@
 	</ul>
   </p>
 
+  <hr>
+
   <h4>{{ _('Third party libraries and licenses') }}</h4>
 
   <p>All software used is available under an open source license.</p>
@@ -31,11 +35,9 @@
 
     <dt><a href="http://www.sqlalchemy.org/">SQLAlchemy</a></dt>
     <dd>A great ORM companion.</dd>
-
-    <dt><a href="http://ink.sapo.pt">InK</a></dt>
-    <dd>Ink is a set of tools for quick development of web interfaces.</dd>
-
   </dl>
+
+  <hr>
 
   <h4>{{ _('Statistics') }}</h4>
 

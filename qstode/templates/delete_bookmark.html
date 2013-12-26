@@ -1,22 +1,22 @@
-{% extends "_base_page.html" %}
-{% from "_single_bookmark.html" import render_bookmark with context %}
-{% block title %}Confirm delete{% endblock %}
+{% extends "_page.html" %}
+{% from "_bookmark.html" import render_bookmark with context %}
+{% from "_form_helpers.html" import page_header %}
+{% set page_title = _("Confirm delete") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Deleting Bookmark') }}</h3>
+  {{ page_header(page_title) }}
 
   <p>{{ _('Do you really want to delete this bookmark?') }}</p>
 
   {{ render_bookmark(bookmark) }}
 
-  <form action="" method="post" class="ink-form">
+  <form action="" method="post" role="form">
 	{{ form.hidden_tag() }}
 
-	<div class="form-actions">
-	  <button type="submit" class="ink-button red">{{ _('Delete') }}</button>
-      <button type="button" class="ink-button" onlick="history.go(-1)">{{ _('Cancel') }}</button>
-	</div>
+	<button type="submit" class="btn btn-danger">{{ _('Delete') }}</button>
+    <button type="button" class="btn btn-default" onlick="history.go(-1)">{{ _('Cancel') }}</button>
   </form>
 
 {% endblock %}

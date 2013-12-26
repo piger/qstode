@@ -1,0 +1,70 @@
+{%- macro render_bookmark(bookmark, user=None) %}
+  {% set b_domain = bookmark.href|get_domain %}
+
+  <div class="bookmark-box">
+	<div class="bookmark-box-heading">
+	  {% if config.USE_GOOGLE_FAVICON %}
+		<h3><a href="{{ bookmark.href }}" target="_blank"><img src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
+	  {% else %}
+		<h3><a href="{{ bookmark.href }}">{{ bookmark.title }}</a></h3>
+	  {% endif %}
+	  <h4><span class="glyphicon glyphicon-calendar"></span> {{ bookmark.created_on|dateformat('short') }}</h4>
+	  <h4><span class="glyphicon glyphicon-bookmark"></span> <a href="{{ bookmark.href }}">{{ bookmark.href|truncate(80, True) }}</a></h4>
+	</div>
+
+	<div class="bookmark-box-body">
+	  <blockquote>
+		<p>{{ bookmark.notes }}</p>
+	  </blockquote>
+
+	  <p><span class="glyphicon glyphicon-user"></span> <a href="{{ url_for('user_bookmarks', username=bookmark.user.username) }}">{{ bookmark.user.username }}</a>{% if bookmark.user.id == current_user.id %} <a class="btn btn-success btn-xs" href="{{ url_for('edit_bookmark', bId=bookmark.id) }}">{{ _("Modify") }}</a> <a class="btn btn-xs btn-danger" href="{{ url_for('delete_bookmark', bId=bookmark.id) }}">{{ _("Delete") }}</a>{% endif %}</p>
+
+	  <p><span class="glyphicon glyphicon-tags"></span> {% for tag in bookmark.tags %}<a href="{{ url_for('tagged', tags=tag.name) }}" class="btn btn-xs btn-default">{{ tag.name }}</a>{%if not loop.last %} {% endif %}{% endfor %}</p>
+	</div>
+  </div><!-- /.bookmark-box -->
+{%- endmacro %}
+
+
+{%- macro render_pagination(pag) %}
+  <ul class="pagination">
+	{% if pag.has_prev %}
+	  <li><a href="{{ url_for_other_page(pag.prev_num) }}">&laquo;</a></li>
+	{% else %}
+	  <li><a href="{{ url_for_other_page(1) }}">&laquo;</a></li>
+	{% endif %}
+
+	{% for page in pag.iter_pages() %}
+	  {% if page %}
+		{% if page != pag.page %}
+		  <li><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
+		{% else %}
+		  <li class="active"><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
+		{% endif %}
+	  {% endif %}
+	{% endfor %}
+
+	{% if pag.has_next %}
+	  <li><a href="{{ url_for_other_page(pag.next_num) }}">&raquo;</a></li>
+	{% else %}
+	  <li><a href="{{ url_for_other_page(pag.pages) }}">&raquo;</a></li>
+	{% endif %}
+  </ul>
+	
+{%- endmacro %}
+
+
+{%- macro bookmarks_block(bookmarks) %}
+  {% for bookmark in bookmarks.items %}
+	{{ render_bookmark(bookmark) }}
+
+	{% if not loop.last %}
+	  <hr>
+	{% endif %}
+  {% endfor %}
+
+  {% if bookmarks.items %}
+	<div class="text-center">
+	  {{ render_pagination(bookmarks) }}
+	</div>
+  {% endif %}
+{%- endmacro %}

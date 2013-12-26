@@ -1,14 +1,20 @@
-{% extends "page_with_bookmarks.html" %}
-{% block title %}{{ _('Search results') }}{% endblock %}
+{% extends "_page.html" %}
+{% from "_bookmark.html" import bookmarks_block %}
+{% set page_title = _("Search results") %}
+{% block title %}{{ page_title }}{% endblock %}
 
-{% block page_top %}
+{% block content %}
 
-  <h3>{{ _('Search results') }} {%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif -%}</h3>
+  <div class="page-title">
+	<h3>{{ page_title }} {%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif -%}</h3>
+  </div>
 
   {% if related %}
-	<p>tag vicine: {%- for tagid, tagname, tagc in related %}
+	<p>{{ _("Related tags:") }} {%- for tagid, tagname, tagc in related %}
 	  <a href="{{ url_for('tagged', tags=tagname) }}">{{ tagname }}</a>{%- if not loop.last %},{% endif -%}
 	{% endfor -%}</p>
   {% endif %}
+
+  {{ bookmarks_block(bookmarks) }}
 
 {% endblock %}

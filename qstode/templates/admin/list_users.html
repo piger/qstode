@@ -1,13 +1,15 @@
-{% extends "_base_page.html" %}
+{% extends "_page.html" %}
 {% import "_form_helpers.html" as h %}
-{% block title %}{% trans %}Administration: manage users{% endtrans %}{% endblock %}
+{% from "_form_helpers.html" import page_header %}
+{% set page_title = _("Administration: manage users") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Administration: manage users') }}</h3>
+  {{ page_header(page_title) }}
 
   {% if users %}
-	<table class="ink-table bordered alternating">
+	<table class="table table-condensed">
 	  <thead>
 		<tr>
 		  <th>{% trans %}Username{% endtrans %}</th>
@@ -19,7 +21,7 @@
 
       <tbody>
 		{% for user in users %}
-		  <tr>
+		  <tr class="{%- if not user.active %}warning{%- endif %}">
 			<td><a href="{{ url_for("admin_edit_user", id=user.id) }}">{{ user.username }}</a></td>
 			<td>{{ user.email }}</td>
 			<td>{% if user.active -%}{{ _('Active') }}{% else %}{{ _('Inactive') }}{% endif -%}</td>

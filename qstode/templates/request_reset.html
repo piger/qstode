@@ -1,35 +1,26 @@
-{% extends "_public_base_page.html" %}
-
+{% extends "_public_page.html" %}
+{% import "_form_helpers.html" as h %}
 {% block title %}{{ _('Request a reset of your password') }}{% endblock %}
 
 {% block content %}
 
-  <h3>{{ _('Password reset') }}</h3>
+  <div class="page-title">
+	<h3>{{ _('Password reset') }}</h3>
+  </div>
 
   <div>
     <p>{% trans %}If you have lost your password you can request a reset by filling the form below with your email address; you will soon receive a mail with further instructions (remember to check your <strong>spam</strong> folder!).{% endtrans %}</p>
   </div>
 
-  <div class="large-50">
+  <div class="row">
+	<div class="col-md-4">
+	  <form action="" method="post" role="form">
+		{{ form.hidden_tag() }}
 
-    <form action="" method="post" class="ink-form spaced-form">
-	  {{ form.hidden_tag() }}
-
-	  <div class="control-group validation{%- if form.email.errors %} error{% endif -%}">
-
-        {{ form.email.label() }}
-	    <div class="control append-button">
-
-          <span>{{ form.email(size=30, placeholder='Email') }}</span>
-	      <button class="ink-button" type="submit">{{ _('Send request') }}</button>
-		  {% for error in form.email.errors %}
-		    <p class="tip">{{ error }}</p>
-		  {% endfor %}
-
-	    </div>
-	  </div>
-
-    </form>
+		{{ h.render_field(form.email, placeholder=_("Email")) }}
+		<button type="submit" class="btn btn-primary">{{ _('Send') }}</button>
+	  </form>
+	</div>
   </div>
 
 {% endblock %}

@@ -134,9 +134,6 @@ def post_bookmark():
     notes = request.args.get('notes', '')
     url_count = 0
 
-    if url:
-        url_count += model.Url.query.filter_by(url=url).count()
-
     form = forms.BookmarkForm(request.form, url=url, title=title, notes=notes)
     if form.validate_on_submit():
         bookmark = form.create_bookmark(current_user)
@@ -144,7 +141,7 @@ def post_bookmark():
         whoosh_searcher.add_bookmark(bookmark)
         return redirect(url_for('close_popup'))
 
-    return render_template('post_popup.html', form=form, url_count=url_count)
+    return render_template('post_popup.html', form=form)
 
 
 @app.route('/add', methods=['GET', 'POST'])

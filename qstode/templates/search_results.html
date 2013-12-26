@@ -1,5 +1,5 @@
 {% extends "_page.html" %}
-{% from "_bookmark.html" import render_bookmark, render_pagination %}
+{% from "_bookmark.html" import render_bookmark, render_pagination with context %}
 {% set page_title = _("Search results") %}
 {% block title %}{{ page_title }}{% endblock %}
 

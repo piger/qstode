@@ -1,20 +1,18 @@
 {% extends "_page.html" %}
-{% from "_form_helpers.html" import bookmark_form %}
-{% import "_form_helpers.html" as h %}
-{% from "_form_helpers.html" import page_header %}
+{% import "_helpers.html" as h %}
 {% set page_title = _("Edit bookmark") %}
 {% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  {{ page_header(page_title) }}
+  {{ h.page_header(page_title) }}
 
   <div class="row">
 	<div class="col-md-8">
 	  <form action="" method="post" role="form">
 		{{ form.hidden_tag() }}
 
-		{{ bookmark_form(form) }}
+		{{ h.bookmark_form(form) }}
 
 		{{ h.render_actions() }}
 	  </form>

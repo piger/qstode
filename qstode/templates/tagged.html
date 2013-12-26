@@ -1,7 +1,12 @@
-{% extends "page_with_bookmarks.html" %}
-{% block title %}{{ _('Tag search') }}{% endblock %}
+{% extends "_page.html" %}
+{% import "_helpers.html" as h %}
+{% from "_bookmark.html" import bookmarks_block with context %}
+{% set page_title = _("Tag search") %}
+{% block title %}{{ page_title }}{% endblock %}
 
-{% block page_top %}
+{% block content %}
+
+  {{ h.page_header(page_title) }}
 
   <h3>{{ _('Tagged with:') }} <a href="{{ url_for('tagged', tags=tags|join(',')) }}">{{ tags|join(', ') }}</a> {%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif -%}</h3>
 
@@ -9,6 +14,12 @@
 	<p>{% trans %}near tags:{% endtrans %} {%- for tagid, tagname, tagc in related %}
 	  <a href="{{ url_for('tagged', tags=tagname) }}">{{ tagname }}</a>{%- if not loop.last %},{% endif -%}
 	{% endfor -%}</p>
+  {% endif %}
+
+  {% if bookmarks.items %}
+	{{ bookmarks_block(bookmarks) }}
+  {% else %}
+	<p>{% trans %}There isn't any bookmark yet!{% endtrans %}</p>
   {% endif %}
 
 {% endblock %}

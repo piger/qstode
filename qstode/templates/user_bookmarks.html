@@ -1,5 +1,5 @@
 {% extends "_page.html" %}
-{% from "_bookmark.html" import bookmarks_block %}
+{% from "_bookmark.html" import bookmarks_block with context %}
 {% block title %}{% trans username=for_user.username %}{{ username }}'s bookmarks{% endtrans %}{% endblock %}
 {% block content %}
 

@@ -1,12 +1,11 @@
 {% extends "_page.html" %}
-{% import "_form_helpers.html" as h %}
-{% from "_form_helpers.html" import page_header %}
+{% import "_helpers.html" as h %}
 {% set page_title = _("Administration: manage users") %}
 {% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  {{ page_header(page_title) }}
+  {{ h.page_header(page_title) }}
 
   {% if users %}
 	<table class="table table-condensed">

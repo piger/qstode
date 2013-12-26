@@ -24,8 +24,8 @@ class Mailer(object):
         port = app.config.get('SMTP_PORT', 25)
 
         msg = MIMEMultipart('alternative')
-        part_txt = MIMEText(message_text, 'plain')
-        part_html = MIMEText(message_html, 'html')
+        part_txt = MIMEText(message_text, 'plain', 'utf-8')
+        part_html = MIMEText(message_html, 'html', 'utf-8')
 
         msg['Subject'] = '[QStode] %s' % (subject,)
         msg['From'] = self.sender

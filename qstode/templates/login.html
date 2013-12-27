@@ -22,10 +22,10 @@
 
 	<hr>
 
-	{% autoescape false %}
-	  <p>{{ _('Forgot your password? You can request a %(reset)s!', reset='<a href="%s">%s</a>' % (url_for('reset_request'), _('reset'))) }}</p>
-	{% endautoescape %}
-	
+	<p>{% trans reset=url_for('reset_request') %}
+	  Forgot your password? You can request a <a href="{{ reset }}">reset!</a>
+	  {% endtrans %}
+	</p>
   </form>
 
 {% endblock content %}

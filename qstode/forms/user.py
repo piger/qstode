@@ -18,46 +18,76 @@ from wtforms.validators import (DataRequired, Email, EqualTo, Length, Regexp,
 from flask_wtf.html5 import EmailField
 from flask_babel import lazy_gettext as _
 from .misc import RedirectForm
-from .. import model
+from .validators import unique_username, unique_email
+from ..model import User
 
 
 # Length limit for password validation
-PASSWORD_MIN_LENGTH = 8
-PASSWORD_MAX_LENGTH = 64
+USERNAME_MIN = 3
+USERNAME_MAX = 20
+PASSWORD_MIN = 8
+PASSWORD_MAX = 64
 
 # username validation regexp
 username_re = re.compile(r'^[A-Za-z0-9_-]+$')
 
 
-def unique_username(form, field):
-    """Ensure the given username is unique in the database"""
+class CreateUserForm(Form):
+    username = TextField(_(u"Username"), [
+        DataRequired(),
+        Length(USERNAME_MIN, USERNAME_MAX),
+        Regexp(username_re),
+        unique_username(),
+    ])
+    email = EmailField(_(u"Email"), [
+        DataRequired(),
+        unique_email(),
+    ])
+    password = PasswordField(_(u"Password"), [
+        DataRequired(),
+        Length(PASSWORD_MIN, PASSWORD_MAX),
+        EqualTo("password_confirm")])
+    password_confirm = PasswordField(_(u"Confirm password"), [DataRequired()])
+    active = BooleanField(_(u"Active"), default=True)
+    admin = BooleanField(_(u"Administrator"), default=False)
 
-    user = model.User.query.filter_by(username=field.data).first()
-    if user is not None:
-        raise ValidationError(_(u"Username already exists"))
 
+class EditUserForm(CreateUserForm):
+    """Admin: modify an existing user"""
 
-def unique_username_or_self(form, field):
-    """Ensure the given username is unique in the database or equal
-    to the current username of the user requesting the validation"""
+    # username uniqueness is validated inline
+    username = TextField(_(u"Username"), [
+        DataRequired(),
+        Length(USERNAME_MIN, USERNAME_MAX),
+        Regexp(username_re),
+    ])
+    # email uniqueness is validated inline
+    email = EmailField(_(u"Email"), [DataRequired()])
+    password = PasswordField(_(u"Password"), [
+        Optional(),
+        Length(PASSWORD_MIN, PASSWORD_MAX),
+        EqualTo("password_confirm")])
+    password_confirm = PasswordField(_(u"Confirm password"))
 
-    username = field.data
-    if username != current_user.username:
-        user = model.User.query.filter_by(username=username).first()
-        if user is not None:
-            raise ValidationError(_(u"Username already exists"))
+    def __init__(self, username, email, *args, **kwargs):
+        self._username = username
+        self._email = email
+        super(EditUserForm, self).__init__(*args, username=username, email=email,
+                                           **kwargs)
 
+    def validate_username(self, field):
+        if field.data != self._username:
+            if User.query.filter_by(username=field.data).first() is not None:
+                raise ValidationError(_(u"Username already taken"))
 
-def unique_email(form, field):
-    """Ensure the given email address is unique in the database"""
-
-    user = model.User.query.filter_by(email=field.data).first()
-    if user is not None:
-        raise ValidationError(_(u"E-mail already registered"))
+    def validate_email(self, field):
+        if field.data != self._email:
+            if User.query.filter_by(email=field.data).first() is not None:
+                raise ValidationError(_(u"Email already taken"))
 
 
 class LoginForm(RedirectForm):
-    email = EmailField(_(u'Email'), [DataRequired(), Email()])
+    user = TextField(_(u'User'), [DataRequired()])
     password = PasswordField(_(u'Password'), [DataRequired()])
     remember_me = BooleanField(_(u'Remember me'))
 
@@ -69,10 +99,7 @@ class PasswordResetForm(Form):
 class PasswordChangeForm(Form):
     password = PasswordField(_(u'New password'), [
         DataRequired(),
-        Length(
-            min=PASSWORD_MIN_LENGTH, max=PASSWORD_MAX_LENGTH,
-            message=_(u"Password length must be between %(min)d and %(max)d characters" % dict(min=PASSWORD_MIN_LENGTH, max=PASSWORD_MAX_LENGTH))
-        ),
+        Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
         EqualTo('password_confirm', message=_(u"Passwords must match"))
     ])
     password_confirm = PasswordField(_(u'Confirm new password'))
@@ -87,10 +114,7 @@ class RegistrationForm(Form):
                                      unique_email])
     password = PasswordField(_(u'Password'), [
         DataRequired(),
-        Length(
-            min=PASSWORD_MIN_LENGTH, max=PASSWORD_MAX_LENGTH,
-            message=_(u"Password length must be between %(min)d and %(max)d characters" % dict(min=PASSWORD_MIN_LENGTH, max=PASSWORD_MAX_LENGTH))
-        ),
+        Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
         EqualTo('password_confirm', message=_(u"Passwords must match"))
     ])
     password_confirm = PasswordField(_(u'Confirm password'), [DataRequired()])
@@ -103,15 +127,12 @@ class UserDetailsForm(Form):
         DataRequired(),
         Length(min=3, max=20),
         Regexp(username_re),
-        unique_username_or_self
+        unique_username(include_self=True),
     ])
     password_old = PasswordField('Current password')
     password = PasswordField(_(u'Password'), [
         Optional(),
-        Length(
-            min=PASSWORD_MIN_LENGTH, max=PASSWORD_MAX_LENGTH,
-            message=_(u"Password length must be between %(min)d and %(max)d characters" % dict(min=PASSWORD_MIN_LENGTH, max=PASSWORD_MAX_LENGTH))
-        ),
+        Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
         EqualTo('password_confirm', message=_(u"Passwords must match"))
     ])
     password_confirm = PasswordField(_(u'Confirm new password'))

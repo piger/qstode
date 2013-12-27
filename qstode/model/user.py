@@ -51,11 +51,12 @@ class User(db.Base, UserMixin):
                                  primaryjoin=id==watched_users.c.user_id,
                                  secondaryjoin=id==watched_users.c.other_user_id)
 
-    def __init__(self, username, email, password, openid=None, admin=False):
+    def __init__(self, username, email, password, openid=None, admin=False,
+                 active=True):
         self.username = username
         self.email = email
         self.set_password(password)
-        self.active = True
+        self.active = active
         self.openid = openid
         self.admin = admin
 

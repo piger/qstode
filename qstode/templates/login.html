@@ -1,4 +1,5 @@
 {% extends "_public_page.html" %}
+{% import "_helpers.html" as h %}
 {% block title %}{% trans %}Sign on{% endtrans %}{% endblock %}
 
 {% block sidebar %}{% endblock %}
@@ -9,11 +10,9 @@
 
 	<h2 class="form-signin-heading">{{ _("Sign in") }}</h2>
 
-	{{ form.email(class="form-control", placeholder=_('Email')) }}
-	{{ form.password(class="form-control") }}
-	<label class="checkbox">
-	  {{ form.remember_me() }}Remember me
-	</label>
+	{{ h.render_field(form.user, placeholder=_("Username or email")) }}
+	{{ h.render_field(form.password) }}
+	{{ h.render_checkbox(form.remember_me) }}
 
 	{% if login_failed %}
 	  <span class="help-block">{{ _("Authentication failed!") }}</span>

@@ -40,6 +40,8 @@
 		{% else %}
 		  <li class="active"><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
 		{% endif %}
+	  {% else %}
+		<li><a href="{{ url_for_other_page(page) }}">&hellip;</a></li>
 	  {% endif %}
 	{% endfor %}
 

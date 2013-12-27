@@ -16,13 +16,13 @@ from sqlalchemy.orm import joinedload
 from qstode.app import app, login_manager
 from qstode.mailer import Mailer
 from qstode import db
-from qstode import model
+from ..model import User
 from qstode import forms
 
 
 @login_manager.user_loader
 def load_user(userid):
-    return model.User.query.get(userid)
+    return User.query.get(userid)
 
 
 @login_manager.unauthorized_handler
@@ -45,14 +45,18 @@ def login():
     login_failed = False
 
     if form.validate_on_submit():
-        user = model.User.query.filter_by(email=form.email.data).first()
+        if u'@' in form.user.data:
+            user = User.query.filter_by(email=form.user.data).first()
+        else:
+            user = User.query.filter_by(username=form.user.data).first()
+
         if user and user.active and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            flash(gettext(u'Successfully logged in as %(user)s', user=user.email), "success")
+            flash(gettext(u"Successfully logged in as %(user)s", user=user.username), "success")
             return form.redirect('index')
 
         login_failed = True
-        app.logger.info("Failed login from %s" % form.email.data)
+        app.logger.info("Failed login from %s" % form.user.data)
 
     return render_template('login.html', form=form, login_failed=login_failed)
 
@@ -92,7 +96,7 @@ def reset_request():
     form = forms.PasswordResetForm()
 
     if form.validate_on_submit():
-        user = model.User.query.filter_by(
+        user = User.query.filter_by(
             email=form.email.data
         ).options(
             joinedload('reset_token')
@@ -160,7 +164,7 @@ def register_user():
     registration_enabled = app.config.get('USER_REGISTRATION_ENABLED')
 
     if registration_enabled and form.validate_on_submit():
-        user = model.User(form.username.data, form.email.data, form.password.data)
+        user = User(form.username.data, form.email.data, form.password.data)
         db.Session.add(user)
         db.Session.commit()
 

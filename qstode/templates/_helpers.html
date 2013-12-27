@@ -66,3 +66,21 @@
 
   {% include "_messages.html" %}
 {%- endmacro %}
+
+
+{%- macro render_select(field) %}
+  <div class="form-group">
+
+	{{ field.label() }}
+
+	<select class="form-control" name="{{ field.name }}" id="{{ field.id }}">
+	  {% for value, label, selected in field.iter_choices() %}
+		<option value="{{ value }}"{%- if selected  %} selected{%- endif %}>{{ label }}</option>
+	  {% endfor %}
+	</select>
+
+	{% for error in field.errors %}
+	  <p class="help-block">{{ error }}</p>
+	{% endfor %}
+  </div>
+{%- endmacro %}

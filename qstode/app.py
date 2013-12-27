@@ -27,10 +27,13 @@ app.config['SUPPORTED_LANGUAGES'] = [
 app.config['SUPPORTED_LANGUAGES_ISO'] = [
     l[0] for l in app.config['SUPPORTED_LANGUAGES']]
 
+app.config['ITEMS_PER_PAGE'] = 10
+
 
 babel = Babel(app)
 login_manager = LoginManager()
 login_manager.login_view = "login"
+login_manager.login_message_category = "warning"
 whoosh_searcher = searcher.WhooshSearcher()
 
 

@@ -8,15 +8,21 @@
 
   {{ page_header(page_title) }}
 
-  <p>{{ _('Do you really want to delete this bookmark?') }}</p>
+  <div class="panel panel-default">
+	<div class="panel-heading">{{ _('Do you really want to delete this bookmark?') }}</div>
+	<div class="panel-body">
 
-  {{ render_bookmark(bookmark) }}
+	  {{ render_bookmark(bookmark, controls=False) }}
 
-  <form method="post" role="form">
-	{{ form.hidden_tag() }}
+	  <form method="post" role="form">
+		{{ form.hidden_tag() }}
+	  </form>
+	</div>
 
-	<button type="submit" class="btn btn-danger">{{ _('Delete') }}</button>
-    <button type="button" class="btn btn-default" onlick="history.go(-1)">{{ _('Cancel') }}</button>
-  </form>
+	<div class="panel-footer text-center">
+	  <button type="submit" class="btn btn-sm btn-danger">{{ _('Delete') }}</button>
+	  <button type="button" class="btn btn-sm btn-default" onlick="history.go(-1)">{{ _('Cancel') }}</button>
+	</div>
+  </div>
 
 {% endblock %}

@@ -1,19 +1,19 @@
 {% block sidebar %}
   <ul class="nav nav-pills nav-stacked">
 
-	<li class="{{ active_if('index') }}"><a href="{{ url_for('index') }}">Home</a></li>
-	<li class="{{ active_if('advanced_search') }}"><a href="{{ url_for('advanced_search') }}">{{ _('Advanced Search') }}</a></li>
-	<li class="{{ active_if('help') }}"><a href="{{ url_for('help') }}">{{ _('Help') }}</a></li>
+	<li class="{{ active_if('index') }}"><a href="{{ url_for('index') }}"><span class="glyphicon glyphicon-home"></span> {{ _("Home") }}</a></li>
+	<li class="{{ active_if('advanced_search') }}"><a href="{{ url_for('advanced_search') }}"><span class="glyphicon glyphicon-search"></span> {{ _('Advanced Search') }}</a></li>
+	<li class="{{ active_if('help') }}"><a href="{{ url_for('help') }}"><span class="glyphicon glyphicon-question-sign"></span> {{ _('Help') }}</a></li>
 
 	{% if current_user.is_authenticated() %}
-	  <li class="{{ active_if('user_bookmarks') }}"><a href="{{ url_for('user_bookmarks', username=current_user.username) }}">{{ _('My Bookmarks') }}</a></li>
+	  <li class="{{ active_if('user_bookmarks') }}"><a href="{{ url_for('user_bookmarks', username=current_user.username) }}"><span class="glyphicon glyphicon-book"></span> {{ _('My Bookmarks') }}</a></li>
 
 	  {% if current_user.admin %}
-		<li class="{{ active_if('admin_home') }}"><a href="{{ url_for('admin_home') }}">{{ _('Administration') }}</a></li>
+		<li class="{{ active_if('admin_home') }}"><a href="{{ url_for('admin_home') }}"><span class="glyphicon glyphicon-cog"></span> {{ _('Administration') }}</a></li>
 	  {% endif %}
 	{% endif %}
 
-	<li><a href="{{ url_for('feed_recent') }}">{{ _('RSS Feed') }}</a></li>
+	<li><a href="{{ url_for('feed_recent') }}"><span class="glyphicon glyphicon-bullhorn"></span> {{ _('RSS Feed') }}</a></li>
   </ul>
 
   {% if taglist %}

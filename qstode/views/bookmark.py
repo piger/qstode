@@ -22,7 +22,6 @@ from werkzeug.contrib.atom import AtomFeed
 from qstode.app import app, whoosh_searcher
 from qstode import forms
 from qstode import model
-from qstode import settings
 from qstode import db
 
 
@@ -69,7 +68,8 @@ def permission_denied(e):
 @app.route('/', defaults={'page': 1})
 @app.route('/page/<int:page>')
 def index(page):
-    bookmarks = model.Bookmark.get_latest().paginate(page, settings.PER_PAGE)
+    bookmarks = model.Bookmark.get_latest().\
+                paginate(page, app.config['PER_PAGE'])
 
     return render_template('index.html', bookmarks=bookmarks)
 
@@ -88,8 +88,7 @@ def about():
 
 @app.route('/help')
 def help():
-    bookmarklet_url = request.url_root
-    return render_template('help.html', bookmarklet_url=bookmarklet_url)
+    return render_template('help.html')
 
 
 @app.route('/tagged/<tags>/<int:page>')
@@ -98,7 +97,8 @@ def tagged(tags, page):
     """Shows all bookmarks tagged with one or more comma separated tags"""
 
     tags = re.split(r'\s*,\s*', tags)
-    bookmarks = model.Bookmark.by_tags(tags).paginate(page, settings.PER_PAGE)
+    bookmarks = model.Bookmark.by_tags(tags).\
+                paginate(page, app.config['PER_PAGE'])
     related = model.Tag.get_related(tags)
 
     return render_template('tagged.html', bookmarks=bookmarks, tags=tags,
@@ -118,7 +118,7 @@ def user_bookmarks(username, page):
         include_private = False
 
     results = model.Bookmark.by_user(for_user.id, include_private=include_private).\
-              paginate(page, settings.PER_PAGE)
+              paginate(page, app.config['PER_PAGE'])
 
     return render_template('user_bookmarks.html', bookmarks=results,
                            for_user=for_user)
@@ -264,7 +264,7 @@ def simple_search():
             results = []
         else:
             results = model.Bookmark.by_tags(form.query.data).\
-                      paginate(page, settings.PER_PAGE)
+                      paginate(page, app.config['PER_PAGE'])
             related = model.Tag.get_related(form.query.data)
 
         return render_template('tag_results.html', bookmarks=results,
@@ -323,7 +323,8 @@ def feed_recent():
                     url=request.url_root,
                     subtitle='Recent bookmarks')
 
-    bookmarks = model.Bookmark.get_latest().limit(settings.FEED_NUM_ENTRIES).all()
+    bookmarks = model.Bookmark.get_latest().\
+                limit(app.config['FEED_NUM_ENTRIES']).all()
     
     for bookmark in bookmarks:
         item_id = urljoin(request.url_root,

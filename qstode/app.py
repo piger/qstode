@@ -27,7 +27,11 @@ app.config['SUPPORTED_LANGUAGES'] = [
 app.config['SUPPORTED_LANGUAGES_ISO'] = [
     l[0] for l in app.config['SUPPORTED_LANGUAGES']]
 
-app.config['ITEMS_PER_PAGE'] = 10
+# Number of Bookmarks returned on every page
+app.config['PER_PAGE'] = 10
+
+# Number of Bookmarks returned in the RSS feed
+app.config['FEED_NUM_ENTRIES'] = 15
 
 
 babel = Babel(app)

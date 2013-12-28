@@ -12,7 +12,22 @@
 
 	<div class="panel-body">
 	<p>{% trans email=current_user.email %}Your email address is: <span class="text-info">{{ email }}</span>.{% endtrans %}</p>
+
 	<p>{% trans backup=url_for('export_bookmarks') %}<a class="btn btn-xs btn-info" href="{{ backup }}"><span class="glyphicon glyphicon-download"></span> Download</a> a backup of your bookmarks in HTML format.{% endtrans %}</p>
+
+	<div class="row">
+	  <div class="col-md-4">
+		<form id="lang_form" method="get" role="form">
+		  <label for="lang_selector">{{ _("User interface language") }}</label>
+		  <select class="form-control input-sm" name="_lang" id="lang_selector">
+			{%- for value, label in config.SUPPORTED_LANGUAGES %}
+			  <option value="{{ value }}"{%- if value == g.lang %} selected{% endif -%}>{{ label }}</option>
+			{%- endfor %}
+		  </select>
+		</form>
+	  </div>
+	</div>
+
 	</div>
   </div>
 

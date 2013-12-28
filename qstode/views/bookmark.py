@@ -111,18 +111,21 @@ def tagged(tags, page):
 def user_bookmarks(username, page):
     """Shows all bookmarks for a specific user"""
 
-    for_user = model.User.query.filter_by(username=username).first_or_404()
+    user = model.User.query.filter_by(username=username).first_or_404()
 
-    if current_user.is_authenticated() and for_user.id == current_user.id:
+    if current_user.is_authenticated() and user.id == current_user.id:
         include_private = True
     else:
         include_private = False
 
-    results = model.Bookmark.by_user(for_user.id, include_private=include_private).\
+    results = model.Bookmark.\
+              by_user(user.id, include_private=include_private).\
               paginate(page, app.config['PER_PAGE'])
 
+    tag_cloud = model.Tag.tagcloud(user_id=user.id)
+
     return render_template('user_bookmarks.html', bookmarks=results,
-                           for_user=for_user)
+                           for_user=user, tag_cloud=tag_cloud)
 
 
 @app.route('/post', methods=['GET', 'POST'])

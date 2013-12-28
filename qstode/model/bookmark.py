@@ -157,7 +157,8 @@ class Tag(db.Base):
         return results
 
     @classmethod
-    def tagcloud(cls, limit=15, min_font_size=2, max_font_size=10):
+    def tagcloud(cls, limit=15, min_font_size=2, max_font_size=10,
+                 user_id=None):
         """
         Generates a tag cloud.
 
@@ -170,13 +171,19 @@ class Tag(db.Base):
         for the top `limit` popular Tags.
         """
 
-        tags = db.Session.query(Tag, func.count(Tag.id).label('total')).\
-                join('bookmarks').\
-                filter(Bookmark.private == False).\
-                group_by(Tag.id).\
-                order_by('total DESC').\
-                limit(limit).all()
+        query = db.Session.query(Tag, func.count(Tag.id).label('total')).\
+                join(Tag.bookmarks).\
+                filter(Bookmark.private == False)
 
+        if user_id is not None:
+            query = query.join(Bookmark.user).\
+                    filter(User.id == user_id)
+
+        query = query.group_by(Tag.id).\
+                order_by('total DESC').\
+                limit(limit)
+
+        tags = query.all()
         if len(tags) < limit:
             return []
 

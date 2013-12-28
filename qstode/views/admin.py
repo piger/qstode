@@ -34,10 +34,11 @@ def admin_home():
     return render_template("admin/index.html")
 
 
-@app.route('/admin/users')
+@app.route('/admin/users', defaults={'page': 1})
+@app.route('/admin/users/<int:page>')
 @admin_required
-def admin_users():
-    users = model.User.query.all()
+def admin_users(page):
+    users = model.User.query.paginate(page, app.config['PER_PAGE'])
     return render_template("admin/list_users.html", users=users)
 
 

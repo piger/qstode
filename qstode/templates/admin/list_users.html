@@ -1,5 +1,6 @@
 {% extends "_page.html" %}
 {% import "_helpers.html" as h %}
+{% from "_bookmark.html" import render_pagination %}
 {% set page_title = _("Administration: manage users") %}
 {% block title %}{{ page_title }}{% endblock %}
 
@@ -19,7 +20,7 @@
       </thead>
 
       <tbody>
-		{% for user in users %}
+		{% for user in users.items %}
 		  <tr class="{%- if not user.active %}warning{%- endif %}">
 			<td><a href="{{ url_for("admin_edit_user", id=user.id) }}">{{ user.username }}</a></td>
 			<td>{{ user.email }}</td>
@@ -29,6 +30,10 @@
 		{% endfor %}
       </tbody>
     </table>
+
+	<div class="text-center">
+	  {{ render_pagination(users) }}
+	</div>
 
   {% else %}
 	<p>No user was found.</p>

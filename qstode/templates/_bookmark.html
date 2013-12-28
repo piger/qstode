@@ -74,17 +74,17 @@
 
 
 {%- macro bookmarks_block(bookmarks) %}
-  {% for bookmark in bookmarks.items %}
-	{{ render_bookmark(bookmark) }}
-
-	{% if not loop.last %}
-	  <hr>
-	{% endif %}
-  {% endfor %}
-
   {% if bookmarks.items %}
-	<div class="text-center">
-	  {{ render_pagination(bookmarks) }}
-	</div>
+	{% for bookmark in bookmarks.items %}
+	  {{ render_bookmark(bookmark) }}
+	{% endfor %}
+
+	{% if bookmarks.pages > 1 %}
+	  <div class="text-center">
+		{{ render_pagination(bookmarks) }}
+	  </div>
+	{% endif %}
+  {% else %}
+	<p>{{ _("No matching bookmark was found.") }}
   {% endif %}
 {%- endmacro %}

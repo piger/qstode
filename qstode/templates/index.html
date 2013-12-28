@@ -1,5 +1,5 @@
 {% extends "_page.html" %}
-{% from "_bookmark.html" import render_bookmark, render_pagination with context %}
+{% from "_bookmark.html" import bookmarks_block with context %}
 {% from "_helpers.html" import page_header %}
 {% set page_title = _("Latest bookmarks") %}
 {% block title %}{{ page_title }}{% endblock %}
@@ -7,19 +7,6 @@
 {% block content %}
 
   {{ page_header(page_title) }}
-
-  {% for bookmark in bookmarks.items %}
-	{{ render_bookmark(bookmark) }}
-
-	{% if not loop.last %}
-	  <hr>
-	{% endif %}
-  {% endfor %}
-
-  {% if bookmarks.items %}
-	<div class="text-center">
-	  {{ render_pagination(bookmarks) }}
-	</div>
-  {% endif %}
+  {{ bookmarks_block(bookmarks) }}
 
 {% endblock %}

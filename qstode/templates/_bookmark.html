@@ -22,9 +22,11 @@
 	  </div>
 	</header>
 
-	<blockquote>
-	  <p>{{ bookmark.notes }}</p>
-	</blockquote>
+	{% if bookmark.notes %}
+	  <blockquote>
+		<p>{{ bookmark.notes }}</p>
+	  </blockquote>
+	{% endif %}
 
 	<footer>
 	  <div class="row">

@@ -4,12 +4,12 @@
   <div class="bookmark-box">
 	<div class="bookmark-box-heading">
 	  {% if config.USE_GOOGLE_FAVICON %}
-		<h3><a href="{{ bookmark.href }}" target="_blank"><img alt="favicon for {{ b_domain }}" src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
+		<h3><a href="{{ bookmark.href }}" target="_blank" rel="nofollow"><img alt="favicon for {{ b_domain }}" src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
 	  {% else %}
-		<h3><a href="{{ bookmark.href }}">{{ bookmark.title }}</a></h3>
+		<h3><a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.title }}</a></h3>
 	  {% endif %}
 	  <h4><span class="glyphicon glyphicon-calendar"></span> {{ bookmark.created_on|dateformat('short') }}</h4>
-	  <h4><span class="glyphicon glyphicon-bookmark"></span> <a href="{{ bookmark.href }}">{{ bookmark.href|truncate(80, True) }}</a></h4>
+	  <h4><span class="glyphicon glyphicon-bookmark"></span> <a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.href|truncate(80, True) }}</a></h4>
 	</div>
 
 	<div class="bookmark-box-body">

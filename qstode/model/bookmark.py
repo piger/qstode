@@ -35,6 +35,7 @@ def delete_tag_orphans(session, ctx):
         filter(~Tag.bookmarks.any()).\
         delete(synchronize_session=False)
 
+
 class Tag(db.Base):
     """This seemingly harmless class describes the `Tag` model that is the
     most important piece of this application; tag names are stored treated
@@ -349,6 +350,11 @@ class Bookmark(db.Base):
 
     @classmethod
     def by_tags(cls, tags, exclude=None):
+        """Get bookmark tagged with the specified tags."""
+
+        assert isinstance(tags, list) is True, "`tags` parameter must be " \
+            "a list"
+
         if exclude is None:
             exclude = []
 

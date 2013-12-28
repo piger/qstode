@@ -1,0 +1,19 @@
+{% extends "_page.html" %}
+{% import "_helpers.html" as h %}
+{% set page_title = _("Rename a tag") %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+
+  {{ h.page_header(page_title) }}
+
+  <form method="post" role="form">
+	{{ form.hidden_tag() }}
+
+	{{ h.render_field(form.old_name) }}
+	{{ h.render_field(form.new_name) }}
+
+	<button type="submit" class="btn btn-primary">{{ _("Rename") }}</button>
+  </form>
+
+{% endblock %}

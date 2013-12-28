@@ -10,13 +10,24 @@
 """
 from flask_wtf import Form
 from flask_wtf.html5 import URLField
-from wtforms import (TextField, validators, ValidationError, Field,
+from wtforms import (TextField, ValidationError, Field,
                      BooleanField, TextAreaField, HiddenField,
                      SelectField, SubmitField)
+from wtforms.validators import DataRequired, Length, URL
 from wtforms.widgets import TextInput
 from flask_babel import lazy_gettext as _
 from qstode.model.bookmark import Tag, Bookmark
 from .misc import RedirectForm
+from .validators import ItemsLength, ListLength
+
+
+# Validators for length of each tag
+TAG_MIN = 1
+TAG_MAX = 35
+
+# Validators for length of tag list
+TAGLIST_MIN = 1
+TAGLIST_MAX = 50
 
 
 class TagListField(Field):
@@ -61,16 +72,21 @@ class TagListField(Field):
                 d[item.lower()] = True
                 yield item
 
+
 class SimpleSearchForm(Form):
-    query = TagListField(_(u'Search tags'),
-                         [validators.Required(),
-                          validators.Length(1,50)])
+    query = TagListField(_(u'Search tags'), [
+        DataRequired(),
+        ItemsLength(TAG_MIN, TAG_MAX),
+        ListLength(TAGLIST_MIN, TAGLIST_MAX),
+    ])
     page = HiddenField()
+
 
 class AdvancedSearchForm(Form):
     # XXX: the name of this field currently cannot be "query" otherwise
     # it will conflicts with the global SimpleSearchForm
-    q = TextField(_(u"Search query"), [validators.Required()])
+    q = TextField(_(u"Search query"), [DataRequired()])
+
 
 class TypeaheadTextInput(TextInput):
     """A TextInput with javascript 'typeahead' support"""
@@ -83,12 +99,14 @@ class TypeaheadTextInput(TextInput):
 class BookmarkForm(RedirectForm):
     """Form used to post new bookmarks"""
 
-    title = TextField(_(u'Title'), [validators.Required()])
-    url = URLField(_(u'URL'), [validators.URL()])
+    title = TextField(_(u'Title'), [DataRequired()])
+    url = URLField(_(u'URL'), [DataRequired(), URL()])
     private = BooleanField(_(u'Private'), default=False)
-    tags = TagListField(_(u'Tag'),
-                        [validators.Required(),
-                         validators.Length(1,50)])
+    tags = TagListField(_(u'Tag'), [
+        DataRequired(),
+        ItemsLength(TAG_MIN, TAG_MAX),
+        ListLength(TAGLIST_MIN, TAGLIST_MAX),
+    ])
     notes = TextAreaField(_(u'Note'))
 
     def create_bookmark(self, user):
@@ -119,11 +137,11 @@ class TagSelectionForm(Form):
 
 
 class RenameTagForm(Form):
-    to_name = TextField(_(u"Name"),
-                        [validators.Required(),
-                                  validators.Length(1, 30)])
-    submit = SubmitField(_(u"Rename"))
-
-    def validate_to_name(form, field):
-        if Tag.query.filter_by(name=field.data).first():
-            raise ValidationError(_(u"Tag already exists"))
+    old_name = TextField(_("Tag name"), [
+        DataRequired(),
+        Length(TAG_MIN, TAG_MAX),
+    ])
+    new_name = TextField(_("New tag name"), [
+        DataRequired(),
+        Length(TAG_MIN, TAG_MAX),
+    ])

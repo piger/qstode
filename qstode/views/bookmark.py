@@ -16,6 +16,7 @@ from flask import (render_template, redirect, request, flash,
                    abort, url_for, send_from_directory)
 from flask_login import login_required, current_user
 from flask_babel import gettext
+from flask_babel import lazy_gettext as _
 from flask_sqlalchemy import get_debug_queries, Pagination
 from werkzeug.contrib.atom import AtomFeed
 
@@ -236,6 +237,38 @@ def delete_bookmark(bId):
         return form.redirect('index')
 
     return render_template('delete_bookmark.html', form=form, bookmark=bookmark)
+
+
+@app.route('/bookmark/rename_tag', methods=['GET', 'POST'])
+def rename_tag():
+    form = forms.RenameTagForm()
+
+    if form.validate_on_submit():
+        old_name = form.old_name.data
+        new_name = form.new_name.data
+
+        assert old_name != new_name
+
+        old_tag = model.Tag.query.filter_by(name=old_name).first()
+        if old_tag is None:
+            abort(404)
+
+        new_tag = model.Tag.get_or_create(new_name)
+        assert new_tag is not None
+
+        query = model.Bookmark.by_tags([old_name])
+        query = query.filter(model.Bookmark.user_id == current_user.id)
+
+        for bookmark in query:
+            bookmark.tags.remove(old_tag)
+            bookmark.tags.append(new_tag)
+
+        db.Session.commit()
+
+        flash(gettext(u"Tag renamed successfully"), "success")
+        return redirect(url_for('rename_tag'))
+
+    return render_template('rename_tag.html', form=form)
 
 
 @app.route('/bookmark/<int:bookmark_id>')

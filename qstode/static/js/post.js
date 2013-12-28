@@ -5,46 +5,19 @@
 
 $(function() {
 	$("#tags")
-	// don't navigate away from the field on tab when selecting an item
+	    // don't navigate away from the field on tab when selecting an item
 		.bind( "keydown", function( event ) {
 			if ( event.keyCode == $.ui.keyCode.TAB &&
-				 $( this ).data( "autocomplete" ).menu.active ){
+				 $( this ).data("ui-autocomplete").menu.active ){
 					 event.preventDefault();
 
 				 }
-			/* Questo sarebbe il codice per i suggerimenti.
-			 } else if ( event.keyCode == $.ui.keyCode.COMMA ) {
-			 tags = this.value;
-			 $.ajax({
-			 url: url_autocomplete_suggestions,
-			 dataType: 'json',
-			 data: {
-			 term: tags
-			 },
-			 success: function(data) {
-			 nomi = new Array(), i;
-
-			 for (var i=0; i < data.results.length; i++) {
-			 nomi.push(data.results[i].label);
-			 }
-
-			 $("#tags-suggestions-text").text(nomi.join(', '));
-			 }
-			 });
-			 }
-			 */
 		})
 		.autocomplete({
 			minLength: 0,
-			/*
-			 source: function( request, response ) {
-			 $.getJSON("{{ url_for('complete_tags') }}", {
-			 term: extract_last( request.term )
-			 }, response );
-			 },
-			 */
-			/* Con questo posso giostrarmela con il jsonify() di Flask, che crea per forza un dict con una chiave,
-			 mentre jquery-ui si aspetta secca una lista.
+			/* Con questo posso giostrarmela con il jsonify() di
+			 * Flask, che crea per forza un dict con una chiave, mentre
+			 * jquery-ui si aspetta secca una lista.
 			 */
 			source: function(request, response) {
 				$.ajax({

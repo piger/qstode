@@ -28,7 +28,7 @@ $(function() {
 	// don't navigate away from the field on tab when selecting an item
 		.bind( "keydown", function( event ) {
 			if ( event.keyCode == $.ui.keyCode.TAB &&
-				 $( this ).data( "autocomplete" ).menu.active ){
+				 $( this ).data( "ui-autocomplete" ).menu.active ){
 					 event.preventDefault();
 				 }
 		})

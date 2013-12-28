@@ -16,7 +16,7 @@ from sqlalchemy.orm import joinedload
 from qstode.app import app, login_manager
 from qstode.mailer import Mailer
 from qstode import db
-from ..model import User
+from ..model import User, watched_users
 from qstode import forms
 
 
@@ -87,6 +87,16 @@ def user_details():
         return redirect(url_for('user_details'))
 
     return render_template('user_details.html', form=form)
+
+
+@app.route('/user/manage_followings', methods=['GET', 'POST'])
+@login_required
+def manage_followings():
+    users = User.query.\
+            join(watched_users, User.id == watched_users.c.other_user_id).\
+            filter(watched_users.c.user_id == current_user.id)
+
+    return render_template('manage_followings.html', users=users)
 
 
 @app.route('/user/reset/request', methods=['GET', 'POST'])

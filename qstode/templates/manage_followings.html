@@ -1,0 +1,32 @@
+{% extends "_page.html" %}
+{% import "_helpers.html" as h %}
+{% set page_title = _("Manage followings") %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+
+  {{ h.page_header(page_title) }}
+
+  {% if users %}
+	<table class="table">
+	  <thead>
+		<tr>
+		  <th>Username</th>
+		  <th>Controls</th>
+		</tr>
+	  </thead>
+
+	  <tbody>
+		{% for user in users %}
+		  <tr>
+			<td><a href="{{ url_for('user_bookmarks', username=user.username) }}">{{ user.username }}</a></td>
+			<td><button type="button" class="btn btn-xs btn-default">Unfollow</button></td>
+		  </tr>
+		{% endfor %}
+	  </tbody>
+	</table>
+  {% else %}
+	<p>{% trans %}You aren't following any user yet!{% endtrans %}</p>
+  {% endif %}
+
+{% endblock %}

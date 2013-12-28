@@ -39,9 +39,11 @@
 			  <li><a href="{{ url_for('user_details') }}">{{ _('Edit Profile') }}</a></li>
 			  <li><a href="{{ url_for('manage_followings') }}">{{ _("Manage followings") }}</a></li>
 			  <li class="divider"></li>
-			  <li><a href="{{ url_for('logout') }}">{{ _('Logout') }}</a></li>
+			  <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></span> {{ _('Logout') }}</a></li>
 			</ul>
 		  </li>
+		{% else %}
+		  <li><a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-user"></span> {{ _("Login") }}</a></li>
 		{% endif %}
 	  </ul>
 

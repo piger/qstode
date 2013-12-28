@@ -51,6 +51,25 @@ body {
 }
 
 
+/*
+ * Search Form on the navigation bar.
+ * The problem with jquery-ui and bootstrap is that by default the z-index
+ * of the autocompletion menu appears behind the navigation bar; we apply
+ * different z-index on the input field and the autocomplete menu to avoid
+ * this issue.
+ */
+.search-query {
+	position: relative;
+	z-index: 10000;
+}
+
+.ui-autocomplete {
+	z-index: 9999 !important;
+	position: absolute;
+	cursor: default;
+}
+
+
 /* BOOKMARKS */
 .bookmark-box-body {
 	blockquote {

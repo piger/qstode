@@ -26,7 +26,7 @@
 
 
 {%- macro render_pagination(pag) %}
-  <ul class="pagination">
+  <ul class="pagination" role="navigation">
 	{% if pag.has_prev %}
 	  <li><a href="{{ url_for_other_page(pag.prev_num) }}">&laquo;</a></li>
 	{% else %}

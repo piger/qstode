@@ -7,13 +7,26 @@
 
   {{ h.page_header(page_title) }}
 
-  <form method="post" role="form">
-	{{ form.hidden_tag() }}
+  <p>{% trans %}Here you can assign a new name to a tag of your bookmarks.{% endtrans %}</p>
 
-	{{ h.render_field(form.old_name) }}
-	{{ h.render_field(form.new_name) }}
+  <div class="row">
+	<div class="col-md-6">
 
-	<button type="submit" class="btn btn-primary">{{ _("Rename") }}</button>
-  </form>
+	  <div class="panel panel-default">
+		<div class="panel-body">
+
+		  <form method="post" role="form">
+			{{ form.hidden_tag() }}
+
+			{{ h.render_field(form.old_name) }}
+			{{ h.render_field(form.new_name) }}
+
+			<button type="submit" class="btn btn-primary">{{ _("Rename") }}</button>
+		  </form>
+		</div>
+	  </div>
+
+	</div>
+  </div>
 
 {% endblock %}

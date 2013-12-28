@@ -8,24 +8,29 @@
   {{ h.page_header(page_title) }}
 
   <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-7">
 
-	  <form method="post" role="form">
-		{{ form.hidden_tag() }}
+	  <div class="panel panel-default">
+		<div class="panel-body">
+		  <form method="post" role="form">
+			{{ form.hidden_tag() }}
 
-		{{ h.render_field(form.username) }}
-		{{ h.render_field(form.email) }}
-		{{ h.render_field(form.password) }}
-		{{ h.render_field(form.password_confirm) }}
+			{{ h.render_field(form.username) }}
+			{{ h.render_field(form.email) }}
+			{{ h.render_field(form.password) }}
+			{{ h.render_field(form.password_confirm) }}
 
-		{{ h.render_checkbox(form.active) }}
-		{{ h.render_checkbox(form.admin) }}
+			{{ h.render_checkbox(form.active) }}
+			{{ h.render_checkbox(form.admin) }}
 
-		<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> {{ _("Update") }}</button>
-		<button type="button" onclick="location.href='{{ url_for('admin_users') }}';" class="btn btn-default">{{ _("Cancel") }}</button>
+			<div class="form-group text-center">
+			  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> {{ _("Update") }}</button>
+			  <button type="button" onclick="location.href='{{ url_for('admin_users') }}';" class="btn btn-default">{{ _("Cancel") }}</button>
+			</div>
+		  </form>
+		</div>
+	  </div>
 
-	  </form>
-	</div>
-  </div>
-
+	</div><!-- /.col -->
+  </div><!-- /.row -->
 {% endblock %}

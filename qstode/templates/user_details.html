@@ -7,30 +7,39 @@
 
   {{ h.page_header(page_title) }}
 
-  <p>{% trans email=current_user.email %}Your email address is: <em>{{ email }}</em>{% endtrans %}</p>
+  <div class="panel panel-default">
+	<div class="panel-heading">{{ _("Account informations") }}</div>
 
-  <div class="row">
-	<div class="col-md-6">
-      <form method="post" role="form">
-	    {{ form.hidden_tag() }}
+	<div class="panel-body">
+	<p>{% trans email=current_user.email %}Your email address is: <span class="text-info">{{ email }}</span>.{% endtrans %}</p>
+	<p>{% trans backup=url_for('export_bookmarks') %}<a class="btn btn-xs btn-info" href="{{ backup }}"><span class="glyphicon glyphicon-download"></span> Download</a> a backup of your bookmarks in HTML format.{% endtrans %}</p>
+	</div>
+  </div>
 
-        <fieldset>
-	      {{ h.render_field(form.username) }}
-	      {{ h.render_field(form.password, help=_("You can leave this blank if you don't want to change password")) }}
-	      {{ h.render_field(form.password_confirm) }}
+  <div class="panel panel-default">
+	<div class="panel-heading">{{ _("Modify your profile") }}</div>
+	<div class="panel-body">
 
-          <div class="content-center">
-	        {{ h.render_actions() }}
-          </div>
+	  <div class="row">
+		<div class="col-md-7">
 
-        </fieldset>
+		  <form method="post" role="form">
+			{{ form.hidden_tag() }}
 
-      </form>
+			<fieldset>
+			  {{ h.render_field(form.username) }}
+			  {{ h.render_field(form.password, help=_("You can leave this blank if you don't want to change password")) }}
+			  {{ h.render_field(form.password_confirm) }}
+
+			  <div class="content-center">
+				{{ h.render_actions() }}
+			  </div>
+			</fieldset>
+		  </form>
+
+		</div>
+	  </div>
+
     </div>
   </div>
-
-  <div>
-    <p>{% trans backup=url_for('export_bookmarks') %}<a href="{{ backup }}">Download</a> a backup of your bookmarks in HTML format{% endtrans %}</p>
-  </div>
-
 {% endblock %}

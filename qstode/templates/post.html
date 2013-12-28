@@ -1,25 +1,34 @@
 {% extends "_page.html" %}
 {% import "_helpers.html" as h %}
-{% block title %}{% trans %}Save a bookmark{% endtrans %}{% endblock %}
+{% set page_title = _("Save a bookmark") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <div class="page-title">
-	<h3>{{ _('Save a Bookmark') }}</h3>
-  </div>
+  {{ h.page_header(page_title) }}
 
   {% autoescape false %}
 	<p>{{ _("To add a Bookmark you can also use the <strong>bookmarklet</strong>! Check out the %(help)s section to find out more.", help="<a href='%s'>%s</a>" % (url_for('help'), _("Help"))) }}</p>
   {% endautoescape %}
 
 	<div class="row">
-	  <div class="col-md-8">
+	  <div class="col-md-8 col-md-offset-2">
 
-		<form method="post" role="form">
-	      {{ form.hidden_tag() }}
-	      {{ h.bookmark_form(form) }}
-          {{ h.render_actions() }}
-		</form>
+		<div class="panel panel-default">
+		  <div class="panel-body">
+
+			<form method="post" role="form">
+			  {{ form.hidden_tag() }}
+			  {{ h.bookmark_form(form) }}
+
+			  <div class="form-group text-center">
+				<button type="submit" class="btn btn-primary">{{ _("Save") }}</button>
+				<button type="button" class="btn btn-default">{{ _("Cancel") }}</button>
+			  </div>
+			</form>
+
+		  </div><!-- /.panel-body -->
+		</div><!-- /.panel -->
 
       </div>
 	</div>

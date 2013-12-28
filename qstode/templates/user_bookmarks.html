@@ -4,7 +4,7 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{% trans username=for_user.username %}Bookmarks of <em>{{ username }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif -%}</h3>
+	<h3>{% trans username=for_user.username %}Bookmarks of <em>{{ username }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif %} <a style="display:none" href="#" id="following-toggle" alt="Follow user"><span title="Click to follow user" id="following-star" class="glyphicon glyphicon-star-empty"></span></a></h3>
   </div>
 
   {% if bookmarks.items %}
@@ -13,4 +13,52 @@
 	<p>{% trans %}There isn't any bookmark yet!{% endtrans %}</p>
   {% endif %}
 
+{% endblock %}
+
+{% block extrajs %}
+  <script>
+   $(document).ready(function () {
+	 // Detect following-status on page load
+	 $.ajax({
+	   url: "{{ url_for('is_following', user_id=for_user.id) }}"
+	 })
+	 .done(function (data) {
+	   if (console && console.log) {
+		 var result = data.result;
+
+		 // 0 == not following
+		 // 1 == following
+		 // 2 == do not display
+		 if (result === 0) {
+		   $("#following-star").attr("class", "glyphicon glyphicon-star-empty");
+		   $("#following-star").prop("title", "Click to follow user");
+		   $("#following-toggle").show();
+		 } else if (result === 1) {
+		   $("#following-star").attr("class", "glyphicon glyphicon-star");
+		   $("#following-star").prop("title", "Click to unfollow user");
+		   $("#following-toggle").show();
+		 }
+	   }
+	 });
+
+	 $("#following-toggle").click(function (event) {
+	   $.ajax({
+		 url: "{{ url_for('follow_user', user_id=for_user.id) }}"
+	   })
+	   .done(function (data) {
+		 var result = data.result;
+
+		 if (result === 0) {
+		   $("#following-star").attr("class", "glyphicon glyphicon-star-empty");
+		   $("#following-star").prop("title", "Click to follow user");
+		 } else if (result === 1) {
+		   $("#following-star").attr("class", "glyphicon glyphicon-star");
+		   $("#following-star").prop("title", "Click to unfollow user");
+		 }
+	   });
+
+	   event.preventDefault();
+	 });
+   });
+  </script>
 {% endblock %}

@@ -317,6 +317,14 @@ def tagcloud():
     return render_template('tagcloud.html', tagcloud=tags)
 
 
+@app.route('/followed', defaults={'page': 1})
+@app.route('/followed/<int:page>')
+def followed(page):
+    bookmarks = model.Bookmark.by_followed().\
+                paginate(page, app.config['PER_PAGE'])
+
+    return render_template('followed.html', bookmarks=bookmarks)
+
 @app.route('/feed/recent')
 def feed_recent():
     feed = AtomFeed('QStode', feed_url=request.url,

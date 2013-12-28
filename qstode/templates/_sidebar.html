@@ -8,6 +8,8 @@
 	{% if current_user.is_authenticated() %}
 	  <li class="{{ active_if('user_bookmarks') }}"><a href="{{ url_for('user_bookmarks', username=current_user.username) }}"><span class="glyphicon glyphicon-book"></span> {{ _('My Bookmarks') }}</a></li>
 
+	  <li class="{{ active_if('followed') }}"><a href="{{ url_for('followed') }}"><span class="glyphicon glyphicon-transfer"></span> {{ _("Incoming Bookmarks") }}</a></li>
+
 	  {% if current_user.admin %}
 		<li class="{{ active_if('admin_home') }}"><a href="{{ url_for('admin_home') }}"><span class="glyphicon glyphicon-cog"></span> {{ _('Administration') }}</a></li>
 	  {% endif %}

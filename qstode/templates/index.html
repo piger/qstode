@@ -7,6 +7,10 @@
 {% block content %}
 
   {{ page_header(page_title) }}
+
+  <p>{% trans %}The latest bookmarks posted by all
+	users.{% endtrans %}</p>
+
   {{ bookmarks_block(bookmarks) }}
 
 {% endblock %}

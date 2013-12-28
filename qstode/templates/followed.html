@@ -1,0 +1,16 @@
+{% extends "_page.html" %}
+{% from "_bookmark.html" import bookmarks_block, render_bookmark with context %}
+{% import "_helpers.html" as h %}
+{% set page_title = _("Incoming Bookmarks") %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+
+  {{ h.page_header(page_title) }}
+
+  <p>{% trans %}Here you can find all your incoming
+	bookmarks posted by the users you follow.{% endtrans %}</p>
+
+  {{ bookmarks_block(bookmarks) }}
+
+{% endblock %}

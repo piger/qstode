@@ -18,6 +18,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 from flask_login import current_user
 from .. import db
+from .user import User, watched_users
 
 
 bookmark_tags = Table(
@@ -332,6 +333,19 @@ class Bookmark(db.Base):
         if not include_private:
             where = where & (cls.private == False)
         return cls.query.filter(where).order_by(cls.created_on.desc())
+
+    @classmethod
+    def by_followed(cls):
+        """Get the latest bookmarks from the users followed by
+        the current user"""
+
+        q = cls.query.join(User).\
+            outerjoin(watched_users, User.id == watched_users.c.other_user_id).\
+            filter(watched_users.c.user_id == current_user.id).\
+            filter(cls.private == False).\
+            order_by(cls.created_on.desc())
+
+        return q
 
     @classmethod
     def by_tags(cls, tags, exclude=None):

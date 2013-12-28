@@ -1,7 +1,6 @@
 /* JS globale di QStode */
 
 /* Funzioni per completion & co */
-
 function comma_split(val) {
 	return val.split(/,\s*/);
 }
@@ -14,29 +13,19 @@ function is_https() {
 	return window.location.protocol == 'https:';
 }
 
-/* Codice DOM-dipendente */
+
 $(function() {
-
-	/* tooltip per il search Form sulla navbar */
-	$('#query').tooltip({
-		title: "Inserire una o piu' tag, separate da virgola",
-		placement: 'bottom'
-	});
-
-	// completion per search nella navbar
+	// Autocompletion for the search form on the navigation bar
 	$(".search-query")
 	// don't navigate away from the field on tab when selecting an item
 		.bind( "keydown", function( event ) {
 			if ( event.keyCode == $.ui.keyCode.TAB &&
-				 $( this ).data( "ui-autocomplete" ).menu.active ){
+				 $( this ).data("ui-autocomplete").menu.active ){
 					 event.preventDefault();
 				 }
 		})
 		.autocomplete({
 			minLength: 0,
-			/* Con questo posso giostrarmela con il jsonify() di Flask, che crea per forza un dict con una chiave,
-			 mentre jquery-ui si aspetta secca una lista.
-			 */
 			source: function(request, response) {
 				$.ajax({
 					url: url_autocomplete_tags,
@@ -64,19 +53,20 @@ $(function() {
 				// add placeholder to get the comma-and-space at the end
 				terms.push("");
 				this.value = terms.join(", ");
+
+				// Move caret and focus to the end of the input box;
+				// this doesn't work in Chrome! :(
+				$(this).caretToEnd();
+
+				// Canceling this event prevents the value from being
+				// updated, but does not prevent the menu from
+				// closing.
 				return false;
 			},
 
-			focus: function() {
+			focus: function(event, ui) {
 				// prevent value inserted on focus
 				return false;
 			}
 		});
-
-
-	$(".bookmarklet").popover({
-		trigger: "hover",
-		content: "Devi trascinare questo link nella barra degli indirizzi del tuo browser (Firefox, Safari, ...)."
-	});
-
 });

@@ -5,44 +5,58 @@ QStode is a Python web application and depends on some external
 libraries which can be installed via `setuptools`_; it will also need a
 web server capable of running WSGI applications.
 
-You will need Python 2.6 or higher to get started and you should make
-sure to install `setuptools`_ with your favourite package manager.
+Requirements
+------------
 
-virtualenv
-----------
+* Python >= 2.6
+* MySQL 5.x database
+* python-setuptools
+* python-mysqldb (also packaged as **MySQL-Python**)
+* WSGI server (e.g gunicorn)
+* Web server
+* one writable directory
+
+You *may* also need:
+
+* git
+* python-virtualenv
+* Redis database
+* c/c++ compiler
+
+Ubuntu example::
+
+  $ sudo apt-get install python-setuptools python-dev python-virtualenv \
+      git mysql-server gunicorn build-essential
+  
+Getting the sources
+-------------------
+
+You can download a tarball of the latest release from the `releases`_ page
+on `GitHub`_, or you can *clone* the repository with git::
+
+  $ cd /usr/local/src
+  $ git clone https://github.com/piger/qstode.git
+
+Installing Python packages
+--------------------------
 
 `virtualenv`_ is the best way to manage your installation of QStode;
 if you don't know what `virtualenv`_ is be sure to check out the
 website and learn why you should use it with your web applications
 deployment.
 
-If you are in a hurry all you need to know is that `virtualenv`_
-allow you to keep a separate *Python environment* with specific
-versions of libraries and packages.
+Create a virtualenv::
 
-Ubuntu font
------------
+  $ virtualenv /srv/qstode/env
 
-The InK framework uses the `Ubuntu Font`_ which must be manually
-downloaded and extracted into ``qstode-src-x.y.z/qstode/static/font``.
+Install QStode with setuptools::
 
-QStode Installation
--------------------
+  $ source /srv/qstode/env/bin/activate
+  $ cd /usr/local/src/qstode
+  $ python setup.py install
 
-You must create a configuration file which by default is located in
-``/etc/qstode/web_config.py`` and make sure you specify a valid database
-URI.
-
-Create the database tables and default **admin** user::
-
-   $ qstode -c config.py setup
-
-A test server can be run with::
-
-   $ qstode -c config.py -D server
-
-MySQL
-'''''
+Database setup
+--------------
 
 QStode need to store data in a MySQL database with **UTF-8** character
 encoding; an example database can be created running the following
@@ -55,32 +69,33 @@ SQL commands: :
   mysql> grant all privileges on qstode.* to 'qstode'@'localhost';
   mysql> flush privileges;
 
+Configuration file
+------------------
 
-System-Wide Installation
-''''''''''''''''''''''''
+See :doc:`configuration` for details about the configuration file.
 
-This kind of installation is unsupported at the moment, use at your
-own risk!
+Initial setup
+-------------
 
-Example Test Installation
-'''''''''''''''''''''''''
+You must create a configuration file in a directory readable by the
+WSGI server process, for example ``/etc/qstode/config.py``.
 
-Here we describe an example **test** installation within a virtualenv:
+To create the database tables and the admin user (remember to activate
+the virtualenv first!)::
 
-.. code-block:: console
+  $ source /srv/qstode/env/bin/activate
+  $ qstode -c /etc/qstode/config.py setup
 
-   $ mkdir -p /srv/www/qstode /etc/qstode
-   $ cd /srv/www/qstode
-   $ virtualenv env
-   $ source env/bin/activate
-   $ git clone https://github.com/piger/qstode.git
-   $ cd qstode
-   $ python setup.py develop
-   $ cp flask_config_sample.py /etc/qstode/web_config.py
-   $ qstode -c /etc/qstode/web_config.py setup
-   $ qstode -c /etc/qstode/web_config.py -D server
+You can test your installation by running a local server with the command::
 
-Now you have a test server running on http://127.0.0.1:5000
+  $ qstode -c /etc/qstode/config.py server
+
+A **DEBUG** mode is also available::
+
+  $ qstode -c /etc/qstode/config.py -D server
+
+Deployment
+----------
 
 Deployment with uWSGI
 '''''''''''''''''''''
@@ -91,14 +106,12 @@ A configuration file to run QStode with `uWSGI`_:
 
    [uwsgi]
    plugin = python
-   virtualenv = /srv/www/qstode/env
+   virtualenv = /srv/qstode/env
    module = qstode.main
    callable = run_wsgi
    stats = 127.0.0.1:9191
-   env = APP_CONFIG=/etc/qstode/web_config.py
+   env = APP_CONFIG=/etc/qstode/config.py
    threads = 4
-   # fix a buffer size problem related to Flask-OpenID
-   buffer-size = 10240
 
 A sample configuration for nginx:
 
@@ -113,10 +126,10 @@ A sample configuration for nginx:
 
       server_name example.com;
 
-      root /srv/www/qstode/htdocs;
+      root /srv/qstode/htdocs;
 
       location /static/ {
-          root /path/to/qstode-src-x.y.z/qstode/;
+          root /usr/local/src/qstode/qstode/;
           expires 15d;
           add_header Pragma public;
           add_header Cache-Control "public, must-revalidate, proxy-revalidate";
@@ -128,13 +141,13 @@ A sample configuration for nginx:
 
       location @proxy_to_app {
           uwsgi_pass qstode_uwsgi;
-          uwsgi_param APP_CONFIG /etc/qstode/web_config.py;
+          uwsgi_param APP_CONFIG /etc/qstode/config.py;
           include uwsgi_params;
       }
   }
 
 Migration and Backup
-''''''''''''''''''''
+--------------------
 
 You can backup all your data to a *JSON* file by running the
 ``backup`` command::
@@ -153,6 +166,7 @@ again all your content, running the ``reindex`` command::
 
 
 .. _setuptools: https://pypi.python.org/pypi/setuptools
+.. _releases: https://github.com/piger/qstode/releases
+.. _GitHub: https://github.com/piger/qstode
 .. _virtualenv: http://www.virtualenv.org/en/latest/
 .. _uWSGI: https://github.com/unbit/uwsgi
-.. _Ubuntu Font: http://font.ubuntu.com/

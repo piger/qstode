@@ -100,7 +100,11 @@ def tagged(tags, page):
     tags = re.split(r'\s*,\s*', tags)
     bookmarks = model.Bookmark.by_tags(tags).\
                 paginate(page, app.config['PER_PAGE'])
-    related = model.Tag.get_related(tags)
+
+    if app.config['ENABLE_RELATED_TAGS']:
+        related = model.Tag.get_related(tags)
+    else:
+        related = []
 
     return render_template('tagged.html', bookmarks=bookmarks, tags=tags,
                            related=related)
@@ -295,13 +299,15 @@ def simple_search():
         except ValueError:
             page = 1
 
-        related = None
+        # XXX disable related tags
+        related = []
+
         if not form.query.data:
             results = []
         else:
             results = model.Bookmark.by_tags(form.query.data).\
                       paginate(page, app.config['PER_PAGE'])
-            related = model.Tag.get_related(form.query.data)
+            # related = model.Tag.get_related(form.query.data)
 
         return render_template('tag_results.html', bookmarks=results,
                                related=related)

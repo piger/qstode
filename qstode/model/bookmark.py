@@ -92,10 +92,6 @@ class Tag(db.Base):
         and rewritten.
         """
 
-        # XXX
-        # This MUST be optimized -- smashes MySQL! :(
-        return []
-
         tags = [t.lower() for t in tags]
         tag_count = len(tags)
 

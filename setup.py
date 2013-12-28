@@ -47,6 +47,7 @@ setup(
         "console_scripts": [
             "qstode = qstode.main:main",
             "qstode-indexer = qstode.search.server:main",
+            "qstode-scuttle-export = qstode.cli.scuttle_exporter:main",
         ],
     },
 )

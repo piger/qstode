@@ -149,6 +149,11 @@ def run_reindex(args):
     writer.commit()
 
 
+def run_scuttle_import(args):
+    application = create_app()
+    cli.import_scuttle(args)
+
+
 def main():
     """Command line entry point"""
 
@@ -179,6 +184,10 @@ def main():
     p_reindex = subparsers.add_parser(
         'reindex', help="Re-index the search engine database")
     p_reindex.set_defaults(func=run_reindex)
+
+    p_scuttle_import = subparsers.add_parser(
+        'scuttle-import', help="Import data from a Scuttle json backup")
+    p_scuttle_import.set_defaults(func=run_scuttle_import)
 
     args = parser.parse_args()
 

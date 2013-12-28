@@ -1,5 +1,5 @@
 {% block sidebar %}
-  <ul class="nav nav-pills nav-stacked">
+  <ul class="nav nav-pills nav-stacked" role="navigation">
 
 	<li class="{{ active_if('index') }}"><a href="{{ url_for('index') }}"><span class="glyphicon glyphicon-home"></span> {{ _("Home") }}</a></li>
 	<li class="{{ active_if('advanced_search') }}"><a href="{{ url_for('advanced_search') }}"><span class="glyphicon glyphicon-search"></span> {{ _('Advanced Search') }}</a></li>
@@ -20,7 +20,7 @@
 	<div class="hidden-xs">
       <h3 class="text-center">{% trans %}Popular tags{% endtrans %}</h3>
 
-      <ul class="list-unstyled text-center">
+      <ul class="list-unstyled text-center" role="navigation">
 		{% for tag, total in taglist %}
 	      <li class="small"><a href="{{ url_for('tagged', tags=tag.name) }}">{{ tag.name }} <span>({{ total }})</span></a></li>
 		{% endfor %}

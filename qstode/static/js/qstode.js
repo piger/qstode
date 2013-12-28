@@ -1,6 +1,6 @@
-/* JS globale di QStode */
+/* Global js */
 
-/* Funzioni per completion & co */
+/* Miscellaneous functions */
 function comma_split(val) {
 	return val.split(/,\s*/);
 }
@@ -13,11 +13,10 @@ function is_https() {
 	return window.location.protocol == 'https:';
 }
 
-
-$(function() {
-	// Autocompletion for the search form on the navigation bar
-	$(".search-query")
-	// don't navigate away from the field on tab when selecting an item
+/* Setup autocompletion for a given element */
+function setupAutocomplete(el) {
+	$(el)
+	    // don't navigate away from the field on tab when selecting an item
 		.bind( "keydown", function( event ) {
 			if ( event.keyCode == $.ui.keyCode.TAB &&
 				 $( this ).data("ui-autocomplete").menu.active ){
@@ -69,4 +68,9 @@ $(function() {
 				return false;
 			}
 		});
+}
+
+
+$(function() {
+	setupAutocomplete($(".search-query"));
 });

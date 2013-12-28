@@ -52,7 +52,7 @@
 	</form>
 
 	<!-- Switch language form -->
-	<form id="lang_form" class="navbar-form pull-right" action="" method="get">
+	<form id="lang_form" class="navbar-form pull-right" method="get">
 	  <select class="input-small" name="_lang" id="lang_selector">
 	    {%- for iso, lname in config.SUPPORTED_LANGUAGES %}
 	      <option value="{{ iso }}"{%- if iso == g.lang %} selected{% endif -%}>{{ lname }}</option>

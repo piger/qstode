@@ -8,6 +8,7 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+from flask.ext.login import current_user
 from ..model import User
 from wtforms import ValidationError
 

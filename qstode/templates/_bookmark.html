@@ -4,7 +4,7 @@
   <div class="bookmark-box">
 	<div class="bookmark-box-heading">
 	  {% if config.USE_GOOGLE_FAVICON %}
-		<h3><a href="{{ bookmark.href }}" target="_blank"><img src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
+		<h3><a href="{{ bookmark.href }}" target="_blank"><img alt="favicon for {{ b_domain }}" src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
 	  {% else %}
 		<h3><a href="{{ bookmark.href }}">{{ bookmark.title }}</a></h3>
 	  {% endif %}

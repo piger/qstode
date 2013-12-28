@@ -11,12 +11,11 @@
   {% autoescape false %}
 	<p>{{ _("To add a Bookmark you can also use the <strong>bookmarklet</strong>! Check out the %(help)s section to find out more.", help="<a href='%s'>%s</a>" % (url_for('help'), _("Help"))) }}</p>
   {% endautoescape %}
-    </p>
 
 	<div class="row">
 	  <div class="col-md-8">
 
-		<form action="{{ action }}" method="post" role="form">
+		<form method="post" role="form">
 	      {{ form.hidden_tag() }}
 	      {{ h.bookmark_form(form) }}
           {{ h.render_actions() }}

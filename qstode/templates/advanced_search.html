@@ -11,7 +11,7 @@
 
   <p>{% trans %}Ask QStode about something:{% endtrans %}</p>
 
-  <form action="" method="post" class="form-search{%- if form.errors %} error{%- endif %}" role="form">
+  <form method="post" class="form-search{%- if form.errors %} error{%- endif %}" role="form">
 	{{ form.hidden_tag() }}
 
 	{{ h.render_field(form.q) }}

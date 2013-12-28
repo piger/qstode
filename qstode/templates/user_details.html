@@ -5,15 +5,13 @@
 
 {% block content %}
 
-  <div class="page-title">
-	<h3>{{ page_title }}</h3>
-  </div>
+  {{ h.page_header(page_title) }}
 
   <p>{% trans email=current_user.email %}Your email address is: <em>{{ email }}</em>{% endtrans %}</p>
 
   <div class="row">
 	<div class="col-md-6">
-      <form action="" method="post" role="form">
+      <form method="post" role="form">
 	    {{ form.hidden_tag() }}
 
         <fieldset>

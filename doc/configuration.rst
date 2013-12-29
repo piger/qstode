@@ -28,6 +28,28 @@ SQLALCHEMY_DATABASE_URI
   
 The following configuration values are specific to QStode:
 
+PUBLIC_ACCESS (``True``)
+  Enable anonymous access to all the public pages; if set to ``False``
+  a valid user is required to browse the application.
+
+USER_REGISTRATION_ENABLED (``True``)
+  Allow anonymous users to register themselves.
+
+PER_PAGE (``10``)
+  Specify how many bookmarks to show on each page.
+
+FEED_NUM_ENTRIES (``15``)
+  Specify how many bookmarks to list in the public RSS feed.
+
+TAGLIST_ITEMS (``30``)
+  Specify how many tags to show in the Popular Tags listing.
+
+ENABLE_RELATED_TAGS (``True``)
+  Enable functions to show related tags in the *search* views.
+
+.. warning:: The ``related tag`` feature is currently half-broken when
+			 using MySQL without InnoDB.
+
 BABEL_DEFAULT_LOCALE (``en``)
   The default locale to use if no locale selector is registered.
 
@@ -44,12 +66,11 @@ WHOOSH_INDEX_PATH
   The directory used to store the search engine's files; must be
   writable by the user running QStode.
 
-USER_REGISTRATION_ENABLED (``True``)
-  Allow anonymous users to register themselves.
-
 USE_GOOGLE_FAVICON (``True``)
   Enable or disable the use of Google services to display *favicons*
   for bookmarked sites.
+
+.. note:: This feature can be disabled by paranoid users ;)
 
 REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD
   Redis connection parameters.

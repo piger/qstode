@@ -10,19 +10,18 @@ A bookmark in QStode is serialized to a JSON dictionary; for example:
 
    {
      "results": {
-       "content_date": "2012-05-20",
-       "last_modified": "2012-06-08T11:14:18",
+       "modified_on": "2012-06-08T11:14:18",
        "title": "A caldo: che cos\u2019\u00e8 questo golpe?\u00a0|\u00a0Giap",
        "url": "http://www.wumingfoundation.com/giap/?p=8016&cpage=1&utm_source=dlvr.it&utm_medium=twitter#comment-12257",
        "notes": "La \u201cstrategia della tensione\u201d \u00e8 sempre una strategia di controrivoluzione preventiva.\r\n",
        "tags": [
-	 "attualita'",
-	 "terrorismo",
-	 "wu-ming"
+	     "attualita'",
+	     "terrorismo",
+	     "wu-ming"
        ],
        "id": 1,
        "private": false,
-       "creation_date": "2012-05-20T23:47:14"
+       "created_on": "2012-05-20T23:47:14"
      }
    }
 
@@ -46,13 +45,10 @@ notes
 private
     Privacy status of the bookmark.
 
-content_date
-    The date (without timestamp) of the web page content.
-
-creation_date
+created_on
     Date and time of the bookmark creation.
 
-last_modified
+modified_on
     Date and time of the last modification to the bookmark data.
 
 .. note:: All timestamps are in UTC format!
@@ -83,9 +79,7 @@ Get all Bookmarks, with pagination.
      "results": {
        "bookmarks": [
 	 {
-	   "category": "default",
-	   "content_date": "2013-06-27",
-	   "last_modified": "2013-06-27T19:06:36",
+	   "modified_on": "2013-06-27T19:06:36",
 	   "title": "Occupy Gezi",
 	   "url": "http://occupygezi.neocities.org/",
 	   "notes": " Timemap of the events in Turkey between June 5th and June 17th (2013) as seen here: gezipark.nadir.org.",
@@ -97,7 +91,7 @@ Get all Bookmarks, with pagination.
 	   ],
 	   "id": 712,
 	   "private": false,
-	   "creation_date": "2013-06-27T19:06:36"
+	   "created_on": "2013-06-27T19:06:36"
 	 },
      }
    }
@@ -128,19 +122,18 @@ Retrieve a single Bookmark by the given `bookmark_id`.
 
    {
      "results": {
-       "content_date": "2012-05-20",
-       "last_modified": "2012-06-08T11:14:18",
+       "modified_on": "2012-06-08T11:14:18",
        "title": "A caldo: che cos\u2019\u00e8 questo golpe?\u00a0|\u00a0Giap",
        "url": "http://www.wumingfoundation.com/giap/?p=8016&cpage=1&utm_source=dlvr.it&utm_medium=twitter#comment-12257",
        "notes": "La \u201cstrategia della tensione\u201d \u00e8 sempre una strategia di controrivoluzione preventiva.\r\n",
        "tags": [
-	 "attualita'",
-	 "terrorismo",
-	 "wu-ming"
+		 "attualita'",
+		 "terrorismo",
+		 "wu-ming"
        ],
        "id": 1,
        "private": false,
-       "creation_date": "2012-05-20T23:47:14"
+       "created_on": "2012-05-20T23:47:14"
      }
    }
 

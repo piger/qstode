@@ -1,5 +1,55 @@
-Export data from Scuttle
-########################
+Exporting data from Scuttle
+###########################
+
+Utilities
+=========
+
+QStode includes two utilities to export bookmark data from the
+database of a `Scuttle`_ installation; the code was only partially
+tested, so use with caution and remember to backup your data first.
+
+Exporting data from Scuttle
+---------------------------
+
+``qstode-scuttle-export`` is a Python script that exports data from
+the database of a `Scuttle`_ installation to either a **JSON** file or
+a HTML file.
+
+Access to the database is configured in a funny way; you must write a
+configuration file containing just one value::
+
+  uri = <sqlalchemy URI>
+
+For example::
+
+  uri = mysql://my-user:s3cRet@localhost/qstode
+
+Check out the ``SQLALCHEMY_DATABASE_URI`` parameter in the
+:doc:`configuration` page for more informations about the URI format.
+
+To run the export utility::
+
+  $ qstode-scuttle-export -c config.txt
+
+After the operation is completed you will find a file named
+``scuttle-export.json`` in your current directory.
+
+Importing data from a Scuttle JSON export file
+----------------------------------------------
+
+To import a **JSON** backup file in QStode you must run the following
+command::
+
+  $ qstode -c /etc/qstode/config.py scuttle-import <backup-filename.json>
+
+You have to specify the path to the main configuration file of your
+QStode installation.
+
+Please note that if you are importing data to a fresh installation of
+QStode you will have to run the ``setup`` command before running the
+import commands::
+
+  $ qstode -c /etc/qstode/config.py setup
 
 What to do if you have utf-8 data in a latin1 database
 ======================================================
@@ -48,3 +98,6 @@ we have 'e' == 'è'::
 
 To fix this you can edit the SQL dump and add ``COLLATE=utf8_bin`` to
 the ``CREATE TABLE`` statement of the problematic table.
+
+
+.. _Scuttle: http://sourceforge.net/projects/scuttle/

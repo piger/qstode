@@ -29,6 +29,23 @@ SMTP_HOST = "localhost"
 SMTP_PORT = 25
 MAIL_FROM = "qstode@example.com"
 
+# Enable anonymous access to all the public pages
+# PUBLIC_ACCESS = True
+
+# Number of Bookmarks listed on each page
+# PER_PAGE = 10
+
+# Number of recent Bookmarks listed in the public RSS feed
+# FEED_NUM_ENTRIES = 15
+
+# Number of tags listed in the Popular Tags list
+# TAGLIST_ITEMS = 30
+
+# Enable the related tags functions
+# NOTE: this is currently half-broken when using MySQL without InnoDB.
+# ENABLE_RELATED_TAGS = True
+
+
 # the domain for the session cookie. If this is not set, the cookie will be
 # valid for all subdomains of SERVER_NAME.
 # SESSION_COOKIE_DOMAIN = None

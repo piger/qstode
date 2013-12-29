@@ -33,6 +33,9 @@ app.config['PER_PAGE'] = 10
 # Number of Bookmarks returned in the RSS feed
 app.config['FEED_NUM_ENTRIES'] = 15
 
+# Number of tags listed in the Popular Tags list
+app.config['TAGLIST_ITEMS'] = 30
+
 # Temporary switch for related tags
 app.config['ENABLE_RELATED_TAGS'] = True
 

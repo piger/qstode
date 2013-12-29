@@ -6,7 +6,7 @@
 	  {% if config.USE_GOOGLE_FAVICON %}
 		<h3 class="bk-title"><a href="{{ bookmark.href }}" target="_blank" rel="nofollow"><img alt="favicon for {{ b_domain }}" src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
 	  {% else %}
-		<h3 class="bk-title"><a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.title }}</a></h3>
+		<h3 class="bk-title"><span class="glyphicon glyphicon-globe"></span> <a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.title }}</a></h3>
 	  {% endif %}
 
 	  <div class="row">

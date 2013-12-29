@@ -17,13 +17,13 @@ from flask import (render_template, redirect, request, flash,
 from flask_login import login_required, current_user
 from flask_babel import gettext
 from flask_babel import lazy_gettext as _
-from flask_sqlalchemy import get_debug_queries, Pagination
 from werkzeug.contrib.atom import AtomFeed
 
 from qstode.app import app, whoosh_searcher
 from qstode import forms
 from qstode import model
 from qstode import db
+from qstode import utils
 from . import helpers
 
 
@@ -43,11 +43,8 @@ def inject_globals():
     else:
         search_form = forms.SimpleSearchForm()
 
-    return dict(
-        search_form=search_form,
-        taglist=model.Tag.taglist(40),
-        debug_queries=get_debug_queries()
-    )
+    return dict(search_form=search_form,
+                taglist=model.Tag.taglist(app.config['TAGLIST_ITEMS']))
 
 
 @app.errorhandler(404)
@@ -348,8 +345,8 @@ def search_results(query):
         # we can use all() because the list of ids in `search_results`
         # was already paginated
         bookmarks = model.Bookmark.by_ids(results).all()
-        pagination = Pagination(None, page, app.config['PER_PAGE'], len(results),
-                                bookmarks)
+        pagination = utils.Pagination(None, page, app.config['PER_PAGE'],
+                                      len(results), bookmarks)
 
     return render_template('search_results.html', bookmarks=pagination,
                            query=query)

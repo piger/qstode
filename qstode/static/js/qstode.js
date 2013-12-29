@@ -1,10 +1,19 @@
-/* Global js */
+/*
+ * QStode - Main javascript code
+ * =============================
+ *
+ * copyright (c) 2013 by Daniel Kertesz
+ * Licensed under a BSD license; see LICENSE file for more details.
+ */
 
-/* Miscellaneous functions */
+/* Split a string containing a comma separated list of words */
 function comma_split(val) {
 	return val.split(/,\s*/);
 }
 
+/* Returns the last word from a string containing a comma separated list
+ * of words
+ */
 function extract_last(term) {
 	return comma_split(term).pop();
 }
@@ -13,7 +22,7 @@ function is_https() {
 	return window.location.protocol == 'https:';
 }
 
-/* Setup autocompletion for a given element */
+/* Setup tag autocompletion for a given element */
 function setupAutocomplete(el) {
 	$(el)
 	    // don't navigate away from the field on tab when selecting an item
@@ -72,5 +81,6 @@ function setupAutocomplete(el) {
 
 
 $(function() {
+	// Setup autocompletion for the search form on the navigation bar
 	setupAutocomplete($(".search-query"));
 });

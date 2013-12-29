@@ -19,9 +19,13 @@ Things to note:
   `AsyncWriter` that relies on threads and is not suitable for high
   work loads.
 
-- SQL query for *related tags* is broken and causes high load on MySQL :(
-
 - a MySQL database is suggested; PostgreSQL support is experimental/incomplete.
+
+## Documentation
+
+Documentation is available on [ReadTheDocs][rtd].
+
+[rtd]: http://qstode.readthedocs.org/en/latest/index.html
 
 ## Requirements
 
@@ -32,11 +36,7 @@ Things to note:
 The suggested setup involves the use of a *virtual environment* created with
 `virtualenv`.
 
-NOTE: You can also run QStode with the built in http server, but not on the open internet!
-
-## Installation
-
-Check out the `doc` directory.
+NOTE: You can also run QStode with the built in http server, but it's not suitable for the open internet!
 
 ## Author(s)
 

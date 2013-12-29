@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+    qstode.cli.scuttle_exporter
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Utility function to export data from a Scuttle database to a json file
+
+    :copyright: (c) 2012 by Daniel Kertesz
+    :license: BSD, see LICENSE for more details.
+"""
 import sys
 import os
 import codecs

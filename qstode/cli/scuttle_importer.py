@@ -1,45 +1,38 @@
 # -*- coding: utf-8 -*-
-"""Utility function to import data from a Scuttle json export file"""
+"""
+    qstode.cli.scuttle_importer
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    Utility function to import data from a Scuttle json export file
+
+    :copyright: (c) 2012 by Daniel Kertesz
+    :license: BSD, see LICENSE for more details.
+"""
 import json
 import codecs
 import os
 import iso8601
 import re
-from qstode.model import Bookmark, Tag, Link, User
-from qstode.app import db
+from ..model import Bookmark, Tag, Link, User, TAG_MIN, TAG_MAX, tag_name_re
+from ..app import db
+from .helpers import ObjectCache, parse_datetime, unescape
 
 
 __all__ = ['import_scuttle']
 
 
-class Cache(object):
-    """A simple cache object that does not interact with the database"""
-    MODEL = None
-
-    def __init__(self):
-        self._cache = {}
-
-    def get(self, key):
-        if not key in self._cache:
-            item = self.MODEL(key)
-            self._cache[key] = item
-        return self._cache[key]
-
-class TagCache(Cache):
-    MODEL = Tag
-
-class LinkCache(Cache):
-    MODEL = Link
+# Constants from Scuttle
+SCUTTLE_PRIVATE = 2
 
 
-def parse_date(d):
-    """Parse a ISO8601 datetime string and strips timezone information
-    to please MySQL"""
-    if d is not None:
-        rv = iso8601.parse_date(d)
-        return rv.replace(tzinfo=None)
-    return d
+# Cache for Tags and Links
+class TagCache(ObjectCache):
+    model_class = Tag
+
+
+class LinkCache(ObjectCache):
+    model_class = Link
+
 
 def list_duplicate_emails(data):
     emails = {}
@@ -53,20 +46,28 @@ def list_duplicate_emails(data):
         if tot > 1:
             print email, tot
 
-def fix_escaping(s):
-    for pattern, repl in (
-            (u"\\'", u"'"),
-            (u'\\"', u'"')):
-        s = s.replace(pattern, repl)
-    return s
 
-MAX_TAG_LEN = 50
-def sanitize_name(name):
-    name.replace(u',', u'')
-    name = fix_escaping(name)
-    name = name.strip()
-    return name
-    # return name[:MAX_TAG_LEN]
+def cleanup_tags(tags):
+    """Run some validation on a list of tag names; can return an empty list"""
+
+    rv = []
+    for tag in tags:
+        # strip commas
+        tag = tag.replace(u",", u"")
+
+        # unescape, strip
+        tag = unescape(tag)
+        tag = tag.strip()
+
+        # validate
+        if len(tag) < TAG_MIN or len(tag) > TAG_MAX:
+            continue
+        if not tag_name_re.match(tag):
+            continue
+        rv.append(tag)
+
+    rv = set([tag.lower() for tag in rv])
+    return rv
 
 
 def import_scuttle(args):
@@ -74,7 +75,7 @@ def import_scuttle(args):
 
     data = None
     tag_cache = TagCache()
-    url_cache = LinkCache()
+    link_cache = LinkCache()
     users = {}
     emails = {}
     all_users = []
@@ -86,8 +87,14 @@ def import_scuttle(args):
     for i, db_user in enumerate(data['users']):
         print "Importing user %d of %d" % (i+1, tot)
 
+        username = db_user.get('username')
         email = db_user.get('email', '').lower()
-        if not email:
+        name = db_user.get('name', '')
+        password = 'secret'
+        if username is None:
+            print "Skipping user without username: id=%r" % db_user['id']
+            continue
+        elif not email:
             print "Skipping user without email address: id=%r" % db_user['id']
             continue
 
@@ -95,37 +102,30 @@ def import_scuttle(args):
         # XXX users in scuttle are identified by their username while their
         # name is the "display_name".
         if not email in users:
-            user = User(db_user['username'], db_user['email'], 'secret')
+            user = User(username, email, password, display_name=name)
             user.password = db_user['password']
-            user.created_at = parse_date(db_user['created_at'])
-            user.username = db_user['username'] or db_user['name'] or u''
+            user.created_at = parse_datetime(db_user['created_at'])
             users[email] = user
         else:
             user = users[email]
 
         for db_bookmark in db_user['bookmarks']:
-            is_private = db_bookmark['status'] == 2
-            url = url_cache.get(db_bookmark['url'])
-            title = fix_escaping(db_bookmark['title'])
-            notes = fix_escaping(db_bookmark['description'])
-            content_date = iso8601.parse_date(db_bookmark['created_at']).date()
+            title = unescape(db_bookmark['title'])
+            private = (db_bookmark['status'] == SCUTTLE_PRIVATE)
+            notes = unescape(db_bookmark['description'])
+            created_on = parse_datetime(db_bookmark['created_at'])
+            modified_on = parse_datetime(db_bookmark['modified_at'])
 
-            bookmark = Bookmark(
-                title, private=is_private,
-                created_on=parse_date(db_bookmark['created_at']),
-                modified_on=parse_date(db_bookmark['modified_at']),
-                notes=notes)
-            bookmark.link = url_cache.get(db_bookmark['url'])
-                                
-            tags = []
-            tag_names = set([t.lower() for t in db_bookmark['tags']])
-            for tag_name in tag_names:
-                # tag_name = fix_escaping(tag_name)
-                tag_name = sanitize_name(tag_name)
+            bookmark = Bookmark(title, private=private,
+                                created_on=created_on,
+                                modified_on=modified_on,
+                                notes=notes)
+            bookmark.link = link_cache.get(db_bookmark['url'])
+                     
+            tags = cleanup_tags(db_bookmark['tags'])
+            for tag_name in tags:
                 tag = tag_cache.get(tag_name)
-                # tags.append(tag)
                 bookmark.tags.append(tag)
-            # bookmark.tags = tags
 
             user.bookmarks.append(bookmark)
 

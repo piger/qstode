@@ -33,6 +33,7 @@ class User(db.Base, UserMixin):
 
     id = Column(Integer, primary_key=True)
     username = Column(String(50), nullable=False, unique=True, index=True)
+    display_name = Column(String(128))
     email = Column(String(128), index=True, unique=True, nullable=False)
     password = Column(String(128))
     created_at = Column(DateTime(), default=datetime.utcnow)
@@ -51,11 +52,12 @@ class User(db.Base, UserMixin):
                                  primaryjoin=id==watched_users.c.user_id,
                                  secondaryjoin=id==watched_users.c.other_user_id)
 
-    def __init__(self, username, email, password, openid=None, admin=False,
-                 active=True):
+    def __init__(self, username, email, password, display_name=None,
+                 openid=None, admin=False, active=True):
         self.username = username
         self.email = email
         self.set_password(password)
+        self.display_name = display_name
         self.active = active
         self.openid = openid
         self.admin = admin

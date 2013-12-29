@@ -187,6 +187,7 @@ def main():
 
     p_scuttle_import = subparsers.add_parser(
         'scuttle-import', help="Import data from a Scuttle json backup")
+    p_scuttle_import.add_argument('filename')
     p_scuttle_import.set_defaults(func=run_scuttle_import)
 
     args = parser.parse_args()

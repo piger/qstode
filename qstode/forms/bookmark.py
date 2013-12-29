@@ -17,21 +17,14 @@ from wtforms import (TextField, ValidationError, Field,
 from wtforms.validators import DataRequired, Length, URL, Regexp
 from wtforms.widgets import TextInput
 from flask_babel import lazy_gettext as _
-from qstode.model.bookmark import Tag, Bookmark
+from ..model import Tag, Bookmark, tag_name_re, TAG_MIN, TAG_MAX
 from .misc import RedirectForm
 from .validators import ItemsLength, ListLength, ListRegexp
 
 
-# Validators for length of each tag
-TAG_MIN = 1
-TAG_MAX = 35
-
 # Validators for length of tag list
 TAGLIST_MIN = 1
 TAGLIST_MAX = 50
-
-# Tag names must be validated by this regex
-_tag_re = re.compile(r'^\w[\w!?.,$-_]*$', re.U)
 
 # Tag names in a search form must be validated by this regex, which allows
 # a '-' in front of the tag names to indicate tags to be excluded from the
@@ -116,7 +109,7 @@ class BookmarkForm(RedirectForm):
         DataRequired(),
         ItemsLength(TAG_MIN, TAG_MAX),
         ListLength(TAGLIST_MIN, TAGLIST_MAX),
-        ListRegexp(_tag_re),
+        ListRegexp(tag_name_re),
     ])
     notes = TextAreaField(_(u'Note'))
 

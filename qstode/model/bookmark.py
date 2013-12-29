@@ -8,6 +8,7 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+import re
 import math
 from datetime import datetime, timedelta
 import sqlalchemy.types
@@ -21,6 +22,16 @@ from .. import db
 from .user import User, watched_users
 
 
+# Automatically delete orphan tags on database flush.
+# http://stackoverflow.com/questions/9234082/setting-delete-orphan-on-sqlalchemy-relationship-causes-assertionerror-this-att
+@event.listens_for(db.Session, 'after_flush')
+def delete_tag_orphans(session, ctx):
+    session.query(Tag).\
+        filter(~Tag.bookmarks.any()).\
+        delete(synchronize_session=False)
+
+
+# Many-to-many mapping between Bookmarks and Tags
 bookmark_tags = Table(
     'bookmark_tags', db.Base.metadata,
     Column('bookmark_id', Integer, ForeignKey('bookmarks.id', ondelete='cascade'),
@@ -28,12 +39,12 @@ bookmark_tags = Table(
     Column('tag_id', Integer, ForeignKey('tags.id', ondelete='cascade'), primary_key=True))
 
 
-# http://stackoverflow.com/questions/9234082/setting-delete-orphan-on-sqlalchemy-relationship-causes-assertionerror-this-att
-@event.listens_for(db.Session, 'after_flush')
-def delete_tag_orphans(session, ctx):
-    session.query(Tag).\
-        filter(~Tag.bookmarks.any()).\
-        delete(synchronize_session=False)
+# Tag names must be validated by this regex
+tag_name_re = re.compile(r'^\w[\w!?.,$-_]*$', re.U)
+
+# Validators for length of each tag
+TAG_MIN = 1
+TAG_MAX = 35
 
 
 class Tag(db.Base):

@@ -24,6 +24,7 @@ from qstode.app import app, whoosh_searcher
 from qstode import forms
 from qstode import model
 from qstode import db
+from . import helpers
 
 
 # robots.txt
@@ -294,18 +295,25 @@ def simple_search():
     form = forms.SimpleSearchForm(request.args)
 
     if form.validate_on_submit:
-        try:
-            page = int(form.page.data)
-        except ValueError:
-            page = 1
+        page = helpers.validate_page(form.page.data)
 
         # XXX disable related tags
         related = []
 
-        if not form.query.data:
+        # build a list of tags to be included and excluded from the query
+        in_tags = []
+        ex_tags = []
+        for tag_name in form.query.data:
+            # The leading '-' must be stripped from the excluded tag names!
+            if tag_name.startswith(u'-'):
+                ex_tags.append(tag_name[1:])
+            else:
+                in_tags.append(tag_name)
+
+        if not in_tags:
             results = []
         else:
-            results = model.Bookmark.by_tags(form.query.data).\
+            results = model.Bookmark.by_tags(in_tags, ex_tags).\
                       paginate(page, app.config['PER_PAGE'])
             # related = model.Tag.get_related(form.query.data)
 
@@ -326,17 +334,12 @@ def advanced_search():
 
 @app.route('/search_results/<query>')
 def search_results(query):
-    page_len = 10
-    page = request.args.get("page", 1)
-    try:
-        page = int(page)
-    except ValueError:
-        page = 1
-
+    page = helpers.validate_page(request.args.get('page', 1))
     pagination = None
     results = None
+
     try:
-        results = whoosh_searcher.search(query, page, page_len)
+        results = whoosh_searcher.search(query, page, app.config['PER_PAGE'])
     except ValueError:
         abort(400)
 
@@ -345,7 +348,7 @@ def search_results(query):
         # we can use all() because the list of ids in `search_results`
         # was already paginated
         bookmarks = model.Bookmark.by_ids(results).all()
-        pagination = Pagination(None, page, page_len, len(results),
+        pagination = Pagination(None, page, app.config['PER_PAGE'], len(results),
                                 bookmarks)
 
     return render_template('search_results.html', bookmarks=pagination,

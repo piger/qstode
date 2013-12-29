@@ -353,7 +353,15 @@ class Bookmark(db.Base):
 
     @classmethod
     def by_tags(cls, tags, exclude=None):
-        """Get bookmark tagged with the specified tags."""
+        """Returns all the Bookmarks tagged with the tag names specified in
+        the `tags` parameter.
+
+        The optional parameter `exclude` can be specified to exclude Bookmarks
+        tagged with any of the specified tag names.
+
+        :param tags: a list of tag names to include in the results
+        :param exclude: an optional list of tag names to exclude from the results
+        """
 
         assert isinstance(tags, list) is True, "`tags` parameter must be " \
             "a list"
@@ -363,6 +371,7 @@ class Bookmark(db.Base):
 
         # enforce lowercase and uniqueness
         tags = set([t.lower() for t in tags])
+        exclude = set([t.lower() for t in exclude])
 
         if not exclude:
             return cls.get_public().join(cls.tags).\

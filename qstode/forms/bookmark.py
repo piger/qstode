@@ -30,7 +30,13 @@ TAG_MAX = 35
 TAGLIST_MIN = 1
 TAGLIST_MAX = 50
 
+# Tag names must be validated by this regex
 _tag_re = re.compile(r'^\w[\w!?.,$-_]*$', re.U)
+
+# Tag names in a search form must be validated by this regex, which allows
+# a '-' in front of the tag names to indicate tags to be excluded from the
+# search
+_tag_search_re = re.compile(r'^[\w-][\w!?.,$-_]*$', re.U)
 
 
 class TagListField(Field):
@@ -81,7 +87,7 @@ class SimpleSearchForm(Form):
         DataRequired(),
         ItemsLength(TAG_MIN, TAG_MAX),
         ListLength(TAGLIST_MIN, TAGLIST_MAX),
-        ListRegexp(_tag_re),
+        ListRegexp(_tag_search_re),
     ])
     page = HiddenField()
 

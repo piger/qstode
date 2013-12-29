@@ -1,12 +1,40 @@
 {% extends "_page.html" %}
 {% import "_helpers.html" as h %}
-{% block title %}{% trans %}Administration: delete user{% endtrans %}{% endblock %}
+{% set page_title = _("Administration: delete user") %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 
-  <div class="page-title">
-	<h3>{{ _('Administration: delete user') }}</h3>
-  </div>
+  {{ h.page_header(page_title) }}
 
-  <p>This must be implemented!</p>
+  <p>{% trans username=user.username %}Are you sure you want to delete the user <strong>{{ username }}</strong>?{% endtrans %}</p>
+
+  <div class="row">
+	<div class="col-md-7">
+
+	  <form method="post" role="form">
+		{{ form.hidden_tag() }}
+		{{ form.next() }}
+		{{ form.user_id() }}
+
+		<div class="form-group">
+		  <button type="submit" class="btn btn-primary">{{ _("Delete") }}</button>
+		  <button type="button" id="btn-cancel" class="btn btn-default">{{ _("Cancel") }}</button>
+		</div>
+	  </form>
+
+	</div><!-- /.col -->
+  </div><!-- /.row -->
+
+{% endblock %}
+
+{% block extrajs %}
+  <script>
+   $(document).ready(function () {
+	 $("#btn-cancel").click(function (event) {
+	   window.history.go(-1);
+	   event.preventDefault();
+	 });
+   });
+  </script>
 {% endblock %}

@@ -14,7 +14,7 @@ from flask_login import current_user
 from flask_babel import gettext
 from qstode.app import app
 from qstode import db
-from qstode import model
+from ..model import User, Bookmark
 from qstode import forms
 
 
@@ -38,7 +38,7 @@ def admin_home():
 @app.route('/admin/users/<int:page>')
 @admin_required
 def admin_users(page):
-    users = model.User.query.paginate(page, app.config['PER_PAGE'])
+    users = User.query.paginate(page, app.config['PER_PAGE'])
     return render_template("admin/list_users.html", users=users)
 
 
@@ -48,7 +48,7 @@ def admin_create_user():
     form = forms.CreateUserForm()
 
     if form.validate_on_submit():
-        user = model.User(form.username.data,
+        user = User(form.username.data,
                           form.email.data,
                           form.password.data,
                           admin=form.admin.data,
@@ -65,18 +65,25 @@ def admin_create_user():
 @app.route('/admin/delete_user/<int:id>', methods=['GET', 'POST'])
 @admin_required
 def admin_delete_user(id):
-    user = model.User.query.get_or_404(id)
+    user = User.query.get_or_404(id)
+    form = forms.DeleteUserForm(next=request.referrer, user_id=user.id)
 
-    # What to do with existing bookmarks?
-    # If we delete all we must also de-index them...
-        
-    return render_template("admin/delete_user.html", user=user)
+    if form.validate_on_submit():
+        username = user.username
+        db.Session.delete(user)
+        db.Session.commit()
+
+        flash(gettext(u"User %(username)s deleted", username=username),
+              "success")
+        return form.redirect()
+
+    return render_template("admin/delete_user.html", user=user, form=form)
 
 
-@app.route('/admin/users/<int:id>', methods=['GET', 'POST'])
+@app.route('/admin/user/<int:id>', methods=['GET', 'POST'])
 @admin_required
 def admin_edit_user(id):
-    user = model.User.query.get_or_404(id)
+    user = User.query.get_or_404(id)
 
     # Create the required form, populating with data from the selected
     # user; update also the dynamic field `choices`.

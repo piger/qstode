@@ -12,7 +12,8 @@ import re
 from flask_login import current_user
 from flask_wtf import Form
 from flask_wtf.recaptcha import RecaptchaField
-from wtforms import TextField, PasswordField, ValidationError, BooleanField
+from wtforms import (TextField, PasswordField, ValidationError, BooleanField,
+                     HiddenField)
 from wtforms.validators import (DataRequired, Email, EqualTo, Length, Regexp,
                                 Optional)
 from flask_wtf.html5 import EmailField
@@ -50,6 +51,10 @@ class CreateUserForm(Form):
     password_confirm = PasswordField(_(u"Confirm password"), [DataRequired()])
     active = BooleanField(_(u"Active"), default=True)
     admin = BooleanField(_(u"Administrator"), default=False)
+
+
+class DeleteUserForm(RedirectForm):
+    user_id = HiddenField()
 
 
 class EditUserForm(CreateUserForm):

@@ -8,6 +8,7 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+import re
 from flask.ext.login import current_user
 from flask_babel import lazy_gettext as _
 from wtforms import ValidationError
@@ -18,8 +19,8 @@ def ItemsLength(min_length=1, max_length=100):
     """Validate the length of each str element in a list"""
 
     def _ItemsLength(form, field):
-        if not isinstance(field.data, list):
-            raise ValidationError(_(u"Invalid element"))
+        assert isinstance(field.data, list) is True, \
+            "This validator must be used with a `list` field"
 
         for item in field.data:
             l = len(item)
@@ -36,8 +37,8 @@ def ListLength(min_length=1, max_length=100):
     """Validate the length of a list of elements"""
 
     def _ListLength(form, field):
-        if not isinstance(field.data, list):
-            raise ValidationError(_(u"Invalid element"))
+        assert isinstance(field.data, list) is True, \
+            "This validator must be used with a `list` field"
 
         l = len(field.data)
         if l < min_length or l > max_length:
@@ -47,6 +48,20 @@ def ListLength(min_length=1, max_length=100):
                                         'max': max_length,
                                     }))
     return _ListLength
+
+
+def ListRegexp(regex):
+    """Validate every item of list with a regex match operation"""
+
+    def _ListRegexp(form, field):
+        assert isinstance(field.data, list) is True, \
+            "This validator must be used with a `list` field"
+
+        for item in field.data:
+            if regex.match(item) is None:
+                raise ValidationError(_(u"Invalid characters"))
+        
+    return _ListRegexp
 
 
 def unique_username(include_self=False):

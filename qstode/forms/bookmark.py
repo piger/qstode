@@ -8,17 +8,18 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+import re
 from flask_wtf import Form
 from flask_wtf.html5 import URLField
 from wtforms import (TextField, ValidationError, Field,
                      BooleanField, TextAreaField, HiddenField,
                      SelectField, SubmitField)
-from wtforms.validators import DataRequired, Length, URL
+from wtforms.validators import DataRequired, Length, URL, Regexp
 from wtforms.widgets import TextInput
 from flask_babel import lazy_gettext as _
 from qstode.model.bookmark import Tag, Bookmark
 from .misc import RedirectForm
-from .validators import ItemsLength, ListLength
+from .validators import ItemsLength, ListLength, ListRegexp
 
 
 # Validators for length of each tag
@@ -28,6 +29,8 @@ TAG_MAX = 35
 # Validators for length of tag list
 TAGLIST_MIN = 1
 TAGLIST_MAX = 50
+
+_tag_re = re.compile(r'^\w[\w!?.,$-_]*$', re.U)
 
 
 class TagListField(Field):
@@ -78,6 +81,7 @@ class SimpleSearchForm(Form):
         DataRequired(),
         ItemsLength(TAG_MIN, TAG_MAX),
         ListLength(TAGLIST_MIN, TAGLIST_MAX),
+        ListRegexp(_tag_re),
     ])
     page = HiddenField()
 
@@ -106,6 +110,7 @@ class BookmarkForm(RedirectForm):
         DataRequired(),
         ItemsLength(TAG_MIN, TAG_MAX),
         ListLength(TAGLIST_MIN, TAGLIST_MAX),
+        ListRegexp(_tag_re),
     ])
     notes = TextAreaField(_(u'Note'))
 

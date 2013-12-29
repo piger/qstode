@@ -26,7 +26,7 @@ def ItemsLength(min_length=1, max_length=100):
             l = len(item)
             if l < min_length or l > max_length:
                 raise ValidationError(_(u"All elements must be between " \
-                                        "%(min)d and %(max)d characters" % {
+                                        u"%(min)d and %(max)d characters" % {
                                             'min': min_length,
                                             'max': max_length,
                                         }))
@@ -43,7 +43,7 @@ def ListLength(min_length=1, max_length=100):
         l = len(field.data)
         if l < min_length or l > max_length:
             raise ValidationError(_(u"All elements must be between " \
-                                    "%(min)d and %(max)d characters" % {
+                                    u"%(min)d and %(max)d characters" % {
                                         'min': min_length,
                                         'max': max_length,
                                     }))

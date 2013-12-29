@@ -83,4 +83,13 @@ function setupAutocomplete(el) {
 $(function() {
 	// Setup autocompletion for the search form on the navigation bar
 	setupAutocomplete($(".search-query"));
+
+	// Bind the `click` event on each .cancel-btn to a function that
+	// returns to the previous page
+	$(".cancel-btn").each(function (i, item) {
+		$(item).click(function (event) {
+			window.history.go(-1);
+			event.preventDefault();
+		});
+	});
 });

@@ -19,22 +19,11 @@
 
 		<div class="form-group">
 		  <button type="submit" class="btn btn-primary">{{ _("Delete") }}</button>
-		  <button type="button" id="btn-cancel" class="btn btn-default">{{ _("Cancel") }}</button>
+		  <button type="button" id="btn-cancel" class="btn btn-default cancel-btn">{{ _("Cancel") }}</button>
 		</div>
 	  </form>
 
 	</div><!-- /.col -->
   </div><!-- /.row -->
 
-{% endblock %}
-
-{% block extrajs %}
-  <script>
-   $(document).ready(function () {
-	 $("#btn-cancel").click(function (event) {
-	   window.history.go(-1);
-	   event.preventDefault();
-	 });
-   });
-  </script>
 {% endblock %}

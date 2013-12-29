@@ -291,6 +291,18 @@ def simple_search():
     """Performs a simple search from the form on the navigation bar"""
     form = forms.SimpleSearchForm(request.args)
 
+    # Limit search to current_user's bookmarks if 'personal' query arg
+    # was specified
+    if 'personal' in request.args:
+        user_id = current_user.id
+    elif 'user' in request.args:
+        try:
+            user_id = int(request.args.get('user'))
+        except ValueError:
+            abort(400)
+    else:
+        user_id = None
+
     if form.validate_on_submit:
         page = helpers.validate_page(form.page.data)
 
@@ -310,7 +322,7 @@ def simple_search():
         if not in_tags:
             results = []
         else:
-            results = model.Bookmark.by_tags(in_tags, ex_tags).\
+            results = model.Bookmark.by_tags(in_tags, ex_tags, user_id=user_id).\
                       paginate(page, app.config['PER_PAGE'])
             # related = model.Tag.get_related(form.query.data)
 

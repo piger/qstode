@@ -352,7 +352,7 @@ class Bookmark(db.Base):
         return q
 
     @classmethod
-    def by_tags(cls, tags, exclude=None):
+    def by_tags(cls, tags, exclude=None, user_id=None):
         """Returns all the Bookmarks tagged with the tag names specified in
         the `tags` parameter.
 
@@ -361,6 +361,7 @@ class Bookmark(db.Base):
 
         :param tags: a list of tag names to include in the results
         :param exclude: an optional list of tag names to exclude from the results
+        :param user_id: include only bookmarks owned by `user_id`
         """
 
         assert isinstance(tags, list) is True, "`tags` parameter must be " \
@@ -373,12 +374,19 @@ class Bookmark(db.Base):
         tags = set([t.lower() for t in tags])
         exclude = set([t.lower() for t in exclude])
 
+        # If no tags was specified for exclusion we can work out a much
+        # simplier SQL query.
         if not exclude:
-            return cls.get_public().join(cls.tags).\
-                filter(Tag.name.in_(tags)).\
-                group_by(cls.id).\
-                having(func.count(cls.id) == len(tags)).\
-                order_by(cls.created_on.desc())
+            query = cls.get_public().join(cls.tags).\
+                    filter(Tag.name.in_(tags)).\
+                    group_by(cls.id).\
+                    having(func.count(cls.id) == len(tags)).\
+                    order_by(cls.created_on.desc())
+
+            if user_id is not None:
+                query = query.filter(cls.user_id == user_id)
+
+            return query
 
         exclude_query = db.Session.query(bookmark_tags.c.bookmark_id).\
                         join(Tag).\
@@ -399,6 +407,9 @@ class Bookmark(db.Base):
                      cls.id == include_query.c.bookmark_id).\
                 filter(exclude_query.c.bookmark_id == None).\
                 order_by(cls.created_on.desc())
+
+        if user_id is not None:
+            query = query.filter(cls.user_id == user_id)
 
         return query
 

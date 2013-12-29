@@ -17,6 +17,7 @@
 
 	<div class="row">
 	  <div class="col-md-4">
+
 		<form id="lang_form" method="get" role="form">
 		  <label for="lang_selector">{{ _("User interface language") }}</label>
 		  <select class="form-control input-sm" name="_lang" id="lang_selector">
@@ -25,6 +26,7 @@
 			{%- endfor %}
 		  </select>
 		</form>
+
 	  </div>
 	</div>
 
@@ -42,7 +44,8 @@
 			{{ form.hidden_tag() }}
 
 			<fieldset>
-			  {{ h.render_field(form.username) }}
+			  {{ h.render_field(form.display_name) }}
+			  {{ h.render_field(form.password_old) }}
 			  {{ h.render_field(form.password, help=_("You can leave this blank if you don't want to change password")) }}
 			  {{ h.render_field(form.password_confirm) }}
 

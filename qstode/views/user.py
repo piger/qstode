@@ -11,7 +11,7 @@
 from urlparse import urljoin
 from flask import session, request, redirect, flash, render_template, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from flask_babel import gettext
+from flask_babel import gettext as _
 from sqlalchemy.orm import joinedload
 from qstode.app import app, login_manager
 from qstode.mailer import Mailer
@@ -52,7 +52,7 @@ def login():
 
         if user and user.active and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            flash(gettext(u"Successfully logged in as %(user)s", user=user.username), "success")
+            flash(_(u"Successfully logged in as %(user)s", user=user.username), "success")
             return form.redirect('index')
 
         login_failed = True
@@ -73,17 +73,16 @@ def logout():
 def user_details():
     """Edits personal user informations"""
 
-    form = forms.UserDetailsForm(username=current_user.username)
+    form = forms.UserDetailsForm(username=current_user.username,
+                                 display_name=current_user.display_name)
 
     if form.validate_on_submit():
-        if form.username.data != current_user.username:
-            current_user.username = form.username.data
-
+        current_user.display_name = form.display_name.data
         if form.password.data:
             current_user.set_password(form.password.data)
 
         db.Session.commit()
-        flash(gettext(u"Profile successfully updated"), 'success')
+        flash(_(u"Profile successfully updated"), 'success')
         return redirect(url_for('user_details'))
 
     return render_template('user_details.html', form=form)

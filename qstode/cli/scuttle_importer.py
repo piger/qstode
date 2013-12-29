@@ -89,7 +89,9 @@ def import_scuttle(args):
 
         username = db_user.get('username')
         email = db_user.get('email', '').lower()
-        name = db_user.get('name', '')
+        name = db_user.get('name', '').strip()
+        if not name:
+            name = username
         password = 'secret'
         if username is None:
             print "Skipping user without username: id=%r" % db_user['id']

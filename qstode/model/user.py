@@ -57,6 +57,8 @@ class User(db.Base, UserMixin):
         self.username = username
         self.email = email
         self.set_password(password)
+        if not display_name:
+            display_name = username
         self.display_name = display_name
         self.active = active
         self.openid = openid

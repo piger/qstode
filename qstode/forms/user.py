@@ -40,6 +40,9 @@ class CreateUserForm(Form):
         Regexp(username_re),
         unique_username(),
     ])
+    display_name = TextField(_(u"Display name"), [
+        DataRequired(), Length(1, 128)
+    ])
     email = EmailField(_(u"Email"), [
         DataRequired(),
         unique_email(),
@@ -128,13 +131,10 @@ class RegistrationForm(Form):
 
 # unique_username ???
 class UserDetailsForm(Form):
-    username = TextField(_(u'Username'), [
-        DataRequired(),
-        Length(min=3, max=20),
-        Regexp(username_re),
-        unique_username(include_self=True),
+    display_name = TextField(_(u"Display name"), [
+        DataRequired(), Length(1, 128)
     ])
-    password_old = PasswordField('Current password')
+    password_old = PasswordField(_("Current password"))
     password = PasswordField(_(u'Password'), [
         Optional(),
         Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
@@ -142,6 +142,24 @@ class UserDetailsForm(Form):
     ])
     password_confirm = PasswordField(_(u'Confirm new password'))
 
+    def validate(self):
+        """Additional validation for `password_old` and `password` fields"""
+
+        success = super(UserDetailsForm, self).validate()
+
+        # If both a new password and the old password was specified
+        if self.password.data and self.password_old.data:
+            if not current_user.check_password(self.password_old.data):
+                self.password_old.errors.append(_(u"Invalid current password"))
+                success = False
+
+        # If only the new password was specified
+        elif self.password.data and not self.password_old.data:
+            self.password_old.errors.append(_(u"You must specify your current " \
+                                              "password"))
+            success = False
+
+        return success
 
 class CreateProfileForm(Form):
     username = TextField(_(u'Username'), [

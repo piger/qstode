@@ -37,9 +37,9 @@
 		<div class="col-md-5 col-lg-5">
 		  <div class="pull-right">
 			{% if controls %}
-			  <p><span class="glyphicon glyphicon-user"></span> <a href="{{ url_for('user_bookmarks', username=bookmark.user.username) }}">{{ bookmark.user.username }}</a>{% if bookmark.user.id == current_user.id %} <a class="btn btn-success btn-xs" href="{{ url_for('edit_bookmark', bId=bookmark.id) }}">{{ _("Modify") }}</a> <a class="btn btn-xs btn-danger" href="{{ url_for('delete_bookmark', bId=bookmark.id) }}">{{ _("Delete") }}</a>{% endif %}</p>
+			  <p><span class="glyphicon glyphicon-user"></span> <a href="{{ url_for('user_bookmarks', username=bookmark.user.username) }}">{{ bookmark.user.display_name }}</a>{% if bookmark.user.id == current_user.id %} <a class="btn btn-success btn-xs" href="{{ url_for('edit_bookmark', bId=bookmark.id) }}">{{ _("Modify") }}</a> <a class="btn btn-xs btn-danger" href="{{ url_for('delete_bookmark', bId=bookmark.id) }}">{{ _("Delete") }}</a>{% endif %}</p>
 			{% else %}
-			  <p><span class="glyphicon glyphicon-user"></span> <a href="{{ url_for('user_bookmarks', username=bookmark.user.username) }}">{{ bookmark.user.username }}</a></p>
+			  <p><span class="glyphicon glyphicon-user"></span> <a href="{{ url_for('user_bookmarks', username=bookmark.user.username) }}">{{ bookmark.user.display_name }}</a></p>
 			{% endif %}
 		  </div>
 		</div>

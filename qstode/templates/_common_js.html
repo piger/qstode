@@ -8,10 +8,12 @@
 <script type="text/javascript">
   $(document).ready(function() {
 
+   // Setup language selector form
     $("#lang_selector").change(function() {
       $("#lang_form").submit();
     });
 
+   // XXX Setup datepicker
     $.datepicker.setDefaults( $.datepicker.regional[ "{{ g.lang or "en" }}" ] );
   });
 </script>

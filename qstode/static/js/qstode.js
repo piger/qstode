@@ -92,4 +92,9 @@ $(function() {
 			event.preventDefault();
 		});
 	});
+
+   // Setup tooltip for every required field on forms
+	$(".field-required").each(function (i, item) {
+		$(item).tooltip();
+	});
 });

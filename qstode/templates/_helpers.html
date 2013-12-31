@@ -1,8 +1,62 @@
 {%- macro render_field(field, help="") %}
-  <div class="form-group{%- if field.errors %} has-error{%- endif %}">
-	{{ field.label() }}
+  {% if field.type == 'BooleanField' %}
+	{{ render_checkbox(field, help, **kwargs) }}
+  {% elif field.type == 'SelectField' %}
+	{{ render_select(field, help, **kwargs) }}
+  {% else %}
+	{{ render_input(field, help, **kwargs) }}
+  {% endif %}
+{%- endmacro %}
 
-	{{ field(class_='form-control', **kwargs) }}
+
+{%- macro render_input(field, help='') %}
+  <div class="form-group {%- if field.errors %} has-error{%- endif %}">
+	<label for="{{ field.id }}">{{ field.label.text }}
+	  {%- if field.flags.required %}
+		<abbr class="field-required" title="{{ _("This field must be filled in") }}">*</abbr>
+	  {%- endif %}</label>
+
+	{{ field(class_="form-control", **kwargs) }}
+
+	{% if help %}
+	  <p class="help-block">{{ help }}</p>
+	{% endif %}
+
+	{% for error in field.errors %}
+	  <p class="help-block">{{ error }}</p>
+	{% endfor %}
+  </div>
+{% endmacro -%}
+
+
+{%- macro render_checkbox(field, help='') %}
+  <div class="form-group {%- if field.errors %} has-error{%- endif %}">
+	<div class="checkbox">
+	  <label>
+		{{ field(**kwargs) }}{{ field.label.text }}
+	  </label>
+	</div>
+
+	{% if help %}
+	  <p class="help-block">{{ help }}</p>
+	{% endif %}
+  </div>
+{%- endmacro %}
+
+
+{%- macro render_select(field, help='') %}
+  <div class="form-group">
+
+	<label for="{{ field.id }}">{{ field.label.text }}
+	  {%- if field.flags.required %}
+		<abbr class="field-required" title="{{ _("This field must be filled in") }}">*</abbr>
+	  {%- endif %}</label>
+
+	<select class="form-control" name="{{ field.name }}" id="{{ field.id }}">
+	  {% for value, label, selected in field.iter_choices() %}
+		<option value="{{ value }}"{%- if selected  %} selected{%- endif %}>{{ label }}</option>
+	  {% endfor %}
+	</select>
 
 	{% if help %}
 	  <p class="help-block">{{ help }}</p>
@@ -15,9 +69,9 @@
 {%- endmacro %}
 
 
-{%- macro render_actions(submit_label=None, cancel_label=None) %}
-  <div class="form-group">
-    <button type="submit" class="btn btn-primary">{{ submit_label or _('Save') }}</button>
+{%- macro render_actions(submit_label=None, cancel_label=None, ok_icon=None, center=True) %}
+  <div class="form-group {%- if center %} text-center{% endif %}">
+    <button type="submit" class="btn btn-primary">{%- if ok_icon %}<span class="glyphicon glyphicon-{{ ok_icon }}"></span> {% endif %}{{ submit_label or _('Save') }}</button>
     <button type="button" class="btn btn-default">{{ cancel_label or _('Cancel') }}</button>
   </div>
 {%- endmacro %}
@@ -37,17 +91,6 @@
 {% endmacro %}
 
 
-{%- macro render_checkbox(field) %}
-  <div class="form-group">
-	<div class="checkbox">
-	  <label>
-		{{ field(**kwargs) }}{{ field.label.text }}
-	  </label>
-	</div>
-  </div>
-{%- endmacro %}
-
-
 {%- macro bookmark_form(form) %}
   <fieldset>
 	{{ render_field(form.url, placeholder="http://www.example.com") }}
@@ -65,22 +108,4 @@
   </div>
 
   {% include "_messages.html" %}
-{%- endmacro %}
-
-
-{%- macro render_select(field) %}
-  <div class="form-group">
-
-	{{ field.label() }}
-
-	<select class="form-control" name="{{ field.name }}" id="{{ field.id }}">
-	  {% for value, label, selected in field.iter_choices() %}
-		<option value="{{ value }}"{%- if selected  %} selected{%- endif %}>{{ label }}</option>
-	  {% endfor %}
-	</select>
-
-	{% for error in field.errors %}
-	  <p class="help-block">{{ error }}</p>
-	{% endfor %}
-  </div>
 {%- endmacro %}

@@ -77,6 +77,23 @@
 {%- endmacro %}
 
 
+{%- macro render_alert(message, category='default', title=None, dismiss=True) %}
+  <div class="alert alert-{{ category }}">
+	{% if dismiss %}
+	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	{% endif %}
+	{% if title %}
+	  <h4>{{ title }}</h4>
+	{% endif %}
+
+	<p>{{ message }}</p>
+
+	{% if caller %}
+	  {{ caller() }}
+	{% endif %}
+  </div>
+{%- endmacro %}
+
 {% macro button_group() -%}
   <div class="control-group">
 	<div class="control">

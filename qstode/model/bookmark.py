@@ -40,7 +40,7 @@ bookmark_tags = Table(
 
 
 # Tag names must be validated by this regex
-tag_name_re = re.compile(r'^\w[\w!?.,$-_]*$', re.U)
+tag_name_re = re.compile(r'^\w[\w!?.,$-_ ]*$', re.U)
 
 # Validators for length of each tag
 TAG_MIN = 1

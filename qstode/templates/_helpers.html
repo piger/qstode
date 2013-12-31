@@ -130,3 +130,17 @@
 	{{ caller() }}
   {% endif %}
 {%- endmacro %}
+
+
+{%- macro render_panel(title=None, category="default") %}
+  <div class="panel panel-{{ category }}">
+	{% if title %}
+	  <div class="panel-heading"><h3 class="panel-title">{{ title }}</h3></div>
+	{% endif %}
+	<div class="panel-body">
+	  {% if caller %}
+		{{ caller() }}
+	  {% endif %}
+	</div>
+  </div>
+{%- endmacro %}

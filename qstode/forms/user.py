@@ -11,7 +11,6 @@
 import re
 from flask_login import current_user
 from flask_wtf import Form
-from flask_wtf.recaptcha import RecaptchaField
 from wtforms import (TextField, PasswordField, ValidationError, BooleanField,
                      HiddenField)
 from wtforms.validators import (DataRequired, Email, EqualTo, Length, Regexp,
@@ -114,19 +113,26 @@ class PasswordChangeForm(Form):
 
 
 class RegistrationForm(Form):
-    username = TextField(_(u'Username'), [DataRequired(),
-                                          Length(min=3, max=20),
-                                          Regexp(username_re),
-                                          unique_username])
-    email = EmailField(_(u'Email'), [DataRequired(), Email(),
-                                     unique_email])
+    display_name = TextField(_(u"Display name"), [
+        DataRequired(), Length(1, 128)
+    ])
+    username = TextField(_(u'Username'), [
+        DataRequired(),
+        Length(min=3, max=20),
+        Regexp(username_re),
+        unique_username(),
+    ])
+    email = EmailField(_(u'Email'), [
+        DataRequired(),
+        Email(),
+        unique_email(),
+    ])
     password = PasswordField(_(u'Password'), [
         DataRequired(),
         Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
         EqualTo('password_confirm', message=_(u"Passwords must match"))
     ])
     password_confirm = PasswordField(_(u'Confirm password'), [DataRequired()])
-    recaptcha = RecaptchaField()
 
 
 # unique_username ???

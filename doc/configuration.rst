@@ -4,6 +4,9 @@ Configuration
 Configuration handling in QStode is inherited from `Flask`_, therefore
 it's managed by a Python script used as a configuration file.
 
+Configuration parameters
+========================
+
 The following configuration values have the same meaning they have in
 `Flask`_ (default values between parenthesis):
 
@@ -34,6 +37,9 @@ PUBLIC_ACCESS (``True``)
 
 USER_REGISTRATION_ENABLED (``True``)
   Allow anonymous users to register themselves.
+
+ENABLE_RECAPTCHA (``True``)
+  Enable use of Recaptcha service (see also: ``RECAPTCHA_PUBLIC_KEY``, etc.).
 
 PER_PAGE (``10``)
   Specify how many bookmarks to show on each page.
@@ -74,6 +80,9 @@ USE_GOOGLE_FAVICON (``True``)
 
 REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD
   Redis connection parameters.
+
+Recaptcha
+---------
 
 RECAPTCHA_USE_SSL
   Enable/disable recaptcha through ssl.

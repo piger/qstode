@@ -1,0 +1,40 @@
+{% extends "_public_page.html" %}
+{% import "_helpers.html" as h %}
+{% set page_title = _("New user registration") %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+
+  {{ h.page_header(page_title) }}
+
+  {% if registration_enabled %}
+
+	<div class="row">
+	  <div class="col-md-6 col-md-offset-3">
+
+		{% call h.render_panel(_("Register")) %}
+		  <form method="post" role="form">
+			{{ form.hidden_tag() }}
+
+			{{ h.render_field(form.display_name) }}
+			{{ h.render_field(form.username) }}
+			{{ h.render_field(form.email) }}
+			{{ h.render_field(form.password) }}
+			{{ h.render_field(form.password_confirm) }}
+
+			{% if form.recaptcha %}
+			  {{ h.render_field(form.recaptcha) }}
+			{% endif %}
+
+			{{ h.render_actions(_("Register")) }}
+
+		  </form>
+		{% endcall %}
+	  </div>
+	</div>
+
+  {% else %}
+	<p>{% trans %}New user registration is currently disabled.{% endtrans %}</p>
+  {% endif %}
+
+{% endblock %}

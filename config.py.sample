@@ -63,6 +63,8 @@ MAIL_FROM = "qstode@example.com"
 USER_REGISTRATION_ENABLED = True
 
 # Recaptcha, for user registration
+ENABLE_RECAPTCHA = True
+
 RECAPTCHA_USE_SSL = False
 RECAPTCHA_PUBLIC_KEY = ''
 RECAPTCHA_PRIVATE_KEY = ''

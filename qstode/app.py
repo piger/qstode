@@ -39,6 +39,11 @@ app.config['TAGLIST_ITEMS'] = 30
 # Temporary switch for related tags
 app.config['ENABLE_RELATED_TAGS'] = True
 
+# Enable new users registration
+app.config['USER_REGISTRATION_ENABLED'] = True
+
+# Use recaptcha
+app.config['ENABLE_RECAPTCHA'] = True
 
 babel = Babel(app)
 login_manager = LoginManager()

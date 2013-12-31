@@ -8,13 +8,15 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
-import wtforms
+from wtforms import Form
+from wtforms.fields import StringField
 from flask import url_for, g
 from mock import patch
 from werkzeug.datastructures import MultiDict
 from .. import test
 from .. import model
 from .. import forms
+from ..forms.validators import *
 
 
 SAMPLE_DATA = {
@@ -25,12 +27,6 @@ SAMPLE_DATA = {
     'notes': u"A couple of notes",
 }
 
-class FakeField(object):
-    """Fake form field, mocks a wtforms.Field"""
-
-    def __init__(self, data):
-        self.data = data
-
 
 class ValidatorsTest(test.FlaskTestCase):
     def setUp(self):
@@ -39,31 +35,41 @@ class ValidatorsTest(test.FlaskTestCase):
             model.User(u'pippo', 'pippo@example.com', 'secret')
         ])
 
-    def test_unique_username(self):
-        """Failed validation: unique username"""
-
-        field = FakeField(u'pippo')
-        self.assertRaises(wtforms.ValidationError,
-                          forms.unique_username, None, field)
-
-    def test_unique_email(self):
-        """Failed validation: unique email address"""
-
-        field = FakeField(u'pippo@example.com')
-        self.assertRaises(wtforms.ValidationError,
-                          forms.unique_email, None, field)
-
-    def test_unique_username_false(self):
+    def test_unique_username_ok(self):
         """Validation: unique username"""
 
-        field = FakeField(u'charlie root')
-        self.assertIsNone(forms.unique_username(None, field))
+        class TestForm(Form):
+            username = StringField("username", [unique_username()])
 
-    def test_unique_email_false(self):
+        form = TestForm(username=u"charlie_root")
+        self.assertTrue(form.validate())
+
+    def test_unique_username_fail(self):
+        """Failed validation: unique username"""
+
+        class TestForm(Form):
+            username = StringField("username", [unique_username()])
+
+        form = TestForm(username=u"pippo")
+        self.assertFalse(form.validate())
+
+    def test_unique_email_ok(self):
         """Validation: unique email address"""
 
-        field = FakeField(u'charlie@root.com')
-        self.assertIsNone(forms.unique_email(None, field))
+        class TestForm(Form):
+            email = StringField("email", [unique_email()])
+
+        form = TestForm(email=u"charlie@root.com")
+        self.assertTrue(form.validate())
+
+    def test_unique_email_fail(self):
+        """Failed validation: unique email address"""
+
+        class TestForm(Form):
+            email = StringField("email", [unique_email()])
+
+        form = TestForm(email=u"pippo@example.com")
+        self.assertFalse(form.validate())
 
 
 class BookmarkFormBaseTest(test.FlaskTestCase):
@@ -75,7 +81,7 @@ class BookmarkFormBaseTest(test.FlaskTestCase):
 
     def _login(self):
         rv = self.client.post('/login', data={
-            "email": u"pippo@example.com",
+            "user": u"pippo@example.com",
             "password": "secret"
         }, follow_redirects=False)
         self.assert_redirects(rv, url_for('index'))
@@ -115,14 +121,14 @@ class TagListTest(BookmarkFormBaseTest):
     def test_empty_values(self):
         """Validation of empty values as tag list (i.e. ",,,")"""
 
-        class DogForm(wtforms.Form):
+        class TestForm(Form):
             tags = forms.TagListField()
             
         with self.app.test_request_context():
             data = MultiDict([
                 ("tags", u"fast, lazy, , ,,,"),
             ])
-            form = DogForm(data)
+            form = TestForm(data)
             self.assertTrue(form.validate())
             self.assertEquals(form.tags.data, [u'fast', u'lazy'])
 
@@ -153,12 +159,10 @@ class TagListTest(BookmarkFormBaseTest):
 
         self._login()
         data = SAMPLE_DATA.copy()
-        tags = u', '.join([u"tag-%d" % i for i in xrange(51)])
+        tags = u', '.join([u"tag-%d" % i for i in xrange(forms.TAGLIST_MAX + 1)])
         data['tags'] = tags
         rv = self.client.post('/add', data=data)
         self.assertEquals(rv.status_code, 200)
-        self.assertTrue(u'Field must be between 1 and 50 characters long'
-                        in rv.data)
 
     @patch('qstode.app.whoosh_searcher.add_bookmark')
     def test_length_validator_correct(self, mock_add_bookmark):
@@ -184,26 +188,13 @@ class LoginFormTest(test.FlaskTestCase):
             form = forms.LoginForm()
             self.assertFalse(form.validate())
 
-    def test_invalid_email(self):
-        """Validation of a form with an invalid email field"""
-
-        with self.app.test_request_context():
-            g.lang = "en"
-
-            data = MultiDict([
-                ('email', u'user'),
-                ('password', u'secret'),
-            ])
-            form = forms.LoginForm(data)
-            self.assertFalse(form.validate())
-
     def test_required_fields(self):
         """Validation of required fields"""
         with self.app.test_request_context():
             g.lang = "en"
 
             data = MultiDict([
-                ('email', u'user@example.com'),
+                ('user', u'user@example.com'),
                 ('password', u'secret'),
             ])
             form = forms.LoginForm(data)
@@ -217,7 +208,7 @@ class LoginFormTest(test.FlaskTestCase):
         ])
 
         rv = self.client.post('/login', data={
-            "email": u"pippo@example.com",
+            "user": u"pippo@example.com",
             "password": "secret",
             "next": "http://www.evil.com",
         }, follow_redirects=False)
@@ -231,7 +222,7 @@ class LoginFormTest(test.FlaskTestCase):
         ])
 
         rv = self.client.post('/login', data={
-            "email": u"pippo@example.com",
+            "user": u"pippo@example.com",
             "password": "secret",
             "next": "/about",
         }, follow_redirects=False)

@@ -22,7 +22,7 @@
 			  {{ h.bookmark_form(form) }}
 
 			  <div class="form-group text-center">
-				<button type="submit" class="btn btn-primary">{{ _("Save") }}</button>
+				<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> {{ _("Save") }}</button>
 				<button type="button" class="btn btn-default">{{ _("Cancel") }}</button>
 			  </div>
 			</form>
@@ -38,8 +38,4 @@
 
 {% block extrajs %}
   <script src="{{ url_for('static', filename="js/post.js") }}" type="text/javascript"></script>
-
-  {% if g.lang == "it" %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.ui.datepicker-it.min.js') }}"></script>
-  {% endif %}
 {% endblock %}

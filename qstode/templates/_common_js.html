@@ -12,8 +12,5 @@
     $("#lang_selector").change(function() {
       $("#lang_form").submit();
     });
-
-   // XXX Setup datepicker
-    $.datepicker.setDefaults( $.datepicker.regional[ "{{ g.lang or "en" }}" ] );
   });
 </script>

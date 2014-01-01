@@ -43,7 +43,8 @@
 			</ul>
 		  </li>
 		{% else %}
-		  <li><a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-user"></span> {{ _("Login") }}</a></li>
+		  <li><a href="{{ url_for('register_user') }}"><span class="glyphicon glyphicon-user"></span> {{ _("Register") }}</a></li>
+		  <li><a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> {{ _("Login") }}</a></li>
 		{% endif %}
 	  </ul>
 

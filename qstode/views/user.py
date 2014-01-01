@@ -177,7 +177,7 @@ def register_user():
         form = RecaptchaRegistrationForm()
     else:
         form = forms.RegistrationForm()
-    registration_enabled = app.config.get('USER_REGISTRATION_ENABLED')
+    registration_enabled = app.config.get('ENABLE_USER_REGISTRATION')
 
     if registration_enabled and form.validate_on_submit():
         user = User(form.username.data, form.email.data, form.password.data,

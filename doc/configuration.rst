@@ -35,10 +35,10 @@ PUBLIC_ACCESS (``True``)
   Enable anonymous access to all the public pages; if set to ``False``
   a valid user is required to browse the application.
 
-USER_REGISTRATION_ENABLED (``True``)
+ENABLE_USER_REGISTRATION (``True``)
   Allow anonymous users to register themselves.
 
-ENABLE_RECAPTCHA (``True``)
+ENABLE_RECAPTCHA (``False``)
   Enable use of Recaptcha service (see also: ``RECAPTCHA_PUBLIC_KEY``, etc.).
 
 PER_PAGE (``10``)

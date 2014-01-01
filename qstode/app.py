@@ -18,8 +18,6 @@ from . import db
 app = Flask('qstode')
 
 # Set some configuration defaults
-app.config['USER_REGISTRATION_ENABLED'] = True
-
 app.config['SUPPORTED_LANGUAGES'] = [
     ('en', 'English'),
     ('it', 'Italiano'),
@@ -40,10 +38,10 @@ app.config['TAGLIST_ITEMS'] = 30
 app.config['ENABLE_RELATED_TAGS'] = True
 
 # Enable new users registration
-app.config['USER_REGISTRATION_ENABLED'] = True
+app.config['ENABLE_USER_REGISTRATION'] = True
 
 # Use recaptcha
-app.config['ENABLE_RECAPTCHA'] = True
+app.config['ENABLE_RECAPTCHA'] = False
 
 babel = Babel(app)
 login_manager = LoginManager()

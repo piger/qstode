@@ -60,10 +60,10 @@ MAIL_FROM = "qstode@example.com"
 # ]
 
 # Enable or disable anonymous user registration
-USER_REGISTRATION_ENABLED = True
+ENABLE_USER_REGISTRATION = True
 
 # Recaptcha, for user registration
-ENABLE_RECAPTCHA = True
+ENABLE_RECAPTCHA = False
 
 RECAPTCHA_USE_SSL = False
 RECAPTCHA_PUBLIC_KEY = ''

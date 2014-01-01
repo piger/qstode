@@ -43,15 +43,15 @@ class FrontendViewsTest(FlaskTestCase):
 
     def test_login_failure(self):
         rv = self.client.post('/login', data=dict(
-            email='fakeuser@google.it',
+            user='fakeuser@google.it',
             password='password'
         ), follow_redirects=True)
         self.assert200(rv)
-        assert 'Authentication failed' in rv.data
+        assert 'alert alert-danger' in rv.data
 
     def test_login_success(self):
         rv = self.client.post('/login', data=dict(
-            email='pippo@example.com',
+            user='pippo@example.com',
             password='password'
         ), follow_redirects=True)
         self.assert200(rv)

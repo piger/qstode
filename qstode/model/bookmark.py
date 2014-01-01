@@ -150,18 +150,18 @@ class Tag(db.Base):
         return results
 
     @classmethod
-    def get_many(cls, names):
+    def get_many(cls, names, match_case=False):
         """
         Returns a list of Tags matching `names`.
         """
-        results = []
-        names = [n.lower() for n in names]
+        if match_case is False:
+            names = set([name.lower() for name in names])
 
-        for name in names:
-            tag = cls.query.filter_by(name=name).first()
-            if tag is not None:
-                results.append(tag)
-        return results
+        if not len(names):
+            return []
+
+        query = cls.query.filter(Tag.name.in_(names))
+        return query
 
     @classmethod
     def tagcloud(cls, limit=15, min_font_size=2, max_font_size=10,
@@ -311,17 +311,16 @@ class Bookmark(db.Base):
 
         :returns: the bookmark just created
         """
+        user = data.get('user')
         link = Link.get_or_create(data.get('url'))
         bookmark = Bookmark(title=data.get('title'),
                             private=data.get("private", False),
                             notes=data.get('notes'))
         bookmark.link = link
-        bookmark.user = data.get('user')
         for tag in Tag.get_or_create_many(data.get('tags')):
             bookmark.tags.append(tag)
-            
-        db.Session.add(bookmark)
-        db.Session.commit()
+        user.bookmarks.append(bookmark)
+
         return bookmark
 
     @classmethod

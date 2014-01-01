@@ -143,6 +143,8 @@ def post_bookmark():
     form = forms.BookmarkForm(request.form, url=url, title=title, notes=notes)
     if form.validate_on_submit():
         bookmark = form.create_bookmark(current_user)
+        db.Session.add(bookmark)
+        db.Session.commit()
         db.Session.refresh(bookmark)
         whoosh_searcher.add_bookmark(bookmark)
         return redirect(url_for('close_popup'))
@@ -162,7 +164,8 @@ def add():
 
     if form.validate_on_submit():
         bookmark = form.create_bookmark(current_user)
-
+        db.Session.add(bookmark)
+        db.Session.commit()
         db.Session.refresh(bookmark)
         whoosh_searcher.add_bookmark(bookmark)
 

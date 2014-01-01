@@ -13,7 +13,7 @@ from sqlalchemy import func
 from nose.plugins.skip import SkipTest
 from qstode.test import FlaskTestCase
 from qstode import db
-from qstode import model
+from ..model import User, Bookmark, Tag, Link
 
 
 sample_bookmarks = [
@@ -42,51 +42,67 @@ sample_users = (
 )
 
 
-class UserTest(FlaskTestCase):
-
+class ModelTest(FlaskTestCase):
     def setUp(self):
-        super(UserTest, self).setUp()
-        self.user = model.User(*sample_users[0])
-        self.user2 = model.User(*sample_users[1])
-
-        db.Session.add_all([self.user, self.user2])
+        super(ModelTest, self).setUp()
+        pippo = User(u"pippo", "pippo@example.com", "secret")
+        pluto = User(u"pluto", "pluto@example.com", "secret")
+        db.Session.add_all([pippo, pluto])
         db.Session.commit()
 
-    def test_user(self):
-        """User creation"""
-
-        user = model.User.query.filter_by(email="pippo@spatof.org").first()
-        self.assertEquals(user.email, "pippo@spatof.org")
-
-        not_user = model.User.query.filter_by(email="root@example.com").first()
-        self.assertEquals(not_user, None)
-
-
-class TagTest(FlaskTestCase):
-
-    def test_tag_query(self):
-        """Simple SELECT Bookmark by tag(s)"""
-
-        tag_objects = []
-        for name in [u'prova', u'articoli', u'codice']:
-            tag = model.Tag(name)
-            db.Session.add(tag)
-            tag_objects.append(tag)
-
-        url = model.Link.get_or_create(u"http://127.0.0.1")
-        bookmark = model.Bookmark(title=u"titolo di prova", private=False)
-        bookmark.link = url
-
-        bookmark.tags.extend(tag_objects)
-        db.Session.add(bookmark)
+        b1 = Bookmark.create({
+            'url': u"http://www.google.com",
+            'title': u"Google",
+            'notes': u"Google search engine",
+            'tags': [u"search", u"web", u"google"],
+            'user': pippo,
+        })
+        db.Session.add(b1)
         db.Session.commit()
 
-        b = model.Bookmark.query.filter(
-            model.Bookmark.tags.any(model.Tag.name==u'prova'),
-            ~model.Bookmark.tags.any(model.Tag.name==u'cazzo'),
-        ).first()
+        b2 = Bookmark.create({
+            'url': u"http://www.bing.com",
+            'title': u"Bing",
+            'notes': u"Bing search engine",
+            'tags': [u"search", u"web", u"bing"],
+            'user': pippo,
+            'private': True,
+        })
+        db.Session.add(b2)
+        db.Session.commit()
 
-        self.assertEquals(b.title, u"titolo di prova")
+        b3 = Bookmark.create({
+            'url': u"http://www.slashdot.org",
+            'title': u"Slashdot",
+            'notes': u"Slashdot: news for nerds",
+            'tags': [u"news", u"nerds", u"web"],
+            'user': pluto,
+        })
+        db.Session.add(b3)
+        db.Session.commit()
+
+
+class UserTest(FlaskTestCase):
+    def test_user_creation(self):
+        user = User(u"pippo", u"pippo@example.com", "secret")
+        db.Session.add(user)
+        db.Session.commit()
+
+        user = User.query.filter_by(username=u"pippo").first()
+        assert user is not None
+        assert user.check_password('secret') is True
+        assert user.is_active() is True
+
+
+class TagTest(ModelTest):
+    def test_get_many(self):
+        names = [u"news", u"web"]
+        tags = Tag.get_many(names)
+        assert [t.name for t in tags] == [u"news", u"web"]
+
+    def test_tag_search(self):
+        tag = Tag.search(u"new").first()
+        assert tag.name == u"news"
 
     def test_lowercase_many(self):
         """
@@ -105,28 +121,28 @@ class TagTest(FlaskTestCase):
             u'topolino'
         ]
 
-        pippo = model.Tag(u'pippo')
+        pippo = Tag(u'pippo')
         db.Session.add(pippo)
         db.Session.commit()
 
-        results = model.Tag.get_or_create_many(tags)
+        results = Tag.get_or_create_many(tags)
         self.assertEquals(3, len(tags))
         db.Session.add_all(results)
         db.Session.commit()
 
         self.assertEquals(1,
-                          len(model.Tag.query.filter(
-                              func.lower(model.Tag.name) == u'pippo'
+                          len(Tag.query.filter(
+                              func.lower(Tag.name) == u'pippo'
                           ).all()))
         self.assertEquals(0,
-                          len(model.Tag.query.filter_by(name=u'PIPPO').all()))
+                          len(Tag.query.filter_by(name=u'PIPPO').all()))
 
 
 class BookmarkTest(FlaskTestCase):
     def setUp(self):
         super(BookmarkTest, self).setUp()
-        self.user = model.User(*sample_users[0])
-        self.user2 = model.User(*sample_users[1])
+        self.user = User(*sample_users[0])
+        self.user2 = User(*sample_users[1])
 
         db.Session.add_all([self.user, self.user2])
         db.Session.commit()
@@ -136,13 +152,13 @@ class BookmarkTest(FlaskTestCase):
 
         bd = sample_bookmarks[0]
 
-        url = model.Link.get_or_create(bd['url'])
-        b = model.Bookmark(bd['title'])
+        url = Link.get_or_create(bd['url'])
+        b = Bookmark(bd['title'])
         b.link = url
         db.Session.add(b)
         db.Session.commit()
 
-        b = model.Bookmark.query.filter_by(title=bd['title']).first()
+        b = Bookmark.query.filter_by(title=bd['title']).first()
         self.assertIsInstance(b.created_on, datetime)
         self.assertIsInstance(b.modified_on, datetime)
 
@@ -152,14 +168,14 @@ class BookmarkTest(FlaskTestCase):
         tag_cache = {}
 
         for bd in sample_bookmarks:
-            url = model.Link.get_or_create(bd['url'])
-            b = model.Bookmark(bd['title'])
+            url = Link.get_or_create(bd['url'])
+            b = Bookmark(bd['title'])
             b.link = url
             for t in bd['tags']:
                 if t in tag_cache:
                     b.tags.append(tag_cache[t])
                 else:
-                    tag = model.Tag.get_or_create(t)
+                    tag = Tag.get_or_create(t)
                     tag_cache[t] = tag
                     b.tags.append(tag)
 
@@ -173,16 +189,5 @@ class BookmarkTest(FlaskTestCase):
             ([u"ricerca", u"posta"], 1)]
 
         for tags, count in test_data:
-            rv = model.Bookmark.by_tags(tags)
+            rv = Bookmark.by_tags(tags)
             self.assertEquals(rv.count(), count)
-
-
-class URLGenericTest(FlaskTestCase):
-    def test_duplicates(self):
-        url1 = model.Link(href=u'http://127.0.0.1')
-        db.Session.add(url1)
-        db.Session.commit()
-        url1 = model.Link.query.filter_by(href=u'http://127.0.0.1').first()
-        url2 = model.Link.get_or_create(u'http://127.0.0.1')
-        self.assertEquals(url1, url2)
-        self.assertEquals(url1.id, url2.id)

@@ -14,9 +14,11 @@
   <form method="post" class="form-search{%- if form.errors %} error{%- endif %}" role="form">
 	{{ form.hidden_tag() }}
 
-	{{ h.render_field(form.q) }}
+	{{ h.render_field(form.q, placeholder=_("Type your query here.")) }}
 
-	{{ h.render_actions(_("Search")) }}
+	<div class="form-group">
+	  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> {{ _("Search") }}</button>
+	</div>
   </form>
 
 {% endblock %}

@@ -10,7 +10,7 @@
 """
 import re
 from flask_wtf import Form
-from flask_wtf.html5 import URLField
+from flask_wtf.html5 import URLField, SearchField
 from wtforms import (TextField, ValidationError, Field,
                      BooleanField, TextAreaField, HiddenField,
                      SelectField, SubmitField)
@@ -88,7 +88,7 @@ class SimpleSearchForm(Form):
 class AdvancedSearchForm(Form):
     # XXX: the name of this field currently cannot be "query" otherwise
     # it will conflicts with the global SimpleSearchForm
-    q = TextField(_(u"Search query"), [DataRequired()])
+    q = SearchField(_(u"Search query"), [DataRequired()])
 
 
 class TypeaheadTextInput(TextInput):

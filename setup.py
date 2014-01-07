@@ -39,7 +39,7 @@ setup(
         'redis',
     ],
     setup_requires=[],
-    test_requires=['mock', 'nose'],
+    test_requires=['Flask-Testing', 'mock', 'nose'],
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),

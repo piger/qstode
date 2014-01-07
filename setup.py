@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="qstode",
-    version="0.1.20",
+    version="0.2b1",
     description="A web application serving as a tag based archive of links",
     author="Daniel Kertesz",
     author_email="daniel@spatof.org",

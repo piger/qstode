@@ -135,9 +135,9 @@ def user_bookmarks(username, page):
 def post_bookmark():
     """Posts a new bookmark (with a popup window)"""
 
-    url = request.args.get('url', '')
-    title = request.args.get('title', '')
-    notes = request.args.get('notes', '')
+    url = request.args.get('url', u'')
+    title = request.args.get('title', u'')
+    notes = request.args.get('notes', u'')
     url_count = 0
 
     form = forms.BookmarkForm(request.form, url=url, title=title, notes=notes)

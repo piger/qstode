@@ -14,8 +14,6 @@ import logging
 import logging.handlers
 import argparse
 import jinja2
-import alembic
-from alembic.config import Config as AlembicConfig
 from qstode.app import app, login_manager, whoosh_searcher
 from . import exc
 from . import db
@@ -110,7 +108,7 @@ def run_setup(args):
     application = create_app()
 
     print "Creating DB schema..."
-    db.create_all(enable_alembic=True)
+    db.create_all()
 
     if model.User.query.filter_by(admin=True).first() is None:
         admin_pw = utils.generate_password()

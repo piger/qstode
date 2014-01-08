@@ -24,7 +24,9 @@
 	  {% endif %}
 	{% endif %}
 
-	<li class="{{ active_if('help') }}"><a href="{{ url_for('help') }}"><span class="glyphicon glyphicon-question-sign"></span> {{ _('Help') }}</a></li>
+	{% if current_user.is_authenticated() %}
+	  <li class="{{ active_if('help') }}"><a href="{{ url_for('help') }}"><span class="glyphicon glyphicon-question-sign"></span> {{ _('Help') }}</a></li>
+	{% endif %}
   </ul>
 
   {% if taglist %}

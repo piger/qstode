@@ -14,15 +14,15 @@ from flask_wtf.html5 import URLField, SearchField
 from wtforms import (TextField, ValidationError, Field,
                      BooleanField, TextAreaField, HiddenField,
                      SelectField, SubmitField)
-from wtforms.validators import DataRequired, Length, URL, Regexp
+from wtforms.validators import DataRequired, Length, URL, Regexp, Optional
 from wtforms.widgets import TextInput
 from flask_babel import lazy_gettext as _
-from ..model import Tag, Bookmark, tag_name_re, TAG_MIN, TAG_MAX
+from ..model import Tag, Bookmark, tag_name_re, TAG_MIN, TAG_MAX, NOTES_MAX
 from .misc import RedirectForm
 from .validators import ItemsLength, ListLength, ListRegexp
 
 
-# Validators for length of tag list
+# Validation for length of tag list
 TAGLIST_MIN = 1
 TAGLIST_MAX = 50
 
@@ -111,7 +111,10 @@ class BookmarkForm(RedirectForm):
         ListLength(TAGLIST_MIN, TAGLIST_MAX),
         ListRegexp(tag_name_re),
     ])
-    notes = TextAreaField(_(u'Note'))
+    notes = TextAreaField(_(u'Note'), [
+        Optional(),
+        Length(0, NOTES_MAX),
+    ])
 
     def create_bookmark(self, user):
         data = {

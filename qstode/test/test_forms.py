@@ -116,6 +116,14 @@ class BookmarkFormTest(BookmarkFormBaseTest):
             res = "field is required" in rv.data or "Invalid URL" in rv.data
             self.assertTrue(res, rv.data)
 
+    def test_notes_validation(self):
+        self._login()
+        data = SAMPLE_DATA.copy()
+        data['notes'] = u"A" * (model.NOTES_MAX + 1)
+
+        rv = self.client.post(url_for('add'), data=data)
+        self.assert200(rv)
+
 
 class TagListTest(BookmarkFormBaseTest):
     def test_empty_values(self):
@@ -227,6 +235,7 @@ class LoginFormTest(test.FlaskTestCase):
             "next": "/about",
         }, follow_redirects=False)
         self.assert_redirects(rv, url_for('about'))
+
 
 class PasswordChangeFormTest(test.FlaskTestCase):
     def test_failed_validation(self):

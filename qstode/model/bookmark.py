@@ -42,9 +42,12 @@ bookmark_tags = Table(
 # Tag names must be validated by this regex
 tag_name_re = re.compile(r'^\w[\w!?.,$-_ ]*$', re.U)
 
-# Validators for length of each tag
+# Validation for length of each tag
 TAG_MIN = 1
 TAG_MAX = 35
+
+# Validation for length of the notes field
+NOTES_MAX = 2500
 
 
 class Tag(db.Base):
@@ -71,7 +74,7 @@ class Tag(db.Base):
     __tablename__ = 'tags'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(35), nullable=False, index=True, unique=True)
+    name = Column(String(TAG_MAX), nullable=False, index=True, unique=True)
 
     def __init__(self, name):
         """Create a new Tag, enforcing a lowercase name"""
@@ -284,7 +287,7 @@ class Bookmark(db.Base):
     tags = relationship('Tag', secondary=bookmark_tags,
                         backref=backref('bookmarks', lazy='dynamic'),
                         order_by="Tag.name", lazy='subquery')
-    notes = Column(String(2500))
+    notes = Column(String(NOTES_MAX))
 
     def __init__(self, title, private=False, created_on=None,
                  modified_on=None, notes=None):

@@ -4,7 +4,7 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{% trans name=for_user.display_name %}Bookmarks of <em>{{ name }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif %} <a style="display:none" href="#" id="following-toggle" alt="Follow user"><span title="Click to follow user" id="following-star" class="glyphicon glyphicon-star-empty"></span></a></h3>
+	<h3>{% trans name=for_user.display_name %}<span class="glyphicon glyphicon-user"></span> {{ name }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif %} <a style="display:none" href="#" id="following-toggle" alt="Follow user"><span title="Click to follow user" id="following-star" class="glyphicon glyphicon-star-empty"></span></a></h3>
   </div>
 
 

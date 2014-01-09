@@ -18,7 +18,7 @@
 
 		{% if current_user.is_authenticated() %}
 		  <li class="{{ active_if('help') }}"><a href="{{ url_for('help') }}">{{ _('Help') }}</a></li>
-		  <li class="{{ active_if('add') }}"><a href="{{ url_for('add') }}">{{ _('Save') }}</a></li>
+		  <li class="{{ active_if('add') }}"><a href="{{ url_for('add') }}"><span class="glyphicon glyphicon-paperclip"></span> {{ _('Post!') }}</a></li>
 		{% endif %}
 
 	  </ul>
@@ -35,9 +35,9 @@
 		  <li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{ current_user.username }} <b class="caret"></b></a>
 			<ul class="dropdown-menu">
-			  <li><a href="{{ url_for('user_bookmarks', username=current_user.username) }}">{{ _('My Bookmarks') }}</a></li>
-			  <li><a href="{{ url_for('user_details') }}">{{ _('Edit Profile') }}</a></li>
-			  <li><a href="{{ url_for('manage_followings') }}">{{ _("Manage followings") }}</a></li>
+			  <li><a href="{{ url_for('user_bookmarks', username=current_user.username) }}"><span class="glyphicon glyphicon-book"></span> {{ _('My Bookmarks') }}</a></li>
+			  <li><a href="{{ url_for('user_details') }}"><span class="glyphicon glyphicon-cog"></span> {{ _('Edit Profile') }}</a></li>
+			  <li><a href="{{ url_for('manage_followings') }}"><span class="glyphicon glyphicon-list"></span> {{ _("Manage followings") }}</a></li>
 			  <li class="divider"></li>
 			  <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></span> {{ _('Logout') }}</a></li>
 			</ul>

@@ -37,6 +37,10 @@
 
 		<div class="col-md-5 col-lg-5">
 		  <div class="pull-right">
+			{% if bookmark.private %}
+			  <button type="button" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-eye-close"></span> {{ _('Private') }}</button>
+			{% endif %}
+
 			{% if controls and bookmark.user.id == current_user.id %}
 			  <div class="btn-group">
 				<button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">

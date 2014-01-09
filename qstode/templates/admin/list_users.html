@@ -13,6 +13,7 @@
 	  <thead>
 		<tr>
 		  <th>{% trans %}Username{% endtrans %}</th>
+		  <th>{% trans %}Display name{% endtrans %}</th>
 		  <th>{% trans %}E-mail{% endtrans %}</th>
 		  <th>{% trans %}Status{% endtrans %}</th>
 		  <th>{% trans %}Controls{% endtrans %}</th>
@@ -23,6 +24,7 @@
 		{% for user in users.items %}
 		  <tr class="{%- if not user.active %}warning{%- endif %}">
 			<td><a href="{{ url_for("admin_edit_user", id=user.id) }}">{{ user.username }}</a></td>
+			<td>{{ user.display_name }}</td>
 			<td>{{ user.email }}</td>
 			<td>{% if user.active -%}{{ _('Active') }}{% else %}{{ _('Inactive') }}{% endif -%}</td>
 			<td><a href="{{ url_for('admin_delete_user', id=user.id) }}" class="btn btn-xs btn-danger {%- if user.id == current_user.id %} disabled{%- endif %}">{% trans %}Delete{% endtrans %}</td>

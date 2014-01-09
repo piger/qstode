@@ -10,11 +10,11 @@
 	  {% endif %}
 
 	  <div class="row">
-		<div class="col-md-9 col-lg-9">
+		<div class="col-xs-9">
 		  <h4 class="bk-href"><span class="glyphicon glyphicon-bookmark"></span> <a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.href|truncate(80, True) }}</a></h4>
 		</div>
 
-		<div class="col-md-3 col-lg-3">
+		<div class="col-xs-3">
 		  <div class="pull-right">
 			<h4 class="bk-time bk-time-text"><span class="glyphicon glyphicon-calendar"></span> <time pubdate datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|timesince }}</time></h4>
 			<h4 class="bk-time bk-time-short"><span class="glyphicon glyphicon-calendar"></span> <time pubdate datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|dateformat('short') }}</time></h4>
@@ -31,11 +31,11 @@
 
 	<footer>
 	  <div class="row">
-		<div class="col-md-7 col-lg-7">
+		<div class="col-xs-7">
 		  <p><span class="glyphicon glyphicon-tags"></span> {% for tag in bookmark.tags %}<a href="{{ url_for('tagged', tags=tag.name) }}" class="btn btn-xs btn-default">{{ tag.name }}</a>{%if not loop.last %} {% endif %}{% endfor %}</p>
 		</div>
 
-		<div class="col-md-5 col-lg-5">
+		<div class="col-xs-5">
 		  <div class="pull-right">
 			{% if bookmark.private %}
 			  <button type="button" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-eye-close"></span> {{ _('Private') }}</button>

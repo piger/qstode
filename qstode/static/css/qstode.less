@@ -1,5 +1,6 @@
 body {
 	padding-top: 50px;
+	background-color: #F2F3F5;
 }
 
 #main-container {
@@ -7,6 +8,16 @@ body {
 	padding: 40px 0;
 }
 
+// since we have a gray background, the blockquote left-margin can't be
+// light-gray.
+blockquote {
+	border-left: 5px solid #D2D3D4;
+}
+
+// same for the nav-bar
+.nav>li>a:hover, .nav>li>a:focus {
+	background-color: #D8E3E6;
+}
 
 /* LOGIN PAGE */
 .form-signin {
@@ -84,7 +95,7 @@ article.bookmark {
 
 article.bookmark header {
 	h3 {
-		font-size: 22px;
+		font-size: 21px;
 	}
 
 	h4 {
@@ -94,6 +105,7 @@ article.bookmark header {
 	.bk-time {
 		border-bottom: 1px dashed #CACACC;
 		padding-bottom: 2px;
+		font-size: 15px;
 	}
 
 	h4.bk-time-short {
@@ -101,12 +113,16 @@ article.bookmark header {
 	}
 
 	.bk-href {
-		font-size: 14px;
+		font-size: 15px;
 		margin-top: 1px;
+
+		a {
+			color: #BDB98E;
+		}
 	}
 
-	.bk-time {
-		font-size: 15px;
+	.bk-title a {
+		color: #8E92BD;
 	}
 }
 

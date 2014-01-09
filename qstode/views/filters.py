@@ -15,7 +15,7 @@ import urllib2
 import calendar
 from datetime import datetime
 from flask import request, url_for
-from flask_babel import to_user_timezone, lazy_gettext
+from flask_babel import to_user_timezone, lazy_gettext as _
 from qstode.app import app
 
 
@@ -48,7 +48,7 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
 
 @app.template_filter()
-def timesince(dt, default='adesso'):
+def timesince(dt, default=None):
     """Convert a timestamp to a textual string describing "how much time ago".
 
     The parameter `dt` is a :class:`datetime.datetime` instance without
@@ -59,12 +59,14 @@ def timesince(dt, default='adesso'):
     License: Public Domain
     """
 
+    if default is None:
+        default = _(u'adesso')
+
     user_dt = to_user_timezone(dt)
     now_dt = to_user_timezone(datetime.utcnow())
 
     diff = now_dt - user_dt
 
-    _ = lazy_gettext
     periods = (
         (diff.days / 365, _(u'year'), _(u'years')),
         (diff.days / 30, _(u'month'), _(u'months')),
@@ -81,8 +83,8 @@ def timesince(dt, default='adesso'):
                 timestr = singular
             else:
                 timestr = plural
-            return lazy_gettext("%(num)s %(time)s ago",
-                                num=period, time=timestr)
+            return _("%(num)s %(time)s ago", num=period, time=timestr)
+
     return default
 
 @app.context_processor

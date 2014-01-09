@@ -97,4 +97,10 @@ $(function() {
 	$(".field-required").each(function (i, item) {
 		$(item).tooltip();
 	});
+
+	// Toggle for bookmark date between textual and numeric representation
+	$(".bk-time").click(function (e) {
+		$(this).toggle();
+		$(this).siblings('h4').toggle();
+	});
 });

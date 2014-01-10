@@ -93,15 +93,15 @@ def versioned_url_processor():
     parameter to the URL containing the timestamp of the requested file.
     This is useful to avoid caching of css and javascript files.
     """
+
     def versioned_url(filename):
-        path = os.path.join(app.static_folder, filename)
-        modt = time.localtime(os.path.getmtime(path))
-        mods = time.strftime('%Y%m%dT%H%M%S', modt)
+        static_filename = os.path.join(app.static_folder, filename)
+        modtime = os.path.getmtime(static_filename)
+        static_url = url_for('static', filename=filename)
+        return u"%s?v=%d" % (static_url, modtime)
 
-        url = url_for('static', filename=filename)
-
-        return "%s?v=%s" % (url, mods)
     return dict(versioned_url=versioned_url)
+
 
 @app.context_processor
 def active_if_processor():

@@ -15,7 +15,6 @@ from sqlalchemy import and_
 from qstode.app import app
 from qstode import db
 from qstode import model
-from collections import OrderedDict
 
 
 AUTOCOMPLETE_LIMIT = 15

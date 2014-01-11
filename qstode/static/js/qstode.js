@@ -25,12 +25,12 @@ function is_https() {
 /* Setup tag autocompletion for a given element */
 function setupAutocomplete(el) {
 	$(el)
-	    // don't navigate away from the field on tab when selecting an item
+        // don't navigate away from the field on tab when selecting an item
 		.bind( "keydown", function( event ) {
 			if ( event.keyCode == $.ui.keyCode.TAB &&
-				 $( this ).data("ui-autocomplete").menu.active ){
-					 event.preventDefault();
-				 }
+                 $( this ).data("ui-autocomplete").menu.active ){
+                     event.preventDefault();
+                 }
 		})
 		.autocomplete({
 			minLength: 0,

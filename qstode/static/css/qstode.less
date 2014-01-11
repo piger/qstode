@@ -1,6 +1,16 @@
+/*
+ * QStode LESS stylesheet
+ * (C) 2013 Daniel Kertesz <daniel@spatof.org>
+ * licensed under cc-by-nc, see: http://creativecommons.org/licenses/by-nc/3.0/
+ */
+
+@pageBackground: #F2F3F5;
+@tagColorBase: #B3B3B3;
+
+
 body {
 	padding-top: 50px;
-	background-color: #F2F3F5;
+	background-color: @pageBackground;
 }
 
 #main-container {
@@ -17,6 +27,12 @@ blockquote {
 // same for the nav-bar
 .nav>li>a:hover, .nav>li>a:focus {
 	background-color: #D8E3E6;
+}
+
+// Override default panel-heading background color which is too light for a
+// gray background (see @pageBackground).
+.panel-default>.panel-heading {
+	background-color: darken(#ecf0f1, 10%);
 }
 
 /* LOGIN PAGE */
@@ -157,16 +173,23 @@ footer {
     color: @tag-cloud_a_hover;
 }
 
-/* Tag cloud colors
- * see also: http://0to255.com/706C6E
- */
-.tag-1 { font-size: 0.7em; font-weight: 100; color: #928e90; }
-.tag-2 { font-size: 0.8em; font-weight: 200; color: #8a8587; }
-.tag-3 { font-size: 0.9em; font-weight: 300; color: #817d7f; }
-.tag-4 { font-size: 1.0em; font-weight: 400; color: #797476; }
-.tag-5 { font-size: 1.2em; font-weight: 500; color: #706c6e; }
-.tag-6 { font-size: 1.4em; font-weight: 600; color: #676466; }
-.tag-7 { font-size: 1.6em; font-weight: 700; color: #5f5b5d; }
-.tag-8 { font-size: 1.8em; font-weight: 800; color: #565355; }
-.tag-9 { font-size: 2.2em; font-weight: 900; color: #4d4b4c; }
-.tag-10 { font-size: 2.5em; font-weight: 900; color: #454244; }
+.tag-1 { font-size: 0.7em; font-weight: 100; color: @tagColorBase; }
+.tag-2 { font-size: 0.8em; font-weight: 200; color: darken(@tagColorBase, 4%); }
+.tag-3 { font-size: 0.9em; font-weight: 300; color: darken(@tagColorBase, 8%); }
+.tag-4 { font-size: 1.0em; font-weight: 400; color: darken(@tagColorBase, 12%); }
+.tag-5 { font-size: 1.2em; font-weight: 500; color: darken(@tagColorBase, 16%); }
+.tag-6 { font-size: 1.4em; font-weight: 600; color: darken(@tagColorBase, 20%); }
+.tag-7 { font-size: 1.6em; font-weight: 700; color: darken(@tagColorBase, 24%); }
+.tag-8 { font-size: 1.8em; font-weight: 800; color: darken(@tagColorBase, 32%); }
+.tag-9 { font-size: 2.2em; font-weight: 900; color: darken(@tagColorBase, 36%); }
+.tag-10 { font-size: 2.5em; font-weight: 900; color: darken(@tagColorBase, 40%); }
+
+// sidebar
+.sidebar-tag {
+	a {
+		color: #485952;
+	}
+	a:hover {
+		color: #3B3437;
+	}
+}

@@ -35,7 +35,7 @@
 
       <ul class="list-unstyled text-center" role="navigation">
 		{% for tag, total in taglist %}
-	      <li class="small"><a href="{{ url_for('tagged', tags=tag.name) }}">{{ tag.name }} <span>({{ total }})</span></a></li>
+	      <li class="sidebar-tag small"><a href="{{ url_for('tagged', tags=tag.name) }}">{{ tag.name }} <span>({{ total }})</span></a></li>
 		{% endfor %}
       </ul>
 	</div>

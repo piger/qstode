@@ -15,7 +15,7 @@ from flask_login import UserMixin
 from werkzeug.security import (generate_password_hash, check_password_hash,
                                safe_str_cmp)
 from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
-from sqlalchemy import Boolean
+from sqlalchemy import Boolean, and_
 from sqlalchemy.orm import relationship, backref
 from .. import db
 
@@ -85,6 +85,16 @@ class User(db.Base, UserMixin):
     def is_active(self):
         """Tell if a user have the active flag set (Flask-Login)"""
         return self.active
+
+    def is_following(self, user_id):
+        """Returns True if the User is following `user_id`"""
+
+        rv = db.Session.query(watched_users).\
+             filter(and_(watched_users.c.user_id == self.id,
+                         watched_users.c.other_user_id == user_id)).\
+             count()
+
+        return bool(rv)
 
     def __repr__(self):
         return "<User(username={0}, email={1}, active={2})>".format(

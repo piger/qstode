@@ -83,16 +83,25 @@ class ModelTest(FlaskTestCase):
         db.Session.commit()
 
 
-class UserTest(FlaskTestCase):
+class UserTest(ModelTest):
     def test_user_creation(self):
-        user = User(u"pippo", u"pippo@example.com", "secret")
+        user = User(u"cow-user", u"cow@example.com", "secret")
         db.Session.add(user)
         db.Session.commit()
 
-        user = User.query.filter_by(username=u"pippo").first()
+        user = User.query.filter_by(username=u"cow-user").first()
         assert user is not None
         assert user.check_password('secret') is True
         assert user.is_active() is True
+
+    def test_is_following(self):
+        user1 = User.query.filter_by(username=u'pippo').first()
+        user2 = User.query.filter_by(username=u'pluto').first()
+        user1.watched_users.append(user2)
+        db.Session.commit()
+
+        self.assertTrue(user1.is_following(user2.id))
+        self.assertFalse(user2.is_following(user1.id))
 
 
 class TagTest(ModelTest):

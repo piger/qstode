@@ -118,13 +118,8 @@ def is_following(user_id):
     wu = model.watched_users
 
     other_user = model.User.query.get_or_404(user_id)
-    result = db.Session.query(wu).\
-             filter(and_(wu.c.user_id == current_user.id,
-                         wu.c.other_user_id == other_user.id)).\
-             count()
-    
-    print "Result: {}".format(result)
-    if result > 0:
+    rv = current_user.is_following(other_user.id)
+    if rv is True:
         return jsonify(result=1)
     else:
         return jsonify(result=0)

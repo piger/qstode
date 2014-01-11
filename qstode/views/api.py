@@ -17,9 +17,6 @@ from qstode import db
 from qstode import model
 
 
-AUTOCOMPLETE_LIMIT = 15
-
-
 class APIError(Exception):
     status_code = 400
 
@@ -100,7 +97,8 @@ def complete_tags():
     results = []
 
     if term:
-        tags = model.Tag.search(term).limit(AUTOCOMPLETE_LIMIT).all()
+        tags = model.Tag.search(term).\
+               limit(app.config['TAG_AUTOCOMPLETE_MAX']).all()
         results.extend([dict(id=tag.id, label=tag.name, value=tag.name)
                         for tag in tags])
 

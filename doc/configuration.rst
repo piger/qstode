@@ -50,6 +50,9 @@ FEED_NUM_ENTRIES (``15``)
 TAGLIST_ITEMS (``30``)
   Specify how many tags to show in the Popular Tags listing.
 
+TAG_AUTOCOMPLETE_MAX (``15``)
+  Specify how many tags will be returned in autocompleted fields.
+
 ENABLE_RELATED_TAGS (``True``)
   Enable functions to show related tags in the *search* views.
 

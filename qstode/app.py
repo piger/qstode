@@ -43,6 +43,10 @@ app.config['ENABLE_USER_REGISTRATION'] = True
 # Use recaptcha
 app.config['ENABLE_RECAPTCHA'] = False
 
+# Autocomplete API: number of tag returned
+app.config['TAG_AUTOCOMPLETE_MAX'] = 15
+
+
 babel = Babel(app)
 login_manager = LoginManager()
 login_manager.login_view = "login"

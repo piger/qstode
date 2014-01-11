@@ -15,6 +15,7 @@ from sqlalchemy import and_
 from qstode.app import app
 from qstode import db
 from qstode import model
+from collections import OrderedDict
 
 
 AUTOCOMPLETE_LIMIT = 15
@@ -43,43 +44,55 @@ def handle_api_error(error):
     return response
 
 
-class BookmarkAPI(MethodView):
-    PER_PAGE = 15
+class BookmarkView(MethodView):
+    def get(self, bookmark_id):
+        rv = model.Bookmark.get_public().\
+             filter(model.Bookmark.id == bookmark_id).\
+             first()
 
-    def get(self, bookmark_id=None):
-        page = request.args.get("page", 1)
-        try:
-            page = int(page)
-        except ValueError:
-            raise APIError(u"Invalid page requested", status_code=404)
-
-        if bookmark_id is None:
-            bookmarks = model.Bookmark.get_latest().paginate(page, self.PER_PAGE)
-            results = {
-                '_pagination': {
-                    '_cur_page': bookmarks.page,
-                    '_next_page': bookmarks.next_num,
-                    '_prev_page': bookmarks.prev_num,
-                    '_num_pages': bookmarks.pages,
-                },
-                'bookmarks': [bk.to_dict() for bk in bookmarks.items],
-            }
-
-            return jsonify(results)
+        if rv is None:
+            raise APIError(u"Bookmark not found", status_code=404)
         else:
-            bookmark = model.Bookmark.query.\
-                       filter(model.Bookmark.id == bookmark_id).\
-                       filter(model.Bookmark.private == False).\
-                       first()
+            return jsonify(bookmark=rv.to_dict())
 
-            if bookmark is None:
-                raise APIError(u"Bookmark not found", status_code=404)
-            return jsonify(bookmark=bookmark.to_dict())
-
-bookmark_view = BookmarkAPI.as_view('bookmark_api')
-app.add_url_rule('/api/bookmarks/', view_func=bookmark_view, methods=['GET',])
+bookmark_view = BookmarkView.as_view('api_bookmark')
 app.add_url_rule('/api/bookmarks/<int:bookmark_id>', view_func=bookmark_view,
                  methods=['GET'])
+
+
+class BookmarkListView(MethodView):
+    def get(self):
+        try:
+            page = int(request.args.get('page', 1))
+        except ValueError:
+            raise APIError(u"Invalid page requested", status_code=400)
+
+        bookmarks = model.Bookmark.get_latest().\
+                    paginate(page, app.config['PER_PAGE'])
+        rv = {
+            'meta': {
+                'cur_page': bookmarks.page,
+                'next_page': bookmarks.next_num,
+                'prev_page': bookmarks.prev_num,
+                'num_pages': bookmarks.pages,
+            },
+            'bookmarks': [x.to_dict() for x in bookmarks.items],
+        }
+        return jsonify(rv)
+
+bookmark_list_view = BookmarkListView.as_view('api_bookmark_list')
+app.add_url_rule('/api/bookmarks/', view_func=bookmark_list_view,
+                 methods=['GET'])
+
+
+class TaglistView(MethodView):
+    def get(self):
+        taglist = model.Tag.taglist()
+        rv = [dict(tag=tag.name, count=count) for tag, count in taglist]
+        return jsonify(tags=rv)
+
+taglist_view = TaglistView.as_view('api_taglist')
+app.add_url_rule('/api/tags/popular', view_func=taglist_view, methods=['GET'])
 
 
 @app.route('/_complete/tags')

@@ -13,10 +13,11 @@ import os
 from datetime import datetime
 from urlparse import urljoin
 from flask import (render_template, redirect, request, flash,
-                   abort, url_for, send_from_directory)
+                   abort, url_for, send_from_directory,
+                   make_response, g)
 from flask_login import login_required, current_user
-from flask_babel import gettext
-from flask_babel import lazy_gettext as _
+from flask_babel import gettext, format_datetime, \
+    lazy_gettext as _
 from werkzeug.contrib.atom import AtomFeed
 
 from qstode.app import app, whoosh_searcher
@@ -413,4 +414,16 @@ def feed_recent():
 def export_bookmarks():
     bookmarks = model.Bookmark.by_user(current_user.id, include_private=True)
     today = datetime.now()
-    return render_template('_export.html', bookmarks=bookmarks, today=today)
+    if g.lang == 'it':
+        date_fmt = 'dd-MM-yyyy'
+    else:
+        date_fmt = 'MM-dd-yyyy'
+
+    filename = 'qstode-backup-%s.html' % format_datetime(today, date_fmt)
+
+    resp = make_response(render_template('_export.html', bookmarks=bookmarks,
+                                         today=today))
+    resp.headers['Content-Type'] = 'application/octet-stream'
+    resp.headers['Cache-Control'] = 'no-cache'
+    resp.headers['Content-Disposition'] = 'attachment;filename=' + filename
+    return resp

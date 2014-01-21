@@ -1,3 +1,4 @@
 include Makefile AUTHORS LICENSE README.md config.py.sample
-recursive-include qstode/templates *
+recursive-include qstode/templates *.html *.txt
 recursive-include qstode/static *
+recursive-exclude * *~ .DS_Store

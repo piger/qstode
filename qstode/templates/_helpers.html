@@ -112,7 +112,7 @@
   <fieldset>
 	{{ render_field(form.url, placeholder="http://www.example.com") }}
 	{{ render_field(form.title, placeholder=_("A title for this bookmark")) }}
-	{{ render_field(form.tags, placeholder="interesting, document, music, ...", help=_("A comma separated list of tags")) }}
+	{{ render_field(form.tags, placeholder=_("interesting, document, music, ..."), help=_("A comma separated list of tags")) }}
 	{{ render_field(form.notes, placeholder=_("Write anything here"), help=_("Optional notes"), rows=6) }}
 	{{ render_checkbox(form.private) }}
   </fieldset>

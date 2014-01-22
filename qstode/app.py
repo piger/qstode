@@ -15,38 +15,14 @@ from flask_login import LoginManager
 from . import searcher
 from . import db
 
+
 app = Flask('qstode')
 
-# Set some configuration defaults
-app.config['SUPPORTED_LANGUAGES'] = [
-    ('en', 'English'),
-    ('it', 'Italiano'),
-]
-app.config['SUPPORTED_LANGUAGES_ISO'] = [
-    l[0] for l in app.config['SUPPORTED_LANGUAGES']]
 
-# Number of Bookmarks returned on every page
-app.config['PER_PAGE'] = 10
+# Read the default configuration
+app.config.from_object('qstode.default_config')
 
-# Number of Bookmarks returned in the RSS feed
-app.config['FEED_NUM_ENTRIES'] = 15
-
-# Number of tags listed in the Popular Tags list
-app.config['TAGLIST_ITEMS'] = 30
-
-# Temporary switch for related tags
-app.config['ENABLE_RELATED_TAGS'] = True
-
-# Enable new users registration
-app.config['ENABLE_USER_REGISTRATION'] = True
-
-# Use recaptcha
-app.config['ENABLE_RECAPTCHA'] = False
-
-# Autocomplete API: number of tag returned
-app.config['TAG_AUTOCOMPLETE_MAX'] = 15
-
-
+# initialize extensions
 babel = Babel(app)
 login_manager = LoginManager()
 login_manager.login_view = "login"

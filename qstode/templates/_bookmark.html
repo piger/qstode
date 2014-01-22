@@ -16,8 +16,8 @@
 
 		<div class="col-xs-3">
 		  <div class="pull-right">
-			<h4 class="bk-time bk-time-text"><span class="glyphicon glyphicon-calendar"></span> <time pubdate datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|timesince }}</time></h4>
-			<h4 class="bk-time bk-time-short"><span class="glyphicon glyphicon-calendar"></span> <time pubdate datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|dateformat('short') }}</time></h4>
+			<h4 class="bk-time bk-time-text"><span class="glyphicon glyphicon-calendar"></span> <time datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|timesince }}</time></h4>
+			<h4 class="bk-time bk-time-short"><span class="glyphicon glyphicon-calendar"></span> <time datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|dateformat('short') }}</time></h4>
 		  </div>
 		</div>
 	  </div>
@@ -65,32 +65,33 @@
 
 
 {%- macro render_pagination(pag) %}
-  <ul class="pagination" role="navigation">
-	{% if pag.has_prev %}
-	  <li><a href="{{ url_for_other_page(pag.prev_num) }}">&laquo;</a></li>
-	{% else %}
-	  <li><a href="{{ url_for_other_page(1) }}">&laquo;</a></li>
-	{% endif %}
-
-	{% for page in pag.iter_pages() %}
-	  {% if page %}
-		{% if page != pag.page %}
-		  <li><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
-		{% else %}
-		  <li class="active"><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
-		{% endif %}
+  <nav>
+	<ul class="pagination">
+	  {% if pag.has_prev %}
+		<li><a href="{{ url_for_other_page(pag.prev_num) }}">&laquo;</a></li>
 	  {% else %}
-		<li><a href="{{ url_for_other_page(page) }}">&hellip;</a></li>
+		<li><a href="{{ url_for_other_page(1) }}">&laquo;</a></li>
 	  {% endif %}
-	{% endfor %}
 
-	{% if pag.has_next %}
-	  <li><a href="{{ url_for_other_page(pag.next_num) }}">&raquo;</a></li>
-	{% else %}
-	  <li><a href="{{ url_for_other_page(pag.pages) }}">&raquo;</a></li>
-	{% endif %}
-  </ul>
-	
+	  {% for page in pag.iter_pages() %}
+		{% if page %}
+		  {% if page != pag.page %}
+			<li><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
+		  {% else %}
+			<li class="active"><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
+		  {% endif %}
+		{% else %}
+		  <li><a href="{{ url_for_other_page(page) }}">&hellip;</a></li>
+		{% endif %}
+	  {% endfor %}
+
+	  {% if pag.has_next %}
+		<li><a href="{{ url_for_other_page(pag.next_num) }}">&raquo;</a></li>
+	  {% else %}
+		<li><a href="{{ url_for_other_page(pag.pages) }}">&raquo;</a></li>
+	  {% endif %}
+	</ul>
+  </nav>	
 {%- endmacro %}
 
 

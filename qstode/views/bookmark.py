@@ -125,7 +125,12 @@ def user_bookmarks(username, page):
               by_user(user.id, include_private=include_private).\
               paginate(page, app.config['PER_PAGE'])
 
-    tag_cloud = model.Tag.tagcloud(user_id=user.id)
+    try:
+        # the tagcloud() method is fragily; at the moment the best fix
+        # is to catch the 0 division exception... :(
+        tag_cloud = model.Tag.tagcloud(user_id=user.id)
+    except ZeroDivisionError:
+        tag_cloud = []
 
     return render_template('user_bookmarks.html', bookmarks=results,
                            for_user=user, tag_cloud=tag_cloud)
@@ -366,13 +371,6 @@ def search_results(query):
 
     return render_template('search_results.html', bookmarks=pagination,
                            query=query)
-
-
-@app.route('/tagcloud')
-def tagcloud():
-    tags = model.Tag.tagcloud()
-
-    return render_template('tagcloud.html', tagcloud=tags)
 
 
 @app.route('/followed', defaults={'page': 1})

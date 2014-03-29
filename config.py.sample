@@ -20,6 +20,11 @@ SQLALCHEMY_DATABASE_URI = "mysql://username:password@localhost/dbname"
 # Whoosh index directory
 WHOOSH_INDEX_PATH = "/var/lib/qstode"
 
+# logging
+# SYSLOG_SOCKET = '/dev/log'
+# import logging
+# LOGGING_LEVEL = logging.INFO
+
 # Localization
 BABEL_DEFAULT_LOCALE = "it"
 BABEL_DEFAULT_TIMEZONE = "Europe/Rome"

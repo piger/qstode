@@ -17,7 +17,7 @@ from sqlalchemy.orm import joinedload
 from qstode.app import app, login_manager
 from qstode.mailer import Mailer
 from qstode import db
-from ..model import User, watched_users
+from ..model import User, watched_users, ResetToken
 from qstode import forms
 
 
@@ -121,13 +121,14 @@ def reset_request():
                 "PasswordReset requested for an "
                 "invalid account: %s" % str(form.email.data)
             )
-            return render_template('request_reset_done.html')
+            return render_template('request_reset_done.html',
+                                   unknown_user=True)
 
         if user.reset_token:
             return render_template('request_reset_done.html',
                                    already_requested=True)
 
-        user.reset_token = model.ResetToken()
+        user.reset_token = ResetToken()
         token = user.reset_token.token
 
         reset_url = make_external(url_for('reset_password', token=token))
@@ -139,9 +140,9 @@ def reset_request():
         reset_sender = app.config.get('MAIL_FROM')
         mailer = Mailer(reset_sender)
         result = mailer.send(user.email, "Password reset", msg_txt, msg_html)
-
-        db.Session.commit()
-        return render_template('request_reset_done.html')
+        if result:
+            db.Session.commit()
+        return render_template('request_reset_done.html', result=result)
 
     return render_template('request_reset.html', form=form)
 
@@ -150,7 +151,7 @@ def reset_request():
 def reset_password(token):
     """Resets a user password if a valid token is provided"""
 
-    t = model.ResetToken.query.filter_by(
+    t = ResetToken.query.filter_by(
         token=token
     ).options(
         joinedload('user')

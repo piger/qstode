@@ -40,6 +40,7 @@ class Mailer(object):
             conn.quit()
         except (smtplib.SMTPException, socket.error), ex:
             app.logger.error("Unable to send mail: %s" % str(ex))
+            app.logger.exception(ex)
             return False
 
         return True

@@ -4,11 +4,18 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{{ _('Password reset: sent') }}</h3>
+	<h3>{{ _('Password reset') }}</h3>
   </div>
 
-  {% if already_requested %}
+  {% if unknown_user %}
+    <p>{% trans %}Unknown user{% endtrans %}</p>
+    
+  {% elif already_requested %}
     <p>{% trans %}A password reset process is already active for your account; check your email, especially your <strong>spam</strong> folder!{% endtrans %}</p>
+    
+  {% elif not result %}
+    <p>{% trans %}There was an error sending the password reset email; contact your administrator.{% endtrans %}</p>
+    
   {% else %}
     <p>{% trans %}If the email address was correct you will soon receive an email with further instructions to reset your password. Remember to check also the <strong>spam</strong> folder of your email account.{% endtrans %}</p>
   {% endif %}

@@ -85,12 +85,6 @@ class SimpleSearchForm(Form):
     page = HiddenField()
 
 
-class AdvancedSearchForm(Form):
-    # XXX: the name of this field currently cannot be "query" otherwise
-    # it will conflicts with the global SimpleSearchForm
-    q = SearchField(_(u"Search query"), [DataRequired()])
-
-
 class TypeaheadTextInput(TextInput):
     """A TextInput with javascript 'typeahead' support"""
 

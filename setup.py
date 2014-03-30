@@ -35,8 +35,6 @@ setup(
         'MySQL-Python>=1.2.4',
         'iso8601',
         'pytz',
-        'Whoosh',
-        'redis',
     ],
     setup_requires=[],
     test_requires=['Flask-Testing', 'mock', 'nose'],
@@ -46,7 +44,6 @@ setup(
     entry_points={
         "console_scripts": [
             "qstode = qstode.main:main",
-            "qstode-indexer = qstode.search.server:main",
             "qstode-scuttle-export = qstode.cli.scuttle_exporter:main",
         ],
     },

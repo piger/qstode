@@ -17,9 +17,6 @@ SECRET_KEY = 'secret'
 # Database URI (format: driver-name://username:password@address[:port]/db-name)
 SQLALCHEMY_DATABASE_URI = "mysql://username:password@localhost/dbname"
 
-# Whoosh index directory
-WHOOSH_INDEX_PATH = "/var/lib/qstode"
-
 # logging
 # SYSLOG_SOCKET = '/dev/log'
 # import logging

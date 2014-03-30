@@ -89,8 +89,7 @@ class BookmarkFormBaseTest(test.FlaskTestCase):
 
 class BookmarkFormTest(BookmarkFormBaseTest):
 
-    @patch('qstode.app.whoosh_searcher.add_bookmark')
-    def test_submit_bookmark(self, mock_add_bookmark):
+    def test_submit_bookmark(self):
         """Bookmark form submission"""
 
         self._login()
@@ -98,7 +97,6 @@ class BookmarkFormTest(BookmarkFormBaseTest):
         rv = self.client.post('/add', data=SAMPLE_DATA)
         self.assertTrue(rv.status_code in (301, 302), "Got %r instead (%r)" % (rv.status_code, rv.data))
         self.assert_redirects(rv, url_for('index'))
-        self.assertTrue(mock_add_bookmark.called)
 
         b = model.Bookmark.query.filter_by(title=SAMPLE_DATA['title']).first()
         self.assertIsNotNone(b, "Non e' stato creato il Bookmark")
@@ -140,8 +138,7 @@ class TagListTest(BookmarkFormBaseTest):
             self.assertTrue(form.validate())
             self.assertEquals(form.tags.data, [u'fast', u'lazy'])
 
-    @patch('qstode.app.whoosh_searcher.add_bookmark')
-    def test_taglist_duplicates(self, mock_add_bookmark):
+    def test_taglist_duplicates(self):
         """Duplicate and mixed-case handling of TagList field"""
 
         self._login()
@@ -161,8 +158,7 @@ class TagListTest(BookmarkFormBaseTest):
         assert len(tags) == 1
         assert tags[0] == u"uno"
 
-    @patch('qstode.app.whoosh_searcher.add_bookmark')
-    def test_length_validator_exceed(self, mock_add_bookmark):
+    def test_length_validator_exceed(self):
         """Validation of maximum number of tags for TagList field"""
 
         self._login()
@@ -172,8 +168,7 @@ class TagListTest(BookmarkFormBaseTest):
         rv = self.client.post('/add', data=data)
         self.assertEquals(rv.status_code, 200)
 
-    @patch('qstode.app.whoosh_searcher.add_bookmark')
-    def test_length_validator_correct(self, mock_add_bookmark):
+    def test_length_validator_correct(self):
         """Validation of Bookmark submission"""
 
         self._login()

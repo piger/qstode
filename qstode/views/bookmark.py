@@ -20,7 +20,7 @@ from flask_babel import gettext, format_datetime, \
     lazy_gettext as _
 from werkzeug.contrib.atom import AtomFeed
 
-from qstode.app import app, whoosh_searcher
+from qstode.app import app
 from qstode import forms
 from qstode import model
 from qstode import db
@@ -152,7 +152,6 @@ def post_bookmark():
         db.Session.add(bookmark)
         db.Session.commit()
         db.Session.refresh(bookmark)
-        whoosh_searcher.add_bookmark(bookmark)
         return redirect(url_for('close_popup'))
 
     return render_template('post_popup.html', form=form)
@@ -173,7 +172,6 @@ def add():
         db.Session.add(bookmark)
         db.Session.commit()
         db.Session.refresh(bookmark)
-        whoosh_searcher.add_bookmark(bookmark)
 
         flash(gettext(u"Bookmark added!"), "success")
         return redirect(url_for('index'))
@@ -224,8 +222,6 @@ def edit_bookmark(bId):
         flash(gettext(u"Bookmark modified"), 'success')
 
         db.Session.refresh(bookmark)
-        whoosh_searcher.update_bookmark(bookmark)
-
         return form.redirect('index')
 
     return render_template('edit_bookmark.html', form=form)
@@ -244,8 +240,6 @@ def delete_bookmark(bId):
         bk_id = bookmark.id
         db.Session.delete(bookmark)
         db.Session.commit()
-
-        whoosh_searcher.delete_bookmark(bk_id)
 
         flash(gettext("Bookmark deleted"), 'success')
         return form.redirect('index')
@@ -340,39 +334,6 @@ def simple_search():
     return redirect(url_for('index'))
 
 
-@app.route('/search/advanced', methods=["GET", "POST"])
-def advanced_search():
-    form = forms.AdvancedSearchForm()
-
-    if form.validate_on_submit():
-        return redirect(url_for("search_results", query=form.q.data))
-            
-    return render_template('advanced_search.html', form=form)
-
-
-@app.route('/search_results/<query>')
-def search_results(query):
-    page = helpers.validate_page(request.args.get('page', 1))
-    pagination = None
-    results = None
-
-    try:
-        results = whoosh_searcher.search(query, page, app.config['PER_PAGE'])
-    except ValueError:
-        abort(400)
-
-    # XXX pagination and Whoosh aren't working as indented :(
-    if results:
-        # we can use all() because the list of ids in `search_results`
-        # was already paginated
-        bookmarks = model.Bookmark.by_ids(results).all()
-        pagination = utils.Pagination(None, page, app.config['PER_PAGE'],
-                                      len(results), bookmarks)
-
-    return render_template('search_results.html', bookmarks=pagination,
-                           query=query)
-
-
 @app.route('/followed', defaults={'page': 1})
 @app.route('/followed/<int:page>')
 def followed(page):
@@ -380,6 +341,7 @@ def followed(page):
                 paginate(page, app.config['PER_PAGE'])
 
     return render_template('followed.html', bookmarks=bookmarks)
+
 
 @app.route('/feed/recent')
 def feed_recent():

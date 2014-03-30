@@ -14,7 +14,7 @@ import logging
 import logging.handlers
 import argparse
 import jinja2
-from qstode.app import app, login_manager, whoosh_searcher
+from qstode.app import app, login_manager
 from . import exc
 from . import db
 from . import cli
@@ -72,7 +72,6 @@ def create_app(cfg=None):
     try:
         db.init_db(app.config['SQLALCHEMY_DATABASE_URI'], app)
         login_manager.init_app(app)
-        whoosh_searcher.init_app(app)
     except exc.InitializationError, ex:
         sys.stderr.write("Initialization error: %s\n" % str(ex))
         sys.exit(1)
@@ -147,14 +146,14 @@ def run_import_file(args):
     cli.import_file(args)
 
 
-def run_reindex(args):
-    """Re-index the search engine database"""
-    application = create_app()
+# def run_reindex(args):
+#     """Re-index the search engine database"""
+#     application = create_app()
 
-    writer = whoosh_searcher.get_async_writer()
-    for bookmark in model.Bookmark.query.all():
-        whoosh_searcher.add_bookmark(bookmark, writer)
-    writer.commit()
+#     writer = whoosh_searcher.get_async_writer()
+#     for bookmark in model.Bookmark.query.all():
+#         whoosh_searcher.add_bookmark(bookmark, writer)
+#     writer.commit()
 
 
 def run_scuttle_import(args):
@@ -189,9 +188,9 @@ def main():
     p_import.add_argument('filename')
     p_import.set_defaults(func=run_import_file)
 
-    p_reindex = subparsers.add_parser(
-        'reindex', help="Re-index the search engine database")
-    p_reindex.set_defaults(func=run_reindex)
+    # p_reindex = subparsers.add_parser(
+    #     'reindex', help="Re-index the search engine database")
+    # p_reindex.set_defaults(func=run_reindex)
 
     p_scuttle_import = subparsers.add_parser(
         'scuttle-import', help="Import data from a Scuttle json backup")

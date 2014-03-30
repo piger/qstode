@@ -11,7 +11,6 @@ class FlaskTestCase(TestCase):
     def create_app(self):
         self.tmp_dir = tempfile.mkdtemp()
         self.db_filename = os.path.join(self.tmp_dir, "db.sqlite")
-        self.whoosh_dir = os.path.join(self.tmp_dir, "whoosh")
 
         config = {
             # I hate the author of Flask-WTF for changing the name of the
@@ -19,7 +18,6 @@ class FlaskTestCase(TestCase):
             'WTF_CSRF_ENABLED': False,
             'CSRF_ENABLED': False,
             'SQLALCHEMY_DATABASE_URI': "sqlite:///%s" % self.db_filename,
-            'WHOOSH_INDEX_PATH': self.whoosh_dir,
             'SECRET_KEY': 'test',
             'TESTING': True,
         }

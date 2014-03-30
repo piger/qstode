@@ -20,6 +20,10 @@ from sqlalchemy.orm import relationship, backref
 from .. import db
 
 
+# reset token validity in *hours*
+TOKEN_VALIDITY = 24
+
+
 watched_users = Table(
     'watched_users', db.Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
@@ -116,6 +120,12 @@ class ResetToken(db.Base):
             self.token = hashlib.sha1(os.urandom(20)).hexdigest()
         if created_at is not None:
             self.created_at = created_at
+
+    def expired(self):
+        d = datetime.utcnow() - self.created_at
+        if ((d.total_seconds() / 60) / 60) >= TOKEN_VALIDITY:
+            return True
+        return False
 
     def __repr__(self):
         return "<ResetToken({0}, {1})>".format(self.token, self.created_at)

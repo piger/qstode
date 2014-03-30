@@ -125,8 +125,12 @@ def reset_request():
                                    unknown_user=True)
 
         if user.reset_token:
-            return render_template('request_reset_done.html',
-                                   already_requested=True)
+            if not user.reset_token.expired():
+                return render_template('request_reset_done.html',
+                                       already_requested=True)
+            else:
+                db.Session.delete(user.reset_token)
+                db.Session.commit()
 
         user.reset_token = ResetToken()
         token = user.reset_token.token

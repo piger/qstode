@@ -9,3 +9,4 @@ oid_store/
 doc/_build/
 env
 qstode/static/font
+/node_modules/

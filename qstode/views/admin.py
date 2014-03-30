@@ -89,11 +89,13 @@ def admin_edit_user(id):
     # user; update also the dynamic field `choices`.
     form = forms.EditUserForm(username=user.username,
                               email=user.email,
+                              display_name=user.display_name,
                               admin=user.admin,
                               active=user.active)
 
     if form.validate_on_submit():
         user.username = form.username.data
+        user.display_name = form.display_name.data
         user.active = form.active.data
         if form.password.data:
             user.set_password(form.password.data)

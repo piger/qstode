@@ -8,29 +8,36 @@
   {{ h.page_header(page_title) }}
 
   <div class="row">
-	<div class="col-md-7">
+    <div class="col-md-7">
 
-	  <div class="panel panel-default">
-		<div class="panel-body">
-		  <form method="post" role="form">
-			{{ form.hidden_tag() }}
+      <ul>
+        {% for error in form.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
 
-			{{ h.render_field(form.username) }}
-			{{ h.render_field(form.email) }}
-			{{ h.render_field(form.password) }}
-			{{ h.render_field(form.password_confirm) }}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form method="post" role="form">
+            {{ form.hidden_tag() }}
 
-			{{ h.render_checkbox(form.active) }}
-			{{ h.render_checkbox(form.admin) }}
+            {{ h.render_field(form.username) }}
+            {{ h.render_field(form.display_name) }}
+            {{ h.render_field(form.email) }}
+            {{ h.render_field(form.password) }}
+            {{ h.render_field(form.password_confirm) }}
 
-			<div class="form-group text-center">
-			  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> {{ _("Update") }}</button>
-			  <button type="button" onclick="location.href='{{ url_for('admin_users') }}';" class="btn btn-default">{{ _("Cancel") }}</button>
-			</div>
-		  </form>
-		</div>
-	  </div>
+            {{ h.render_checkbox(form.active) }}
+            {{ h.render_checkbox(form.admin) }}
 
-	</div><!-- /.col -->
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> {{ _("Update") }}</button>
+              <button type="button" onclick="location.href='{{ url_for('admin_users') }}';" class="btn btn-default">{{ _("Cancel") }}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /.col -->
   </div><!-- /.row -->
 {% endblock %}

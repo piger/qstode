@@ -292,6 +292,9 @@ def single_bookmark(bookmark_id):
 @app.route('/search')
 def simple_search():
     """Performs a simple search from the form on the navigation bar"""
+    if not 'query' in request.args:
+        abort(400)
+
     form = forms.SimpleSearchForm(request.args)
 
     # Limit search to current_user's bookmarks if 'personal' query arg

@@ -9,37 +9,37 @@
 
 
 body {
-	padding-top: 50px;
-	background-color: @pageBackground;
+  padding-top: 50px;
+  background-color: @pageBackground;
 }
 
 #main-container {
-	// pad to leave space for the navigation bar
-	padding-top: 25px;
+  // pad to leave space for the navigation bar
+  padding-top: 25px;
 }
 
 // since we have a gray background, the blockquote left-margin can't be
 // light-gray.
 blockquote {
-	border-left: 5px solid #D2D3D4;
+  border-left: 5px solid #D2D3D4;
 }
 
 // same for the nav-bar
 .nav>li>a:hover, .nav>li>a:focus {
-	background-color: #D8E3E6;
+  background-color: #D8E3E6;
 }
 
 // Override default panel-heading background color which is too light for a
 // gray background (see @pageBackground).
 .panel-default>.panel-heading {
-	background-color: darken(#ecf0f1, 10%);
+  background-color: darken(#ecf0f1, 10%);
 }
 
 /* LOGIN PAGE */
 .form-signin {
-	max-width: 330px;
-	padding: 15px;
-	margin: 0 auto;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
 }
 
 .form-signin .form-signin-heading,
@@ -55,8 +55,8 @@ blockquote {
   height: auto;
   padding: 10px;
   -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .form-signin .form-control:focus {
   z-index: 2;
@@ -75,7 +75,7 @@ blockquote {
 
 /* COMMON */
 .page-title {
-	margin-bottom: 45px;
+  margin-bottom: 45px;
 }
 
 
@@ -87,59 +87,59 @@ blockquote {
  * this issue.
  */
 .search-query {
-	position: relative;
-	z-index: 10000;
+  position: relative;
+  z-index: 10000;
 }
 
 .ui-autocomplete {
-	z-index: 9999 !important;
-	position: absolute;
-	cursor: default;
+  z-index: 9999 !important;
+  position: absolute;
+  cursor: default;
 }
 
 
 /* BOOKMARKS */
 article.bookmark {
-	blockquote {
-		margin: 0 0 10px;
-	}
+  blockquote {
+    margin: 0 0 10px;
+  }
 
-	p {
-			font-size: 15px;
-	}
+  p {
+    font-size: 15px;
+  }
 }
 
 article.bookmark header {
-	h3 {
-		font-size: 21px;
-	}
+  h3 {
+    font-size: 21px;
+  }
 
-	h4 {
-		font-size: 17px;
-	}
+  h4 {
+    font-size: 17px;
+  }
 
-	.bk-time {
-		border-bottom: 1px dashed #CACACC;
-		padding-bottom: 2px;
-		font-size: 15px;
-	}
+  .bk-time {
+    border-bottom: 1px dashed #CACACC;
+    padding-bottom: 2px;
+    font-size: 15px;
+  }
 
-	h4.bk-time-short {
-		display: none;
-	}
+  h4.bk-time-short {
+    display: none;
+  }
 
-	.bk-href {
-		font-size: 15px;
-		margin-top: 1px;
+  .bk-href {
+    font-size: 15px;
+    margin-top: 1px;
 
-		a {
-			color: #BDB98E;
-		}
-	}
+    a {
+      color: #BDB98E;
+    }
+  }
 
-	.bk-title a {
-		color: #8E92BD;
-	}
+  .bk-title a {
+    color: #8E92BD;
+  }
 }
 
 
@@ -155,23 +155,23 @@ footer {
 @tag-cloud_a_hover: #9C989A;
 
 .tag-cloud {
-    padding: 2px;
-    line-height: 3em;
-    text-align: center;
-    margin: 0;
+  padding: 2px;
+  line-height: 3em;
+  text-align: center;
+  margin: 0;
 }
 .tag-cloud ul {
-    list-style: none;
+  list-style: none;
 }
 .tag-cloud li {
-    display: inline;
+  display: inline;
 }
 .tag-cloud a {
-    text-decoration: none;
-    padding: 3px;
+  text-decoration: none;
+  padding: 3px;
 }
 .tag-cloud a:hover {
-    color: @tag-cloud_a_hover;
+  color: @tag-cloud_a_hover;
 }
 
 .tag-1 { font-size: 0.7em; font-weight: 100; color: @tagColorBase; }
@@ -187,10 +187,10 @@ footer {
 
 // sidebar
 .sidebar-tag {
-	a {
-		color: #485952;
-	}
-	a:hover {
-		color: #3B3437;
-	}
+  a {
+    color: #485952;
+  }
+  a:hover {
+    color: #3B3437;
+  }
 }

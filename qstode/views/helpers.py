@@ -15,7 +15,7 @@ def validate_page(page):
 
     try:
         rv = int(page)
-    except ValueError:
+    except (ValueError, TypeError):
         rv = 1
 
     return rv

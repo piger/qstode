@@ -1,31 +1,31 @@
 <div class="container">
   <div class="row">
-	<div class="col-md-12">
+    <div class="col-md-12">
 
-	  {% if config.SQLDEBUG and debug_queries %}
-		<div id="sqla-debug">
-		  <h5>SQL Debug</h5>
-		  
-		  {% for query in debug_queries %}
-			<div class="debug-query">
-			  <div class="query-statement">
-				<pre class="small">{{ query.statement }}</pre>
-			  </div><!-- /query-statement -->
+      {% if config.SQLDEBUG and debug_queries %}
+	<div id="sqla-debug">
+	  <h5>SQL Debug</h5>
+	  
+	  {% for query in debug_queries %}
+	    <div class="debug-query">
+	      <div class="query-statement">
+		<pre class="small">{{ query.statement }}</pre>
+	      </div><!-- /query-statement -->
 
-			  <div class="query-details">
-				{% set duration = query.duration * 1000 %}
-				<p>Duration: <strong>{{ duration|round(3) }}</strong> seconds, Parameters: <strong>{{ query.parameters }}</strong>, Context: <strong>{{ query.context }}</strong></p>
-			  </div><!-- /query-details-->
-			</div><!-- /debug-query -->
-		  {% endfor %}
-		</div>
-	  {% endif %}
-
-	  <footer>
-		<p><a href="https://github.com/piger/qstode" target="_blank">QStode</a> &copy; 2013 Daniel Kertesz</p>
-		<p>Source code is BSD licensed</p>
-		<p>{% trans feed=url_for('feed_recent') %}A <a href="{{ feed }}">RSS feed</a> is available.{% endtrans %}</p>
-	  </footer>
+	      <div class="query-details">
+		{% set duration = query.duration * 1000 %}
+		<p>Duration: <strong>{{ duration|round(3) }}</strong> seconds, Parameters: <strong>{{ query.parameters }}</strong>, Context: <strong>{{ query.context }}</strong></p>
+	      </div><!-- /query-details-->
+	    </div><!-- /debug-query -->
+	  {% endfor %}
 	</div>
+      {% endif %}
+
+      <footer>
+        <div class="text-small pull-right">
+	  <p><a href="{{ url_for('feed_recent') }}"><span class="glyphicon glyphicon-link"></span> {% trans %}RSS feed{% endtrans %}</a></p>
+        </div>
+      </footer>
+    </div>
   </div>
 </div>

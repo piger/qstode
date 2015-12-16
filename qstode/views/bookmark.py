@@ -377,12 +377,7 @@ def feed_recent():
 def export_bookmarks():
     bookmarks = model.Bookmark.by_user(current_user.id, include_private=True)
     today = datetime.now()
-    if g.lang == 'it':
-        date_fmt = 'dd-MM-yyyy'
-    else:
-        date_fmt = 'MM-dd-yyyy'
-
-    filename = 'qstode-backup-%s.html' % format_datetime(today, date_fmt)
+    filename = 'qstode-backup-%s.html' % format_datetime(today, 'dd-MM-yyyy')
 
     resp = make_response(render_template('_export.html', bookmarks=bookmarks,
                                          today=today))

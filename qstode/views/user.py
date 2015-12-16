@@ -39,7 +39,7 @@ def make_external(url):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Redirects already logged in users to the index page
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(url_for('index'))
 
     form = forms.LoginForm()
@@ -204,7 +204,7 @@ def public_access_handler():
     NOTE: this handler must be registered after flask-login to correctly see
     the authentication status of a user.
     """
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return
 
     if app.config.get('PUBLIC_ACCESS', True):

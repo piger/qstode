@@ -2,7 +2,7 @@
   <nav>
 	<ul class="nav nav-pills nav-stacked">
 
-	  {% if current_user.is_authenticated() %}
+	  {% if current_user.is_authenticated %}
 		<li class="{{ active_if('user_bookmarks') }}"><a href="{{ url_for('user_bookmarks', username=current_user.username) }}"><span class="glyphicon glyphicon-home"></span> {{ _('My Bookmarks') }}</a></li>
 
 		<li class="{{ active_if('followed') }}"><a href="{{ url_for('followed') }}"><span class="glyphicon glyphicon-transfer"></span> {{ _("Incoming Bookmarks") }}</a></li>
@@ -23,7 +23,7 @@
 		<li class="{{ active_if('index') }}"><a href="{{ url_for('index') }}"><span class="glyphicon glyphicon-home"></span> {{ _("Home") }}</a></li>
 	  {% endif %}
 
-	  {% if current_user.is_authenticated() %}
+	  {% if current_user.is_authenticated %}
 		<li class="{{ active_if('help') }}"><a href="{{ url_for('help') }}"><span class="glyphicon glyphicon-question-sign"></span> {{ _('Help') }}</a></li>
 	  {% endif %}
 	</ul>

@@ -92,7 +92,7 @@ class UserTest(ModelTest):
         user = User.query.filter_by(username=u"cow-user").first()
         assert user is not None
         assert user.check_password('secret') is True
-        assert user.is_active() is True
+        assert user.is_active is True
 
     def test_is_following(self):
         user1 = User.query.filter_by(username=u'pippo').first()

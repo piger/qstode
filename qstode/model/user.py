@@ -86,6 +86,7 @@ class User(db.Base, UserMixin):
                 db.Session.commit()
             return rv
 
+    @property
     def is_active(self):
         """Tell if a user have the active flag set (Flask-Login)"""
         return self.active

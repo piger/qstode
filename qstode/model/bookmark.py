@@ -331,7 +331,7 @@ class Bookmark(db.Base):
         """Return a query for the list of latest public Bookmarks, including
         the private bookmarks for the current user"""
 
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             return cls.query.filter(or_(
                 and_(cls.private == True, cls.user_id == current_user.id),
                 cls.private == False))

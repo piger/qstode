@@ -109,7 +109,7 @@ def complete_tags():
 def is_following(user_id):
     """JSON: check following status of the specified user"""
 
-    if not current_user.is_authenticated() or user_id == current_user.id:
+    if not current_user.is_authenticated or user_id == current_user.id:
         return jsonify(result=2)
 
     wu = model.watched_users
@@ -126,7 +126,7 @@ def is_following(user_id):
 def follow_user(user_id):
     """Toggle following status of the specified user"""
 
-    if not current_user.is_authenticated() or user_id == current_user.id:
+    if not current_user.is_authenticated or user_id == current_user.id:
         return jsonify(result=2, msg="Invalid request")
 
     wu = model.watched_users

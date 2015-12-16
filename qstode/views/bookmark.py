@@ -116,7 +116,7 @@ def user_bookmarks(username, page):
 
     user = model.User.query.filter_by(username=username).first_or_404()
 
-    if current_user.is_authenticated() and user.id == current_user.id:
+    if current_user.is_authenticated and user.id == current_user.id:
         include_private = True
     else:
         include_private = False

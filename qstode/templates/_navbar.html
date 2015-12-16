@@ -16,7 +16,7 @@
 		<li class="{{ active_if('index') }}"><a href="{{ url_for('index') }}">{{ _('Home') }}</a></li>
 		<li class="{{ active_if('about') }}"><a href="{{ url_for('about') }}">{{ _('About') }}</a></li>
 
-		{% if current_user.is_authenticated() %}
+		{% if current_user.is_authenticated %}
 		  <li class="{{ active_if('help') }}"><a href="{{ url_for('help') }}">{{ _('Help') }}</a></li>
 		  <li class="{{ active_if('add') }}"><a href="{{ url_for('add') }}"><span class="glyphicon glyphicon-paperclip"></span> {{ _('Post!') }}</a></li>
 		{% endif %}
@@ -31,7 +31,7 @@
 	  </form>
 
 	  <ul class="nav navbar-nav navbar-right">
-		{% if current_user.is_authenticated() %}
+		{% if current_user.is_authenticated %}
 		  <li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{ current_user.username }} <b class="caret"></b></a>
 			<ul class="dropdown-menu">

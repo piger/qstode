@@ -21,7 +21,7 @@ from qstode import forms
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if current_user.is_authenticated() and current_user.admin is True:
+        if current_user.is_authenticated and current_user.admin is True:
             return f(*args, **kwargs)
         # abort with FORBIDDEN
         abort(403)

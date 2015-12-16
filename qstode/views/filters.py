@@ -60,7 +60,7 @@ def timesince(dt, default=None):
     """
 
     if default is None:
-        default = _(u'adesso')
+        default = _(u'now')
 
     user_dt = to_user_timezone(dt)
     now_dt = to_user_timezone(datetime.utcnow())

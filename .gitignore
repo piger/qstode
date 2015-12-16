@@ -9,3 +9,4 @@ venv/
 qstode/static/font
 /node_modules/
 .tox/
+/messages.pot

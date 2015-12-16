@@ -11,24 +11,24 @@
 
 {% block page %}
   <div class="container">
-	<div class="row">
-	  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
 
-		<h3><a href="{{ url_for('index') }}">QStode</a></h3>
+	<h3><a href="{{ url_for('index') }}">QStode</a></h3>
 
-		<form action="{{ url_for('post_bookmark') }}" method="post" role="form">
-		  {{ form.hidden_tag() }}
+	<form action="{{ url_for('post_bookmark') }}" method="post" role="form">
+	  {{ form.hidden_tag() }}
 
-		  {{ bookmark_form(form) }}
+	  {{ bookmark_form(form) }}
 
-		  <div class="form-group">
-			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> {{ _('Save') }}</button>
-			<button type="button" class="btn btn-default" onClick="window.close();">{{ _('Cancel') }}</button>
+	  <div class="form-group">
+	    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> {{ _('Save') }}</button>
+	    <button type="button" class="btn btn-default" onClick="window.close();">{{ _('Cancel') }}</button>
 
-		  </div>
-		</form>
-	  </div><!-- /.col -->
-	</div><!-- /.row -->
+	  </div>
+	</form>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
   </div><!-- /.container -->
 
 {% endblock %}

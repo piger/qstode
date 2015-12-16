@@ -6,19 +6,19 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{{ page_title }}</h3>
+    <h3>{{ page_title }}</h3>
   </div>
 
   <p>{% trans %}Ask QStode about something:{% endtrans %}</p>
 
   <form method="post" class="form-search{%- if form.errors %} error{%- endif %}" role="form">
-	{{ form.hidden_tag() }}
+    {{ form.hidden_tag() }}
 
-	{{ h.render_field(form.q, placeholder=_("Type your query here.")) }}
+    {{ h.render_field(form.q, placeholder=_("Type your query here.")) }}
 
-	<div class="form-group">
-	  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> {{ _("Search") }}</button>
-	</div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> {{ _("Search") }}</button>
+    </div>
   </form>
 
 {% endblock %}

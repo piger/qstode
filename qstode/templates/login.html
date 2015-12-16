@@ -6,32 +6,27 @@
 
 {% block content %}
   <form action="{{ url_for('login') }}" method="post" class="form-signin" role="form">
-	{{ form.hidden_tag() }}
+    {{ form.hidden_tag() }}
 
-	<h2 class="form-signin-heading">{{ _("Sign in") }}</h2>
+    <h2 class="form-signin-heading">{{ _("Sign in") }}</h2>
 
-	{{ h.render_field(form.user, placeholder=_("Username or email")) }}
-	{{ h.render_field(form.password) }}
-	{{ h.render_checkbox(form.remember_me) }}
+    {{ h.render_field(form.user, placeholder=_("Username or email")) }}
+    {{ h.render_field(form.password) }}
+    {{ h.render_checkbox(form.remember_me) }}
 
-	{% if login_failed %}
-	  <div class="alert alert-danger">{{ _("Authentication failed!") }}</div>
-	{% endif %}
+    {% if login_failed %}
+      <div class="alert alert-danger">{{ _("Authentication failed!") }}</div>
+    {% endif %}
 
-	<button class="btn btn-lg btn-primary btn-block" type="submit">{{ _("Sign in") }}</button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">{{ _("Sign in") }}</button>
 
-	<hr>
+    <hr>
 
-	<p>{% trans reset=url_for('reset_request') %}
-	  Forgot your password? You can request a <a href="{{ reset }}">reset!</a>
-	  {% endtrans %}
-	</p>
+    <p>{% trans reset=url_for('reset_request') %}Forgot your password? You can request a <a href="{{ reset }}">reset!</a>{% endtrans %}</p>
 
-	{% if config.ENABLE_USER_REGISTRATION %}
-	  <p>{% trans register=url_for('register_user') %}
-		You can create an account by clicking <a href="{{ register }}">here</a>.{% endtrans %}
-	  </p>
-	{% endif %}
+    {% if config.ENABLE_USER_REGISTRATION %}
+      <p>{% trans register=url_for('register_user') %}You can create an account by clicking <a href="{{ register }}">here</a>.{% endtrans %}</p>
+    {% endif %}
   </form>
 
 {% endblock content %}

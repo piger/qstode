@@ -2,8 +2,8 @@
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-	{% for category, message in messages %}
-	  {{ h.render_alert(message, category) }}
-	{% endfor %}
+    {% for category, message in messages %}
+      {{ h.render_alert(message, category) }}
+    {% endfor %}
   {% endif %}
 {% endwith %}

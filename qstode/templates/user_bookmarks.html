@@ -4,29 +4,29 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{% trans name=for_user.display_name %}<span class="glyphicon glyphicon-user"></span> {{ name }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif %} <a style="display:none" href="#" id="following-toggle" alt="Follow user"><span title="Click to follow user" id="following-star" class="glyphicon glyphicon-star-empty"></span></a></h3>
+    <h3>{% trans name=for_user.display_name %}<span class="glyphicon glyphicon-user"></span> {{ name }}</em>{% endtrans %}{%- if bookmarks and bookmarks.page > 1 %} <small>Page: {{ bookmarks.page }}</small>{% endif %} <a style="display:none" href="#" id="following-toggle" alt="Follow user"><span title="Click to follow user" id="following-star" class="glyphicon glyphicon-star-empty"></span></a></h3>
   </div>
 
 
   {% if tag_cloud %}
-	<div class="panel panel-default">
-	  <div class="panel-heading">{{ _("User's most popular tags") }}</div>
-	  <div class="panel-body tag-cloud">
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ _("User's most popular tags") }}</div>
+      <div class="panel-body tag-cloud">
 
-		<ul class="tag-cloud">
-		  {% for tag in tag_cloud %}
-			<li class="tag-cloud-item"><a href="{{ url_for('tagged', tags=tag.name) }}" class="tag-{{ tag.size }}">{{ tag.name }}</a></li>
-		  {% endfor %}
-		</ul>
-	  </div><!-- /.panel-body -->
-	</div><!-- /.panel -->
+	<ul class="tag-cloud">
+	  {% for tag in tag_cloud %}
+	    <li class="tag-cloud-item"><a href="{{ url_for('tagged', tags=tag.name) }}" class="tag-{{ tag.size }}">{{ tag.name }}</a></li>
+	  {% endfor %}
+	</ul>
+      </div><!-- /.panel-body -->
+    </div><!-- /.panel -->
   {% endif %}
 
 
   {% if bookmarks.items %}
-	{{ bookmarks_block(bookmarks) }}
+    {{ bookmarks_block(bookmarks) }}
   {% else %}
-	<p>{% trans %}There isn't any bookmark yet!{% endtrans %}</p>
+    <p>{% trans %}There isn't any bookmark yet!{% endtrans %}</p>
   {% endif %}
 
 {% endblock %}
@@ -34,47 +34,47 @@
 {% block extrajs %}
   <script>
    $(document).ready(function () {
-	 // Detect following-status on page load
-	 $.ajax({
-	   url: "{{ url_for('is_following', user_id=for_user.id) }}"
-	 })
-	 .done(function (data) {
-	   if (console && console.log) {
-		 var result = data.result;
+     // Detect following-status on page load
+     $.ajax({
+       url: "{{ url_for('is_following', user_id=for_user.id) }}"
+     })
+      .done(function (data) {
+	if (console && console.log) {
+	  var result = data.result;
 
-		 // 0 == not following
-		 // 1 == following
-		 // 2 == do not display
-		 if (result === 0) {
-		   $("#following-star").attr("class", "glyphicon glyphicon-star-empty");
-		   $("#following-star").prop("title", "Click to follow user");
-		   $("#following-toggle").show();
-		 } else if (result === 1) {
-		   $("#following-star").attr("class", "glyphicon glyphicon-star");
-		   $("#following-star").prop("title", "Click to unfollow user");
-		   $("#following-toggle").show();
-		 }
-	   }
-	 });
+	  // 0 == not following
+	  // 1 == following
+	  // 2 == do not display
+	  if (result === 0) {
+	    $("#following-star").attr("class", "glyphicon glyphicon-star-empty");
+	    $("#following-star").prop("title", "Click to follow user");
+	    $("#following-toggle").show();
+	  } else if (result === 1) {
+	    $("#following-star").attr("class", "glyphicon glyphicon-star");
+	    $("#following-star").prop("title", "Click to unfollow user");
+	    $("#following-toggle").show();
+	  }
+	}
+      });
 
-	 $("#following-toggle").click(function (event) {
-	   $.ajax({
-		 url: "{{ url_for('follow_user', user_id=for_user.id) }}"
-	   })
-	   .done(function (data) {
-		 var result = data.result;
+     $("#following-toggle").click(function (event) {
+       $.ajax({
+	 url: "{{ url_for('follow_user', user_id=for_user.id) }}"
+       })
+	.done(function (data) {
+	  var result = data.result;
 
-		 if (result === 0) {
-		   $("#following-star").attr("class", "glyphicon glyphicon-star-empty");
-		   $("#following-star").prop("title", "Click to follow user");
-		 } else if (result === 1) {
-		   $("#following-star").attr("class", "glyphicon glyphicon-star");
-		   $("#following-star").prop("title", "Click to unfollow user");
-		 }
-	   });
+	  if (result === 0) {
+	    $("#following-star").attr("class", "glyphicon glyphicon-star-empty");
+	    $("#following-star").prop("title", "Click to follow user");
+	  } else if (result === 1) {
+	    $("#following-star").attr("class", "glyphicon glyphicon-star");
+	    $("#following-star").prop("title", "Click to unfollow user");
+	  }
+	});
 
-	   event.preventDefault();
-	 });
+       event.preventDefault();
+     });
    });
   </script>
 {% endblock %}

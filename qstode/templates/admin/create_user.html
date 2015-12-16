@@ -5,36 +5,36 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{{ _('Administration: create new user') }}</h3>
+    <h3>{{ _('Administration: create new user') }}</h3>
   </div>
 
   <div class="row">
-	<div class="col-md-7">
+    <div class="col-md-7">
 
-	  <div class="panel panel-default">
-		<div class="panel-body">
+      <div class="panel panel-default">
+	<div class="panel-body">
 
-		  <form method="post" role="form">
-			{{ form.hidden_tag() }}
+	  <form method="post" role="form">
+	    {{ form.hidden_tag() }}
 
-			{{ h.render_field(form.username) }}
-			{{ h.render_field(form.display_name) }}
-			{{ h.render_field(form.email) }}
-			{{ h.render_field(form.password) }}
-			{{ h.render_field(form.password_confirm) }}
+	    {{ h.render_field(form.username) }}
+	    {{ h.render_field(form.display_name) }}
+	    {{ h.render_field(form.email) }}
+	    {{ h.render_field(form.password) }}
+	    {{ h.render_field(form.password_confirm) }}
 
-			{{ h.render_checkbox(form.active) }}
-			{{ h.render_checkbox(form.admin) }}
+	    {{ h.render_checkbox(form.active) }}
+	    {{ h.render_checkbox(form.admin) }}
 
-			<div class="form-group text-center">
-			  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> {{ _("Create") }}</button>
-			  <button type="button" onclick="location.href='{{ url_for('admin_users') }}';" class="btn btn-default">{{ _("Cancel") }}</button>
-			</div>
+	    <div class="form-group text-center">
+	      <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> {{ _("Create") }}</button>
+	      <button type="button" onclick="location.href='{{ url_for('admin_users') }}';" class="btn btn-default">{{ _("Cancel") }}</button>
+	    </div>
 
-		  </form>
-		</div>
-	  </div>
+	  </form>
+	</div>
+      </div>
 
-	</div><!-- /.col -->
+    </div><!-- /.col -->
   </div><!-- /.row -->
 {% endblock %}

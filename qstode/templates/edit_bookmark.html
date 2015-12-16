@@ -8,15 +8,15 @@
   {{ h.page_header(page_title) }}
 
   <div class="row">
-	<div class="col-md-8">
-	  <form method="post" role="form">
-		{{ form.hidden_tag() }}
+    <div class="col-md-8">
+      <form method="post" role="form">
+	{{ form.hidden_tag() }}
 
-		{{ h.bookmark_form(form) }}
+	{{ h.bookmark_form(form) }}
 
-		{{ h.render_actions() }}
-	  </form>
-	</div>
+	{{ h.render_actions() }}
+      </form>
+    </div>
   </div>
 {% endblock %}
 

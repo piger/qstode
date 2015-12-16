@@ -13,7 +13,7 @@
         </span>
 
         {% for error in form.url.errors %}
-	      <p class="tip">{{ error }}</p>
+	  <p class="tip">{{ error }}</p>
         {% endfor %}
       </div>
     </div>
@@ -29,7 +29,7 @@
         </span>
 
         {% for error in form.title.errors %}
-	      <p class="tip">{{ error }}</p>
+	  <p class="tip">{{ error }}</p>
         {% endfor %}
       </div>
     </div>
@@ -40,13 +40,13 @@
 
       <div class="control append-symbol large-90">
         <span>
-	      {{ form.tags(size="40", autocomplete="off", placeholder=_("A comma-separated list of tags")) }}
+	  {{ form.tags(size="40", autocomplete="off", placeholder=_("A comma-separated list of tags")) }}
 
           <i class="icon-tags"></i>
         </span>
 
         {% for error in form.tags.errors %}
-	      <p class="tip">{{ error }}</p>
+	  <p class="tip">{{ error }}</p>
         {% endfor %}
       </div>
     </div>
@@ -59,7 +59,7 @@
         {{ form.notes(class='input-xlarge', rows=10, autocomplete="off", placeholder=_("Select some text from the bookmarked page and it will appear here, or write a note.")) }}
 
         {% for error in form.notes.errors %}
-	      <p class="tip">{{ error }}</p>
+	  <p class="tip">{{ error }}</p>
         {% endfor %}
       </div>
     </div>
@@ -69,7 +69,7 @@
       {{ form.private.label(class="large-10 content-right") }}
 
       <div class="control large-20">
-            {{ form.private }}
+        {{ form.private }}
       </div>
 
     </div>

@@ -1,45 +1,45 @@
 {%- macro render_field(field, help="") %}
   {% if field.type == 'BooleanField' %}
-	{{ render_checkbox(field, help, **kwargs) }}
+    {{ render_checkbox(field, help, **kwargs) }}
   {% elif field.type == 'SelectField' %}
-	{{ render_select(field, help, **kwargs) }}
+    {{ render_select(field, help, **kwargs) }}
   {% else %}
-	{{ render_input(field, help, **kwargs) }}
+    {{ render_input(field, help, **kwargs) }}
   {% endif %}
 {%- endmacro %}
 
 
 {%- macro render_input(field, help='') %}
   <div class="form-group {%- if field.errors %} has-error{%- endif %}">
-	<label for="{{ field.id }}">{{ field.label.text }}
-	  {%- if field.flags.required %}
-		<abbr class="field-required" title="{{ _("This field must be filled in") }}">*</abbr>
-	  {%- endif %}</label>
+    <label for="{{ field.id }}">{{ field.label.text }}
+      {%- if field.flags.required %}
+	<abbr class="field-required" title="{{ _("This field must be filled in") }}">*</abbr>
+      {%- endif %}</label>
 
-	{{ field(class_="form-control", **kwargs) }}
+      {{ field(class_="form-control", **kwargs) }}
 
-	{% if help %}
-	  <p class="help-block">{{ help }}</p>
-	{% endif %}
+      {% if help %}
+	<p class="help-block">{{ help }}</p>
+      {% endif %}
 
-	{% for error in field.errors %}
-	  <p class="help-block">{{ error }}</p>
-	{% endfor %}
+      {% for error in field.errors %}
+	<p class="help-block">{{ error }}</p>
+      {% endfor %}
   </div>
 {% endmacro -%}
 
 
 {%- macro render_checkbox(field, help='') %}
   <div class="form-group {%- if field.errors %} has-error{%- endif %}">
-	<div class="checkbox">
-	  <label>
-		{{ field(**kwargs) }}{{ field.label.text }}
-	  </label>
-	</div>
+    <div class="checkbox">
+      <label>
+	{{ field(**kwargs) }}{{ field.label.text }}
+      </label>
+    </div>
 
-	{% if help %}
-	  <p class="help-block">{{ help }}</p>
-	{% endif %}
+    {% if help %}
+      <p class="help-block">{{ help }}</p>
+    {% endif %}
   </div>
 {%- endmacro %}
 
@@ -47,24 +47,24 @@
 {%- macro render_select(field, help='') %}
   <div class="form-group">
 
-	<label for="{{ field.id }}">{{ field.label.text }}
-	  {%- if field.flags.required %}
-		<abbr class="field-required" title="{{ _("This field must be filled in") }}">*</abbr>
-	  {%- endif %}</label>
+    <label for="{{ field.id }}">{{ field.label.text }}
+      {%- if field.flags.required %}
+	<abbr class="field-required" title="{{ _("This field must be filled in") }}">*</abbr>
+      {%- endif %}</label>
 
-	<select class="form-control" name="{{ field.name }}" id="{{ field.id }}">
-	  {% for value, label, selected in field.iter_choices() %}
-		<option value="{{ value }}"{%- if selected  %} selected{%- endif %}>{{ label }}</option>
-	  {% endfor %}
-	</select>
-
-	{% if help %}
-	  <p class="help-block">{{ help }}</p>
-	{% endif %}
-
-	{% for error in field.errors %}
-	  <p class="help-block">{{ error }}</p>
+      <select class="form-control" name="{{ field.name }}" id="{{ field.id }}">
+	{% for value, label, selected in field.iter_choices() %}
+	  <option value="{{ value }}"{%- if selected  %} selected{%- endif %}>{{ label }}</option>
 	{% endfor %}
+      </select>
+
+      {% if help %}
+	<p class="help-block">{{ help }}</p>
+      {% endif %}
+
+      {% for error in field.errors %}
+	<p class="help-block">{{ error }}</p>
+      {% endfor %}
   </div>
 {%- endmacro %}
 
@@ -79,26 +79,26 @@
 
 {%- macro render_alert(message, category='default', title=None, dismiss=True) %}
   <div class="alert alert-{{ category }}">
-	{% if dismiss %}
-	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-	{% endif %}
-	{% if title %}
-	  <h4>{{ title }}</h4>
-	{% endif %}
+    {% if dismiss %}
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    {% endif %}
+    {% if title %}
+      <h4>{{ title }}</h4>
+    {% endif %}
 
-	<p>{{ message }}</p>
+    <p>{{ message }}</p>
 
-	{% if caller %}
-	  {{ caller() }}
-	{% endif %}
+    {% if caller %}
+      {{ caller() }}
+    {% endif %}
   </div>
 {%- endmacro %}
 
 {% macro button_group() -%}
   <div class="control-group">
-	<div class="control">
-	  {{ caller() }}
-	</div><!-- /.control -->
+    <div class="control">
+      {{ caller() }}
+    </div><!-- /.control -->
   </div><!-- /.control-group -->
 {%- endmacro %}
 
@@ -110,37 +110,37 @@
 
 {%- macro bookmark_form(form) %}
   <fieldset>
-	{{ render_field(form.url, placeholder="http://www.example.com") }}
-	{{ render_field(form.title, placeholder=_("A title for this bookmark")) }}
-	{{ render_field(form.tags, placeholder=_("interesting, document, music, ..."), help=_("A comma separated list of tags")) }}
-	{{ render_field(form.notes, placeholder=_("Write anything here"), help=_("Optional notes"), rows=6) }}
-	{{ render_checkbox(form.private) }}
+    {{ render_field(form.url, placeholder="http://www.example.com") }}
+    {{ render_field(form.title, placeholder=_("A title for this bookmark")) }}
+    {{ render_field(form.tags, placeholder=_("interesting, document, music, ..."), help=_("A comma separated list of tags")) }}
+    {{ render_field(form.notes, placeholder=_("Write anything here"), help=_("Optional notes"), rows=6) }}
+    {{ render_checkbox(form.private) }}
   </fieldset>
 {%- endmacro %}
 
 
 {%- macro page_header(page_title) %}
   <div class="page-title">
-	<h3>{{ page_title }}</h3>
+    <h3>{{ page_title }}</h3>
   </div>
 
   {% include "_messages.html" %}
 
   {% if caller %}
-	{{ caller() }}
+    {{ caller() }}
   {% endif %}
 {%- endmacro %}
 
 
 {%- macro render_panel(title=None, category="default") %}
   <div class="panel panel-{{ category }}">
-	{% if title %}
-	  <div class="panel-heading"><h3 class="panel-title">{{ title }}</h3></div>
-	{% endif %}
-	<div class="panel-body">
-	  {% if caller %}
-		{{ caller() }}
-	  {% endif %}
-	</div>
+    {% if title %}
+      <div class="panel-heading"><h3 class="panel-title">{{ title }}</h3></div>
+    {% endif %}
+    <div class="panel-body">
+      {% if caller %}
+	{{ caller() }}
+      {% endif %}
+    </div>
   </div>
 {%- endmacro %}

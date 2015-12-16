@@ -5,7 +5,7 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{{ _('Password reset') }}</h3>
+    <h3>{{ _('Password reset') }}</h3>
   </div>
 
   <div>
@@ -13,14 +13,14 @@
   </div>
 
   <div class="row">
-	<div class="col-md-4">
-	  <form method="post" role="form">
-		{{ form.hidden_tag() }}
+    <div class="col-md-4">
+      <form method="post" role="form">
+	{{ form.hidden_tag() }}
 
-		{{ h.render_field(form.email, placeholder=_("Email")) }}
-		<button type="submit" class="btn btn-primary">{{ _('Send') }}</button>
-	  </form>
-	</div>
+	{{ h.render_field(form.email, placeholder=_("Email")) }}
+	<button type="submit" class="btn btn-primary">{{ _('Send') }}</button>
+      </form>
+    </div>
   </div>
 
 {% endblock %}

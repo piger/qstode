@@ -2,111 +2,111 @@
   {% set b_domain = bookmark.href|get_domain %}
 
   <article class="bookmark">
-	<header>
-	  {% if config.USE_GOOGLE_FAVICON %}
-		<h3 class="bk-title"><a href="{{ bookmark.href }}" target="_blank" rel="nofollow"><img alt="favicon for {{ b_domain }}" src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
-	  {% else %}
-		<h3 class="bk-title"><span class="glyphicon glyphicon-globe"></span> <a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.title }}</a></h3>
-	  {% endif %}
+    <header>
+      {% if config.USE_GOOGLE_FAVICON %}
+	<h3 class="bk-title"><a href="{{ bookmark.href }}" target="_blank" rel="nofollow"><img alt="favicon for {{ b_domain }}" src="//www.google.com/s2/favicons?domain={{ b_domain }}"> {{ bookmark.title }}</a></h3>
+      {% else %}
+	<h3 class="bk-title"><span class="glyphicon glyphicon-globe"></span> <a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.title }}</a></h3>
+      {% endif %}
 
-	  <div class="row">
-		<div class="col-xs-9">
-		  <h4 class="bk-href"><span class="glyphicon glyphicon-bookmark"></span> <a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.href|truncate(80, True) }}</a></h4>
-		</div>
+      <div class="row">
+	<div class="col-xs-9">
+	  <h4 class="bk-href"><span class="glyphicon glyphicon-bookmark"></span> <a href="{{ bookmark.href }}" target="_blank" rel="nofollow">{{ bookmark.href|truncate(80, True) }}</a></h4>
+	</div>
 
-		<div class="col-xs-3">
-		  <div class="pull-right">
-			<h4 class="bk-time bk-time-text"><span class="glyphicon glyphicon-calendar"></span> <time datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|timesince }}</time></h4>
-			<h4 class="bk-time bk-time-short"><span class="glyphicon glyphicon-calendar"></span> <time datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|dateformat('short') }}</time></h4>
-		  </div>
-		</div>
+	<div class="col-xs-3">
+	  <div class="pull-right">
+	    <h4 class="bk-time bk-time-text"><span class="glyphicon glyphicon-calendar"></span> <time datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|timesince }}</time></h4>
+	    <h4 class="bk-time bk-time-short"><span class="glyphicon glyphicon-calendar"></span> <time datetime="{{ bookmark.created_on.isoformat() }}">{{ bookmark.created_on|dateformat('short') }}</time></h4>
 	  </div>
-	</header>
+	</div>
+      </div>
+    </header>
 
-	{% if bookmark.notes %}
-	  <blockquote>
-		<p>{{ bookmark.notes }}</p>
-	  </blockquote>
-	{% endif %}
+    {% if bookmark.notes %}
+      <blockquote>
+	<p>{{ bookmark.notes }}</p>
+      </blockquote>
+    {% endif %}
 
-	<footer>
-	  <div class="row">
-		<div class="col-xs-7">
-		  <p><span class="glyphicon glyphicon-tags"></span> {% for tag in bookmark.tags %}<a href="{{ url_for('tagged', tags=tag.name) }}" class="btn btn-xs btn-default">{{ tag.name }}</a>{%if not loop.last %} {% endif %}{% endfor %}</p>
-		</div>
+    <footer>
+      <div class="row">
+	<div class="col-xs-7">
+	  <p><span class="glyphicon glyphicon-tags"></span> {% for tag in bookmark.tags %}<a href="{{ url_for('tagged', tags=tag.name) }}" class="btn btn-xs btn-default">{{ tag.name }}</a>{%if not loop.last %} {% endif %}{% endfor %}</p>
+	</div>
 
-		<div class="col-xs-5">
-		  <div class="pull-right">
-			{% if bookmark.private %}
-			  <button type="button" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-eye-close"></span> {{ _('Private') }}</button>
-			{% endif %}
+	<div class="col-xs-5">
+	  <div class="pull-right">
+	    {% if bookmark.private %}
+	      <button type="button" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-eye-close"></span> {{ _('Private') }}</button>
+	    {% endif %}
 
-			{% if controls and bookmark.user.id == current_user.id %}
-			  <div class="btn-group">
-				<button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
-				  <span class="glyphicon glyphicon-user"></span> {{ bookmark.user.display_name }} <span class="caret"></span>
-				</button>
+	    {% if controls and bookmark.user.id == current_user.id %}
+	      <div class="btn-group">
+		<button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+		  <span class="glyphicon glyphicon-user"></span> {{ bookmark.user.display_name }} <span class="caret"></span>
+		</button>
 
-				<ul class="dropdown-menu" role="menu">
-				  <li><a href="{{ url_for('edit_bookmark', bId=bookmark.id) }}"><span class="glyphicon glyphicon-pencil"></span> {{ _("Modify") }}</a></li>
-				  <li class="divider"></li>
-				  <li><a href="{{ url_for('delete_bookmark', bId=bookmark.id) }}"><span class="glyphicon glyphicon-trash"></span> {{ _("Delete") }}</a></li>
-				</ul>
-			  </div><!-- /.btn-group -->
-			{% else %}
-			  <p><a href="{{ url_for('user_bookmarks', username=bookmark.user.username) }}" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-user"></span> {{ bookmark.user.display_name }}</a></p>
-			{% endif %}
-		  </div>
-		</div>
+		<ul class="dropdown-menu" role="menu">
+		  <li><a href="{{ url_for('edit_bookmark', bId=bookmark.id) }}"><span class="glyphicon glyphicon-pencil"></span> {{ _("Modify") }}</a></li>
+		  <li class="divider"></li>
+		  <li><a href="{{ url_for('delete_bookmark', bId=bookmark.id) }}"><span class="glyphicon glyphicon-trash"></span> {{ _("Delete") }}</a></li>
+		</ul>
+	      </div><!-- /.btn-group -->
+	    {% else %}
+	      <p><a href="{{ url_for('user_bookmarks', username=bookmark.user.username) }}" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-user"></span> {{ bookmark.user.display_name }}</a></p>
+	    {% endif %}
 	  </div>
-	</footer>
+	</div>
+      </div>
+    </footer>
   </article>
 {%- endmacro %}
 
 
 {%- macro render_pagination(pag) %}
   <nav>
-	<ul class="pagination">
-	  {% if pag.has_prev %}
-		<li><a href="{{ url_for_other_page(pag.prev_num) }}">&laquo;</a></li>
-	  {% else %}
-		<li><a href="{{ url_for_other_page(1) }}">&laquo;</a></li>
-	  {% endif %}
+    <ul class="pagination">
+      {% if pag.has_prev %}
+	<li><a href="{{ url_for_other_page(pag.prev_num) }}">&laquo;</a></li>
+      {% else %}
+	<li><a href="{{ url_for_other_page(1) }}">&laquo;</a></li>
+      {% endif %}
 
-	  {% for page in pag.iter_pages() %}
-		{% if page %}
-		  {% if page != pag.page %}
-			<li><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
-		  {% else %}
-			<li class="active"><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
-		  {% endif %}
-		{% else %}
-		  <li><a href="{{ url_for_other_page(page) }}">&hellip;</a></li>
-		{% endif %}
-	  {% endfor %}
-
-	  {% if pag.has_next %}
-		<li><a href="{{ url_for_other_page(pag.next_num) }}">&raquo;</a></li>
+      {% for page in pag.iter_pages() %}
+	{% if page %}
+	  {% if page != pag.page %}
+	    <li><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
 	  {% else %}
-		<li><a href="{{ url_for_other_page(pag.pages) }}">&raquo;</a></li>
+	    <li class="active"><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
 	  {% endif %}
-	</ul>
+	{% else %}
+	  <li><a href="{{ url_for_other_page(page) }}">&hellip;</a></li>
+	{% endif %}
+      {% endfor %}
+
+      {% if pag.has_next %}
+	<li><a href="{{ url_for_other_page(pag.next_num) }}">&raquo;</a></li>
+      {% else %}
+	<li><a href="{{ url_for_other_page(pag.pages) }}">&raquo;</a></li>
+      {% endif %}
+    </ul>
   </nav>	
 {%- endmacro %}
 
 
 {%- macro bookmarks_block(bookmarks) %}
   {% if bookmarks.items %}
-	{% for bookmark in bookmarks.items %}
-	  {{ render_bookmark(bookmark) }}
-	{% endfor %}
+    {% for bookmark in bookmarks.items %}
+      {{ render_bookmark(bookmark) }}
+    {% endfor %}
 
-	{% if bookmarks.pages > 1 %}
-	  <div class="text-center">
-		{{ render_pagination(bookmarks) }}
-	  </div>
-	{% endif %}
+    {% if bookmarks.pages > 1 %}
+      <div class="text-center">
+	{{ render_pagination(bookmarks) }}
+      </div>
+    {% endif %}
   {% else %}
-	<p>{{ _("No matching bookmark was found.") }}
+    <p>{{ _("No matching bookmark was found.") }}
   {% endif %}
 {%- endmacro %}

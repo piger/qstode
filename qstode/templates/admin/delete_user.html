@@ -10,20 +10,20 @@
   <p>{% trans username=user.username %}Are you sure you want to delete the user <strong>{{ username }}</strong>?{% endtrans %}</p>
 
   <div class="row">
-	<div class="col-md-7">
+    <div class="col-md-7">
 
-	  <form method="post" role="form">
-		{{ form.hidden_tag() }}
-		{{ form.next() }}
-		{{ form.user_id() }}
+      <form method="post" role="form">
+	{{ form.hidden_tag() }}
+	{{ form.next() }}
+	{{ form.user_id() }}
 
-		<div class="form-group">
-		  <button type="submit" class="btn btn-primary">{{ _("Delete") }}</button>
-		  <button type="button" id="btn-cancel" class="btn btn-default cancel-btn">{{ _("Cancel") }}</button>
-		</div>
-	  </form>
+	<div class="form-group">
+	  <button type="submit" class="btn btn-primary">{{ _("Delete") }}</button>
+	  <button type="button" id="btn-cancel" class="btn btn-default cancel-btn">{{ _("Cancel") }}</button>
+	</div>
+      </form>
 
-	</div><!-- /.col -->
+    </div><!-- /.col -->
   </div><!-- /.row -->
 
 {% endblock %}

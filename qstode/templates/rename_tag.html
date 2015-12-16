@@ -10,23 +10,23 @@
   <p>{% trans %}Here you can assign a new name to a tag of your bookmarks.{% endtrans %}</p>
 
   <div class="row">
-	<div class="col-md-6">
+    <div class="col-md-6">
 
-	  <div class="panel panel-default">
-		<div class="panel-body">
+      <div class="panel panel-default">
+	<div class="panel-body">
 
-		  <form method="post" role="form">
-			{{ form.hidden_tag() }}
+	  <form method="post" role="form">
+	    {{ form.hidden_tag() }}
 
-			{{ h.render_field(form.old_name) }}
-			{{ h.render_field(form.new_name) }}
+	    {{ h.render_field(form.old_name) }}
+	    {{ h.render_field(form.new_name) }}
 
-			<button type="submit" class="btn btn-primary">{{ _("Rename") }}</button>
-		  </form>
-		</div>
-	  </div>
-
+	    <button type="submit" class="btn btn-primary">{{ _("Rename") }}</button>
+	  </form>
 	</div>
+      </div>
+
+    </div>
   </div>
 
 {% endblock %}

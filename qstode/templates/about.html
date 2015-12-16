@@ -7,16 +7,13 @@
 
   {{ h.page_header(page_title) }}
 
-  <p>{% trans %}
-	QStode is a web application that allows registered users to store bookmarks
-	(like the goold old del.icio.us) categorized by tags.<br />
-	{% endtrans %}</p>
+  <p>{% trans %}QStode is a web application that allows registered users to store bookmarks (like the goold old del.icio.us) categorized by tags.{% endtrans %}</p>
 
   <p>{{ _("Find more about QStode:") }}
-	<ul>
-	  <li>Code on <a href="https://github.com/piger/qstode">GitHub</a></li>
-	  <li>Documentation on <a href="http://qstode.readthedocs.org/en/latest/">Read The Docs</a></li>
-	</ul>
+    <ul>
+      <li>Code on <a href="https://github.com/piger/qstode">GitHub</a></li>
+      <li>Documentation on <a href="http://qstode.readthedocs.org/en/latest/">Read The Docs</a></li>
+    </ul>
   </p>
 
   <hr>
@@ -44,8 +41,8 @@
   <h4>{{ _('Statistics') }}</h4>
 
   <ul>
-	<li>{% trans tot=data.num_bookmarks %}Bookmarks: <strong>{{ tot }}</strong>{% endtrans %}</li>
-	<li>{% trans tot=data.num_tags %}Tags: <strong>{{ tot }}</strong>{% endtrans %}</li>
+    <li>{% trans tot=data.num_bookmarks %}Bookmarks: <strong>{{ tot }}</strong>{% endtrans %}</li>
+    <li>{% trans tot=data.num_tags %}Tags: <strong>{{ tot }}</strong>{% endtrans %}</li>
   </ul>
   
 {% endblock %}

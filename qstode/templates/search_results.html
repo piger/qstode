@@ -6,25 +6,25 @@
 {% block content %}
 
   <div class="page-title">
-	<h3>{{ page_title }}</h3>
+    <h3>{{ page_title }}</h3>
 
-	{% if query %}
-	  <h4>You searched for: {{ query }}</h4>
-	{% endif %}
+    {% if query %}
+      <h4>You searched for: {{ query }}</h4>
+    {% endif %}
   </div>
 
   {% for bookmark in bookmarks.items %}
-	{{ render_bookmark(bookmark) }}
+    {{ render_bookmark(bookmark) }}
 
-	{% if not loop.last %}
-	  <hr>
-	{% endif %}
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
   {% endfor %}
 
   {% if bookmarks.items %}
-	<div class="text-center">
-	  {{ render_pagination(bookmarks) }}
-	</div>
+    <div class="text-center">
+      {{ render_pagination(bookmarks) }}
+    </div>
   {% endif %}
 
 

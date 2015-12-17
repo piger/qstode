@@ -306,9 +306,6 @@ def simple_search():
     if form.validate_on_submit:
         page = helpers.validate_page(form.page.data)
 
-        # XXX disable related tags
-        related = []
-
         # build a list of tags to be included and excluded from the query
         in_tags = []
         ex_tags = []
@@ -319,12 +316,13 @@ def simple_search():
             else:
                 in_tags.append(tag_name)
 
-        if not in_tags:
-            results = []
-        else:
+        results = []
+        related = []
+        if in_tags:
             results = model.Bookmark.by_tags(in_tags, ex_tags, user_id=user_id).\
                       paginate(page, app.config['PER_PAGE'])
-            # related = model.Tag.get_related(form.query.data)
+            if app.config['ENABLE_RELATED_TAGS']:
+                related = model.Tag.get_related(in_tags)
 
         return render_template('tag_results.html', bookmarks=results,
                                related=related)

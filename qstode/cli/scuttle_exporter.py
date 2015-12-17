@@ -3,7 +3,10 @@
     qstode.cli.scuttle_exporter
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Utility function to export data from a Scuttle database to a json file
+    Utility function to export data from a Scuttle database to a json file. This utility
+    expects a configuration file containing the SQLAlchemy URI of the database, for example:
+
+    uri = sqlite:////var/db/mydb.sqlite
 
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.

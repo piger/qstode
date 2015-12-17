@@ -95,7 +95,7 @@ class Tag(db.Base):
         return query
 
     @classmethod
-    def get_related(cls, tags, max_results=10):
+    def broken_get_related(cls, tags, max_results=10):
         """
         Returns a list of tuples (Tag.id, Tag.name, count) for each Tag related
         to `tags`, which is a list of tag names.
@@ -122,7 +122,38 @@ class Tag(db.Base):
                 )
             ).\
             group_by(cls.id).\
-            order_by('tot desc').\
+            order_by(desc('tot')).\
+            limit(max_results)
+
+        return q.all()
+
+    @classmethod
+    def get_related(cls, tags, max_results=10):
+        """
+        A better version of that query which doesn't hang MySQL 5.5.46-0+deb7u1.
+
+        As explained here: http://stackoverflow.com/questions/4483357/join-instead-of-subquery-for-related-tags
+        """
+        assert isinstance(tags, list), "The 'tags' parameter must be a list"
+
+        # enforce lowercase
+        tags = [tag.lower() for tag in tags]
+        # get the IDs for 'tags'
+        tags_ids = [tag.id for tag in Tag.get_many(tags)]
+
+        subq = db.Session.query(bookmark_tags.c.bookmark_id).\
+               filter(bookmark_tags.c.tag_id.in_(tags_ids)).\
+               group_by(bookmark_tags.c.bookmark_id).\
+               having(func.count(bookmark_tags.c.tag_id)==len(tags_ids)).\
+               subquery()
+
+        q = db.Session.query(cls.id, cls.name, func.count('*').label('tot')).\
+            select_from(bookmark_tags).\
+            join(cls, cls.id==bookmark_tags.c.tag_id).\
+            join(subq, subq.c.bookmark_id==bookmark_tags.c.bookmark_id).\
+            filter(not_(cls.id.in_(tags_ids))).\
+            group_by(cls.id).\
+            order_by(desc('tot')).\
             limit(max_results)
 
         return q.all()

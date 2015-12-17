@@ -248,14 +248,15 @@ class Tag(db.Base):
         tags.
         """
 
-        count = func.count(bookmark_tags.c.bookmark_id).label('total')
-        query = db.Session.query(cls, count).\
-                outerjoin(bookmark_tags).\
-                group_by(cls).\
-                order_by('total DESC').\
-                limit(max_results)
+        q = db.Session.query(cls, func.count(bookmark_tags.c.bookmark_id).label('tot')).\
+            join(bookmark_tags).\
+            join(Bookmark).\
+            filter(Bookmark.private==False).\
+            group_by(cls).\
+            order_by(desc('tot')).\
+            limit(max_results)
 
-        return query.all()
+        return q.all()
 
     def __repr__(self):
         return "<Tag(%r)>" % self.name

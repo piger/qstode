@@ -94,46 +94,38 @@ class Tag(db.Base):
                 order_by(cls.name.asc())
         return query
 
-    @staticmethod
-    def get_related(tags, limit=20):
+    @classmethod
+    def get_related(cls, tags, max_results=10):
         """
         Returns a list of tuples (Tag.id, Tag.name, count) for each Tag related
-        to `tags`.
-
-        Source: http://pieceofpy.com/category/sqlalchemy/2/
-
-        WARNING: This is currently broken on MySQL; the query must be redesigned
-        and rewritten.
+        to `tags`, which is a list of tag names.
         """
+        assert isinstance(tags, list), "The 'tags' parameter must be a list"
 
-        tags = [t.lower() for t in tags]
-        tag_count = len(tags)
+        # enforce lowercase
+        tags = [tag.lower() for tag in tags]
+        # get the IDs for 'tags'
+        tags_ids = [tag.id for tag in Tag.get_many(tags)]
 
-        inner_q = select([bookmark_tags.c.bookmark_id])
-        inner_w = inner_q.where(
-            and_(bookmark_tags.c.tag_id == Tag.id, Tag.name.in_(tags))
-        ).group_by(
-            bookmark_tags.c.bookmark_id
-        ).having(
-            func.count(bookmark_tags.c.bookmark_id) == tag_count
-        ).correlate(None)
+        subq = db.Session.query(bookmark_tags.c.bookmark_id).\
+               filter(bookmark_tags.c.tag_id.in_(tags_ids)).\
+               group_by(bookmark_tags.c.bookmark_id).\
+               having(func.count(bookmark_tags.c.tag_id)==len(tags_ids))
 
-        outer_q = select([Tag.id, Tag.name,
-                          func.count(
-                              bookmark_tags.c.bookmark_id
-                          ).label('tot')])
-        outer_w = outer_q.where(
-            and_(
-                bookmark_tags.c.bookmark_id.in_(inner_w),
-                not_(Tag.name.in_(tags)),
-                Tag.id == bookmark_tags.c.tag_id
-            )
-        ).group_by(bookmark_tags.c.tag_id).\
-                order_by(desc('tot')).limit(limit)
+        q = db.Session.query(cls.id, cls.name, func.count('*').label('tot')).\
+            select_from(bookmark_tags).\
+            join(cls, bookmark_tags.c.tag_id==cls.id).\
+            filter(
+                and_(
+                    bookmark_tags.c.bookmark_id.in_(subq),
+                    not_(cls.id.in_(tags_ids))
+                )
+            ).\
+            group_by(cls.id).\
+            order_by('tot desc').\
+            limit(max_results)
 
-        related_tags = db.Session.execute(outer_w).fetchall()
-
-        return related_tags
+        return q.all()
 
     @classmethod
     def get_or_create_many(cls, names):
@@ -337,7 +329,7 @@ class Bookmark(db.Base):
                 cls.private == False))
         else:
             return cls.query.filter(cls.private == False)
-        
+
     @classmethod
     def get_latest(cls):
         query = cls.get_public().\

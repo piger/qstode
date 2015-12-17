@@ -503,3 +503,17 @@ class Bookmark(db.Base):
     def __repr__(self):
         return "<Bookmark(title={0}, created_on={1}, private={2}".format(
             self.title, self.created_on, self.private)
+
+def get_stats():
+    tot_bookmarks = db.Session.query(func.count(Bookmark.id)).\
+                    filter(Bookmark.private==False).\
+                    scalar()
+
+    tot_tags = db.Session.query(Tag).\
+               join(bookmark_tags).\
+               join(Bookmark).\
+               filter(Bookmark.private==False).\
+               group_by(Tag.id).\
+               count()
+
+    return (tot_bookmarks, tot_tags)

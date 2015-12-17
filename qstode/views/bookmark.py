@@ -76,13 +76,7 @@ def index(page):
 
 @app.route('/about')
 def about():
-    data = {
-        'num_bookmarks': model.Bookmark.query.filter_by(private=False).count(),
-        'num_tags': model.Tag.query.join(model.Tag.bookmarks).filter(
-            model.Tag.bookmarks.any(model.Bookmark.private == False)
-        ).distinct(model.Tag.name).group_by(model.Tag.id).count(),
-    }
-
+    data = dict(zip(('num_bookmarks', 'num_tags'), model.get_stats()))
     return render_template('about.html', data=data)
 
 

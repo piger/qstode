@@ -101,3 +101,44 @@ the ``CREATE TABLE`` statement of the problematic table.
 
 
 .. _Scuttle: http://sourceforge.net/projects/scuttle/
+
+How to really export data from a scuttle database infested with latin1
+======================================================================
+
+First I did the `mysqldump` as instructed below, also doing the `replace` step. Please note that some MySQL
+versions use `CHARSET=latin1` instead of `CHARSET latin1` so adjust your command line accordingly.
+
+Then I imported the sql dump in a new utf8 database.
+
+Then I did some expertiments::
+
+  mysql> select bDescription from sc_bookmarks where bDescription like '%a sort of%';
+  | bDescription
+  | This article attempts to give a sort of â€˜orientation tourâ€™ for people whose previous programming background is in high (ish) level languages such as Java or Python, and who now find that they need or want to learn C.
+  1 row in set (0.02 sec)
+
+  mysql> select convert(cast(convert(bDescription using  latin1) as binary) using utf8)
+      -> from sc_bookmarks where bDescription like '%a sort of%';
+  | convert(cast(convert(bDescription using  latin1) as binary) using utf8)
+  | This article attempts to give a sort of ‘orientation tour’ for people whose previous programming background is in high (ish) level languages such as Java or Python, and who now find that they need or want to learn C.      |
+  1 row in set (0.02 sec)
+
+To fix this I issued a couple of UPDATEs:
+
+.. code-block:: sql
+   UPDATE sc_bookmarks SET
+   bDescription=convert(cast(convert(bDescription using latin1) as binary) using utf8),
+   bTitle=convert(cast(convert(bTitle using latin1) as binary) using utf8)
+   WHERE 1;
+
+   ALTER TABLE sc_tags convert to character set utf8 collate utf8_bin;
+
+   UPDATE sc_tags SET
+   tag=convert(cast(convert(tag using latin1) as binary) using utf8)
+   WHERE 1;
+
+The `ALTER TABLE` is explained in the previous chapter.
+
+Finally I was able to dump the scuttle database to a JSON file and import it in QStode :)
+
+

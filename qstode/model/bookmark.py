@@ -473,7 +473,7 @@ class Bookmark(db.Base):
 
         # multi-database support (MySQL, PostgreSQL, SQLite) for date conversion
         engine = db.Session.get_bind()
-        if engine.driver == 'sqlite':
+        if 'sqlite' in engine.driver: # could be 'sqlite', or 'pysqlite'
             fn = cast(func.julianday(cls.created_on), Integer)
         elif engine.driver == 'postgresql':
             fn = cast(cls.created_on, sqlalchemy.types.Date)

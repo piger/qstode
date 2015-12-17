@@ -30,13 +30,14 @@ class IndexerDaemon(object):
         db.init_db(self.config['SQLALCHEMY_DATABASE_URI'])
         self.searcher = searcher.WhooshSearcher(
             index_dir=self.config['WHOOSH_INDEX_PATH'])
+        self.running = False
 
     def _get_writer(self):
         return self.searcher.ix.writer()
 
     def main_loop(self):
-        running = True
-        while running:
+        self.running = True
+        while self.running:
             self.work_on_queue()
 
     def work_on_queue(self):
@@ -59,7 +60,7 @@ class IndexerDaemon(object):
             payload = json.loads(msg)
             op, _id = payload
         except ValueError, ex:
-            log.debug("Invalid job in queue: {0}: {1}".format(msg, str(ex)))
+            log.error("Invalid job in queue: {0}: {1}".format(msg, str(ex)))
         else:
             self.process(op, _id)
 
@@ -77,16 +78,23 @@ class IndexerDaemon(object):
             self.do_delete(_id)
         else:
             log.error("Invalid op: '{}'".format(op))
-            
+
     def do_index(self, _id):
         """Index the specified bookmark id"""
 
         bookmark = model.Bookmark.query.get(_id)
+        if bookmark is None:
+            log.error("Bookmark id={} not found".format(_id))
+            return
+
         writer = self._get_writer()
         self.searcher.add_bookmark(bookmark, writer)
 
-        bookmark.indexed_on = datetime.utcnow()
-        db.Session.commit()
+        try:
+            bookmark.indexed_on = datetime.utcnow()
+            db.Session.commit()
+        except sqlalchemy.exc.SQLAlchemyError as ex:
+            log.error("Updating bookmark {}: {}".format(_id, ex))
 
     def do_update(self, _id):
         """Updates index for the specified bookmark id"""

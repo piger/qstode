@@ -91,8 +91,14 @@ def tagged(tags, page):
     """Shows all bookmarks tagged with one or more comma separated tags"""
 
     tags = re.split(r'\s*,\s*', tags)
-    bookmarks = model.Bookmark.by_tags(tags).\
-                paginate(page, app.config['PER_PAGE'])
+
+    # 'p' is for 'personal'
+    if 'p' in request.args and current_user.is_authenticated:
+        bookmarks = model.Bookmark.by_tags_user(tags, current_user.id)
+    else:
+        bookmarks = model.Bookmark.by_tags(tags)
+
+    bookmarks = bookmarks.paginate(page, app.config['PER_PAGE'])
 
     if app.config['ENABLE_RELATED_TAGS']:
         related = model.Tag.get_related(tags)

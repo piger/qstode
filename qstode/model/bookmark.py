@@ -389,6 +389,19 @@ class Bookmark(db.Base):
         return q
 
     @classmethod
+    def by_tags_user(cls, tags, user_id):
+        assert isinstance(tags, list), "`tags` parameter must be a list"
+
+        query = cls.query.filter(cls.user_id == user_id).\
+                join(cls.tags).\
+                filter(Tag.name.in_(tags)).\
+                group_by(cls.id).\
+                having(func.count(cls.id)==len(tags)).\
+                order_by(cls.created_on.desc())
+
+        return query
+
+    @classmethod
     def by_tags(cls, tags, exclude=None, user_id=None):
         """Returns all the Bookmarks tagged with the tag names specified in
         the `tags` parameter.
@@ -401,8 +414,7 @@ class Bookmark(db.Base):
         :param user_id: include only bookmarks owned by `user_id`
         """
 
-        assert isinstance(tags, list) is True, "`tags` parameter must be " \
-            "a list"
+        assert isinstance(tags, list), "`tags` parameter must be a list"
 
         if exclude is None:
             exclude = []

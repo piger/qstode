@@ -12,7 +12,6 @@ from urlparse import urljoin
 from flask import session, request, redirect, flash, render_template, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_babel import gettext as _
-from flask_wtf.recaptcha import RecaptchaField
 from sqlalchemy.orm import joinedload
 from qstode.app import app, login_manager
 from qstode.mailer import Mailer
@@ -176,17 +175,14 @@ def reset_password(token):
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():
     if app.config['ENABLE_RECAPTCHA']:
-        class RecaptchaRegistrationForm(forms.RegistrationForm):
-            recaptcha = RecaptchaField()
-
-        form = RecaptchaRegistrationForm()
+        form = forms.RecaptchaRegistrationForm()
     else:
         form = forms.RegistrationForm()
     registration_enabled = app.config.get('ENABLE_USER_REGISTRATION')
 
     if registration_enabled and form.validate_on_submit():
         user = User(form.username.data, form.email.data, form.password.data,
-                    display_name=forms.display_name.data)
+                    display_name=form.display_name.data)
         db.Session.add(user)
         db.Session.commit()
 

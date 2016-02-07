@@ -16,6 +16,7 @@ from wtforms import (TextField, PasswordField, ValidationError, BooleanField,
 from wtforms.validators import (DataRequired, Email, EqualTo, Length, Regexp,
                                 Optional)
 from flask_wtf.html5 import EmailField
+from flask_wtf.recaptcha import RecaptchaField
 from flask_babel import lazy_gettext as _
 from .misc import RedirectForm
 from .validators import unique_username, unique_email
@@ -134,6 +135,8 @@ class RegistrationForm(Form):
     ])
     password_confirm = PasswordField(_(u'Confirm password'), [DataRequired()])
 
+class RecaptchaRegistrationForm(forms.RegistrationForm):
+    recaptcha = RecaptchaField()
 
 # unique_username ???
 class UserDetailsForm(Form):

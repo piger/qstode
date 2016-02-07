@@ -135,7 +135,7 @@ class RegistrationForm(Form):
     ])
     password_confirm = PasswordField(_(u'Confirm password'), [DataRequired()])
 
-class RecaptchaRegistrationForm(forms.RegistrationForm):
+class RecaptchaRegistrationForm(RegistrationForm):
     recaptcha = RecaptchaField()
 
 # unique_username ???

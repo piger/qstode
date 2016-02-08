@@ -94,7 +94,7 @@ class EditUserForm(CreateUserForm):
                 raise ValidationError(_(u"Email already taken"))
 
 
-class LoginForm(RedirectForm):
+class LoginForm(Form):
     user = TextField(_(u'User'), [DataRequired()])
     password = PasswordField(_(u'Password'), [DataRequired()])
     remember_me = BooleanField(_(u'Remember me'))

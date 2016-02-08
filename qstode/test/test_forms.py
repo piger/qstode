@@ -203,34 +203,6 @@ class LoginFormTest(test.FlaskTestCase):
             form = forms.LoginForm(data)
             self.assertTrue(form.validate())
 
-    def test_tampered_redirect(self):
-        """Do not follow redirects to external URLs after login"""
-
-        self._load_data([
-            model.User(u'pippo', 'pippo@example.com', 'secret')
-        ])
-
-        rv = self.client.post('/login', data={
-            "user": u"pippo@example.com",
-            "password": "secret",
-            "next": "http://www.evil.com",
-        }, follow_redirects=False)
-        self.assert_redirects(rv, url_for('index'))
-
-    def test_redirect(self):
-        """Allow internal redirection after login"""
-
-        self._load_data([
-            model.User(u'pippo', 'pippo@example.com', 'secret')
-        ])
-
-        rv = self.client.post('/login', data={
-            "user": u"pippo@example.com",
-            "password": "secret",
-            "next": "/about",
-        }, follow_redirects=False)
-        self.assert_redirects(rv, url_for('about'))
-
 
 class PasswordChangeFormTest(test.FlaskTestCase):
     def test_failed_validation(self):

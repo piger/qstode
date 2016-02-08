@@ -53,7 +53,7 @@ def login():
         if user and user.active and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             flash(_(u"Successfully logged in as %(user)s", user=user.username), "success")
-            return form.redirect('index')
+            return redirect(url_for('index'))
 
         login_failed = True
         app.logger.info("Failed login from %s" % form.user.data)

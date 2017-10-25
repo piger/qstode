@@ -9,11 +9,11 @@
     :license: BSD, see LICENSE for more details.
 """
 import re
-from flask_wtf import Form
-from flask_wtf.html5 import URLField, SearchField
+from flask_wtf import FlaskForm
 from wtforms import (TextField, ValidationError, Field,
                      BooleanField, TextAreaField, HiddenField,
                      SelectField, SubmitField)
+from wtforms.fields.html5 import URLField, SearchField
 from wtforms.validators import DataRequired, Length, URL, Regexp, Optional
 from wtforms.widgets import TextInput
 from flask_babel import lazy_gettext as _
@@ -75,7 +75,7 @@ class TagListField(Field):
                 yield item
 
 
-class SimpleSearchForm(Form):
+class SimpleSearchForm(FlaskForm):
     query = TagListField(_(u'Search tags'), [
         DataRequired(),
         ItemsLength(TAG_MIN, TAG_MAX),
@@ -133,11 +133,11 @@ class BookmarkForm(RedirectForm):
         return form
 
 
-class TagSelectionForm(Form):
+class TagSelectionForm(FlaskForm):
     tag = SelectField(_(u"Tag"), coerce=int)
 
 
-class RenameTagForm(Form):
+class RenameTagForm(FlaskForm):
     old_name = TextField(_("Tag name"), [
         DataRequired(),
         Length(TAG_MIN, TAG_MAX),

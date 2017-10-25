@@ -9,7 +9,7 @@
     :license: BSD, see LICENSE for more details.
 """
 import re
-from flask.ext.login import current_user
+from flask_login import current_user
 from flask_babel import lazy_gettext as _
 from wtforms import ValidationError
 from ..model import User

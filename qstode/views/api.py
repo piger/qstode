@@ -10,7 +10,7 @@
 """
 from flask import jsonify, request
 from flask.views import MethodView
-from flask.ext.login import current_user
+from flask_login import current_user
 from sqlalchemy import and_
 from qstode.app import app
 from qstode import db

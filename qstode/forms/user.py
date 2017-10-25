@@ -10,13 +10,13 @@
 """
 import re
 from flask_login import current_user
-from flask_wtf import Form
+from flask_wtf import FlaskForm
+from flask_wtf.recaptcha import RecaptchaField
 from wtforms import (TextField, PasswordField, ValidationError, BooleanField,
                      HiddenField)
 from wtforms.validators import (DataRequired, Email, EqualTo, Length, Regexp,
                                 Optional)
-from flask_wtf.html5 import EmailField
-from flask_wtf.recaptcha import RecaptchaField
+from wtforms.fields.html5 import EmailField
 from flask_babel import lazy_gettext as _
 from .misc import RedirectForm
 from .validators import unique_username, unique_email
@@ -33,7 +33,7 @@ PASSWORD_MAX = 64
 username_re = re.compile(r'^[A-Za-z0-9_-]+$')
 
 
-class CreateUserForm(Form):
+class CreateUserForm(FlaskForm):
     username = TextField(_(u"Username"), [
         DataRequired(),
         Length(USERNAME_MIN, USERNAME_MAX),
@@ -94,17 +94,17 @@ class EditUserForm(CreateUserForm):
                 raise ValidationError(_(u"Email already taken"))
 
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     user = TextField(_(u'User'), [DataRequired()])
     password = PasswordField(_(u'Password'), [DataRequired()])
     remember_me = BooleanField(_(u'Remember me'))
 
 
-class PasswordResetForm(Form):
+class PasswordResetForm(FlaskForm):
     email = EmailField(_(u'Email'), [DataRequired(), Email()])
 
 
-class PasswordChangeForm(Form):
+class PasswordChangeForm(FlaskForm):
     password = PasswordField(_(u'New password'), [
         DataRequired(),
         Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
@@ -113,7 +113,7 @@ class PasswordChangeForm(Form):
     password_confirm = PasswordField(_(u'Confirm new password'))
 
 
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
     display_name = TextField(_(u"Display name"), [
         DataRequired(), Length(1, 128)
     ])
@@ -139,7 +139,7 @@ class RecaptchaRegistrationForm(RegistrationForm):
     recaptcha = RecaptchaField()
 
 # unique_username ???
-class UserDetailsForm(Form):
+class UserDetailsForm(FlaskForm):
     display_name = TextField(_(u"Display name"), [
         DataRequired(), Length(1, 128)
     ])
@@ -170,7 +170,7 @@ class UserDetailsForm(Form):
 
         return success
 
-class CreateProfileForm(Form):
+class CreateProfileForm(FlaskForm):
     username = TextField(_(u'Username'), [
         DataRequired(),
         Length(min=3, max=20),

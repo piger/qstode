@@ -10,7 +10,6 @@
 """
 from datetime import datetime
 from sqlalchemy import func
-from nose.plugins.skip import SkipTest
 from qstode.test import FlaskTestCase
 from qstode import db
 from ..model import User, Bookmark, Tag, Link

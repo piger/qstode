@@ -9,7 +9,6 @@
     :license: BSD, see LICENSE for more details.
 """
 from flask import url_for
-from nose.plugins.skip import SkipTest
 from qstode.test import FlaskTestCase
 from qstode import model
 from qstode import db

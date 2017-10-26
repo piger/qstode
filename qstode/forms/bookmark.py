@@ -10,16 +10,14 @@
 """
 import re
 from flask_wtf import FlaskForm
-from wtforms import (TextField, ValidationError, Field,
-                     BooleanField, TextAreaField, HiddenField,
-                     SelectField, SubmitField)
-from wtforms.fields.html5 import URLField, SearchField
-from wtforms.validators import DataRequired, Length, URL, Regexp, Optional
+from wtforms import TextField, Field, BooleanField, TextAreaField, HiddenField, SelectField
+from wtforms.fields.html5 import URLField
+from wtforms.validators import DataRequired, Length, URL, Optional
 from wtforms.widgets import TextInput
 from flask_babel import lazy_gettext as _
-from ..model import Tag, Bookmark, tag_name_re, TAG_MIN, TAG_MAX, NOTES_MAX
-from .misc import RedirectForm
-from .validators import ItemsLength, ListLength, ListRegexp
+from qstode.model import Bookmark, tag_name_re, TAG_MIN, TAG_MAX, NOTES_MAX
+from qstode.forms.misc import RedirectForm
+from qstode.forms.validators import ItemsLength, ListLength, ListRegexp
 
 
 # Validation for length of tag list

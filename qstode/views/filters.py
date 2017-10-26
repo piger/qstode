@@ -9,7 +9,6 @@
     :license: BSD, see LICENSE for more details.
 """
 import os
-import time
 import re
 import urllib2
 import calendar
@@ -20,6 +19,8 @@ from qstode.app import app
 
 
 domain_re = re.compile(r'https?://((?:[^\/]+|$))')
+
+
 @app.template_filter('get_domain')
 def get_domain(s):
     """Extracts the hostname from a URL"""
@@ -29,6 +30,7 @@ def get_domain(s):
         return match.group(1)
     else:
         return ''
+
 
 @app.template_filter('urlencode')
 def tf_urlencode(s):
@@ -43,6 +45,7 @@ def url_for_other_page(page):
     args['page'] = page
     args.update(request.args)
     return url_for(request.endpoint, **args)
+
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
@@ -87,6 +90,7 @@ def timesince(dt, default=None):
 
     return default
 
+
 @app.context_processor
 def versioned_url_processor():
     """Wraps `url_for()` and is specific to static files; appends a 'v'
@@ -110,6 +114,7 @@ def active_if_processor():
             return 'active'
         return ''
     return dict(active_if=active_if)
+
 
 @app.template_filter()
 def ts_to_unix(t):

@@ -14,18 +14,16 @@ from datetime import datetime
 from urlparse import urljoin
 from flask import (render_template, redirect, request, flash,
                    abort, url_for, send_from_directory,
-                   make_response, g)
+                   make_response)
 from flask_login import login_required, current_user
-from flask_babel import gettext, format_datetime, \
-    lazy_gettext as _
+from flask_babel import gettext, format_datetime
 from werkzeug.contrib.atom import AtomFeed
 
 from qstode.app import app
 from qstode import forms
 from qstode import model
 from qstode import db
-from qstode import utils
-from . import helpers
+from qstode.views import helpers
 
 
 # robots.txt
@@ -144,7 +142,6 @@ def post_bookmark():
     url = request.args.get('url', u'')
     title = request.args.get('title', u'')
     notes = request.args.get('notes', u'')
-    url_count = 0
 
     form = forms.BookmarkForm(request.form, url=url, title=title, notes=notes)
     if form.validate_on_submit():
@@ -237,7 +234,6 @@ def delete_bookmark(bId):
         abort(404)
 
     if form.validate_on_submit():
-        bk_id = bookmark.id
         db.Session.delete(bookmark)
         db.Session.commit()
 
@@ -292,7 +288,7 @@ def single_bookmark(bookmark_id):
 @app.route('/search')
 def simple_search():
     """Performs a simple search from the form on the navigation bar"""
-    if not 'query' in request.args:
+    if 'query' not in request.args:
         abort(400)
 
     form = forms.SimpleSearchForm(request.args)
@@ -352,7 +348,7 @@ def feed_recent():
 
     bookmarks = model.Bookmark.get_latest().\
                 limit(app.config['FEED_NUM_ENTRIES']).all()
-    
+
     for bookmark in bookmarks:
         item_id = urljoin(request.url_root,
                           url_for('single_bookmark', bookmark_id=bookmark.id))

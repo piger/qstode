@@ -13,6 +13,7 @@ import json
 import redis
 from datetime import datetime
 from flask.config import Config
+import sqlalchemy
 from qstode import db
 from qstode import searcher
 from qstode import model

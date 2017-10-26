@@ -25,11 +25,12 @@ class ObjectCache(object):
 
         assert self.model_class is not None
 
-        if not key in self._cache:
+        if key not in self._cache:
             item = self.model_class(key)
             self._cache[key] = item
 
         return self._cache[key]
+
 
 def parse_datetime(dt):
     """Returns a datetime object parsed from the provided timestamp string

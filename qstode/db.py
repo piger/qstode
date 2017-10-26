@@ -80,16 +80,16 @@ def init_alembic(config_file="alembic.ini"):
 
     from alembic.config import Config
     from alembic import command
-    
+
     alembic_cfg = Config(config_file)
     command.stamp(alembic_cfg, "head")
 
 
 def init_db(uri, app=None, create=False):
     # we must import all SQLAlchemy models here
-    from . import model
+    from qstode import model # noqa
 
-    options = { 'convert_unicode': True }
+    options = {'convert_unicode': True}
 
     if app is not None and app.config.get('DEBUG'):
         options['echo'] = True
@@ -110,6 +110,7 @@ def init_db(uri, app=None, create=False):
         create_all(engine)
 
     return engine
+
 
 def create_all(engine=None, enable_alembic=False):
     if engine is None:

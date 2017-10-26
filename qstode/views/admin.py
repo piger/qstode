@@ -14,7 +14,7 @@ from flask_login import current_user
 from flask_babel import gettext
 from qstode.app import app
 from qstode import db
-from ..model import User, Bookmark
+from qstode.model import User
 from qstode import forms
 
 
@@ -49,10 +49,10 @@ def admin_create_user():
 
     if form.validate_on_submit():
         user = User(form.username.data,
-                          form.email.data,
-                          form.password.data,
-                          admin=form.admin.data,
-                          active=form.active.data)
+                    form.email.data,
+                    form.password.data,
+                    admin=form.admin.data,
+                    active=form.active.data)
         db.Session.add(user)
         db.Session.commit()
 

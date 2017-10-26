@@ -35,6 +35,7 @@ def _guess_lang():
         return request.accept_languages.best_match(
             app.config["SUPPORTED_LANGUAGES_ISO"])
 
+
 @app.before_request
 def autodetect_lang():
     lang = request.args.get("_lang")
@@ -42,9 +43,11 @@ def autodetect_lang():
         session["lang"] = lang
     g.lang = _guess_lang()
 
+
 @babel.localeselector
 def get_locale():
     return g.lang
+
 
 def ssl_required(fn):
     """Decorator: redirects to the HTTPS version of a route"""
@@ -57,6 +60,7 @@ def ssl_required(fn):
             return redirect(request.url.replace("http://", "https://"))
         return fn(*args, **kwargs)
     return decorated_view
+
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):

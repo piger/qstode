@@ -8,6 +8,8 @@
     :copyright: (c) 2013 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+
+
 class BaseError(Exception):
     pass
 

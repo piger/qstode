@@ -11,14 +11,14 @@
 import os
 import redis
 import json
-from whoosh.fields import ID, TEXT, KEYWORD, DATETIME, Schema
+from whoosh.fields import ID, TEXT, KEYWORD, Schema
 from whoosh.analysis import RegexTokenizer, LowercaseFilter, CharsetFilter
 from whoosh.support.charset import accent_map
 from whoosh.index import create_in, open_dir, exists_in
 from whoosh.writing import AsyncWriter
 from whoosh.qparser import MultifieldParser
 from whoosh.sorting import Facets
-from . import exc
+from qstode import exc
 
 
 # Constants used in the Redis message queue
@@ -32,15 +32,14 @@ QUEUE_WORK = "index_work"
 def generate_schema():
     """Generates the search engine schema"""
 
-    text_analyzer = RegexTokenizer() \
-                    | LowercaseFilter() \
-                    | CharsetFilter(accent_map)
+    text_analyzer = RegexTokenizer() | LowercaseFilter() | CharsetFilter(accent_map)
 
     schema = Schema(id=ID(stored=True, unique=True),
                     title=TEXT(stored=False, analyzer=text_analyzer),
                     tags=KEYWORD(stored=False, lowercase=True, commas=True),
                     notes=TEXT(stored=False, analyzer=text_analyzer))
     return schema
+
 
 def create_document(bookmark):
     """Creates a Document (a dict) for the search engine"""
@@ -96,8 +95,9 @@ class WhooshSearcher(object):
         """Initialize module and checks if the index exists"""
 
         self.app = app
-        if not 'WHOOSH_INDEX_PATH' in self.app.config:
-            raise exc.InitializationError("You must set the WHOOSH_INDEX_PATH option in the configuration")
+        if 'WHOOSH_INDEX_PATH' not in self.app.config:
+            raise exc.InitializationError("You must set the WHOOSH_INDEX_PATH option "
+                                          "in the configuration")
         self.index_dir = self.app.config["WHOOSH_INDEX_PATH"]
         if not exists_in(self.index_dir):
             self.setup_index()
@@ -155,7 +155,7 @@ class WhooshSearcher(object):
         """Reindex a Bookmark"""
 
         self.add_bookmark(bookmark, writer)
-        
+
     def delete_bookmark(self, bookmark_id, writer=None):
         """Delete a Bookmark from the index"""
 

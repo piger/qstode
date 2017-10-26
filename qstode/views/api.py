@@ -51,6 +51,7 @@ class BookmarkView(MethodView):
         else:
             return jsonify(bookmark=rv.to_dict())
 
+
 bookmark_view = BookmarkView.as_view('api_bookmark')
 app.add_url_rule('/api/bookmarks/<int:bookmark_id>', view_func=bookmark_view,
                  methods=['GET'])
@@ -76,6 +77,7 @@ class BookmarkListView(MethodView):
         }
         return jsonify(rv)
 
+
 bookmark_list_view = BookmarkListView.as_view('api_bookmark_list')
 app.add_url_rule('/api/bookmarks/', view_func=bookmark_list_view,
                  methods=['GET'])
@@ -86,6 +88,7 @@ class TaglistView(MethodView):
         taglist = model.Tag.taglist()
         rv = [dict(tag=tag.name, count=count) for tag, count in taglist]
         return jsonify(tags=rv)
+
 
 taglist_view = TaglistView.as_view('api_taglist')
 app.add_url_rule('/api/tags/popular', view_func=taglist_view, methods=['GET'])
@@ -111,8 +114,6 @@ def is_following(user_id):
 
     if not current_user.is_authenticated or user_id == current_user.id:
         return jsonify(result=2)
-
-    wu = model.watched_users
 
     other_user = model.User.query.get_or_404(user_id)
     rv = current_user.is_following(other_user.id)

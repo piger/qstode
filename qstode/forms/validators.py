@@ -8,7 +8,6 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
-import re
 from flask_login import current_user
 from flask_babel import lazy_gettext as _
 from wtforms import ValidationError
@@ -25,7 +24,7 @@ def ItemsLength(min_length=1, max_length=100):
         for item in field.data:
             l = len(item)
             if l < min_length or l > max_length:
-                raise ValidationError(_(u"All elements must be between " \
+                raise ValidationError(_(u"All elements must be between "
                                         u"%(min)d and %(max)d characters" % {
                                             'min': min_length,
                                             'max': max_length,
@@ -42,7 +41,7 @@ def ListLength(min_length=1, max_length=100):
 
         l = len(field.data)
         if l < min_length or l > max_length:
-            raise ValidationError(_(u"All elements must be between " \
+            raise ValidationError(_(u"All elements must be between "
                                     u"%(min)d and %(max)d characters" % {
                                         'min': min_length,
                                         'max': max_length,
@@ -60,7 +59,7 @@ def ListRegexp(regex):
         for item in field.data:
             if regex.match(item) is None:
                 raise ValidationError(_(u"Invalid characters"))
-        
+
     return _ListRegexp
 
 

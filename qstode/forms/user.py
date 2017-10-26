@@ -135,8 +135,10 @@ class RegistrationForm(FlaskForm):
     ])
     password_confirm = PasswordField(_(u'Confirm password'), [DataRequired()])
 
+
 class RecaptchaRegistrationForm(RegistrationForm):
     recaptcha = RecaptchaField()
+
 
 # unique_username ???
 class UserDetailsForm(FlaskForm):
@@ -164,11 +166,12 @@ class UserDetailsForm(FlaskForm):
 
         # If only the new password was specified
         elif self.password.data and not self.password_old.data:
-            self.password_old.errors.append(_(u"You must specify your current " \
+            self.password_old.errors.append(_(u"You must specify your current "
                                               "password"))
             success = False
 
         return success
+
 
 class CreateProfileForm(FlaskForm):
     username = TextField(_(u'Username'), [

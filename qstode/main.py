@@ -40,6 +40,7 @@ def _get_syslog_socket():
         raise RuntimeError("Unsupported syslog platform; see SYSLOG_SOCKET "
                            "configuration option.")
 
+
 def create_app(cfg=None):
     """Configure the Flask application object and run initialization tasks
 
@@ -92,8 +93,8 @@ def run_shell(args):
             print User.query.filter_by(username=u'charlie')
     """
 
-    from qstode import db
-    from qstode import model
+    from qstode import db # noqa
+    from qstode import model # noqa
 
     create_app()
     try:
@@ -132,7 +133,6 @@ def run_wsgi(args):
     """WSGI entry point"""
 
     application = create_app()
-    setup_logging(args)
     return application
 
 
@@ -205,6 +205,7 @@ def main():
         os.environ['APP_CONFIG'] = os.path.abspath(args.config)
 
     args.func(args)
+
 
 if __name__ == '__main__':
     main()

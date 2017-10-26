@@ -28,13 +28,15 @@ class Cache(object):
         self.items = {}
 
     def get_item(self, name):
-        if not name in self.items:
+        if name not in self.items:
             item = self.instance_class(name)
             self.items[name] = item
         return self.items[name]
 
+
 class LinkCache(Cache):
     instance_class = model.Link
+
 
 class TagCache(Cache):
     instance_class = model.Tag
@@ -95,7 +97,6 @@ def import_file(args):
         print "Error: Invalid backup file format"
         sys.exit(1)
 
-    users = []
     for user_data in users_data:
         user = model.User.query.filter_by(email=user_data['email']).first()
         if user is None:

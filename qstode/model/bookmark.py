@@ -12,14 +12,14 @@ import re
 import math
 from datetime import datetime, timedelta
 import sqlalchemy.types
-from sqlalchemy import desc, func, select, and_, not_, or_, cast, distinct
+from sqlalchemy import desc, func, and_, not_, or_, cast, distinct
 from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy import Boolean, event
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 from flask_login import current_user
-from .. import db
-from .user import User, watched_users
+from qstode import db
+from qstode.model.user import User, watched_users
 
 
 # Automatically delete orphan tags on database flush.
@@ -132,7 +132,8 @@ class Tag(db.Base):
         """
         A better version of that query which doesn't hang MySQL 5.5.46-0+deb7u1.
 
-        As explained here: http://stackoverflow.com/questions/4483357/join-instead-of-subquery-for-related-tags
+        As explained here:
+        http://stackoverflow.com/questions/4483357/join-instead-of-subquery-for-related-tags
         """
         assert isinstance(tags, list), "The 'tags' parameter must be a list"
 
@@ -227,7 +228,9 @@ class Tag(db.Base):
 
         tag_cloud_weighted = []
         for tag, tag_count in tags:
-            weight = ( math.log(tag_count) - math.log(tot_min) ) / ( math.log(tot_max) - math.log(tot_min) )
+            log_count = math.log(tag_count) - math.log(tot_min)
+            log_max = math.log(tot_max) - math.log(tot_min)
+            weight = log_count / log_max
             tag_dict = {
                 'name': tag.name,
                 'weight': weight,
@@ -236,7 +239,7 @@ class Tag(db.Base):
             }
             tag_cloud_weighted.append(tag_dict)
 
-        tag_cloud_weighted = sorted(tag_cloud_weighted, key=lambda x:x['name'],
+        tag_cloud_weighted = sorted(tag_cloud_weighted, key=lambda x: x['name'],
                                     reverse=False)
 
         return tag_cloud_weighted
@@ -485,7 +488,7 @@ class Bookmark(db.Base):
 
         # multi-database support (MySQL, PostgreSQL, SQLite) for date conversion
         engine = db.Session.get_bind()
-        if 'sqlite' in engine.driver: # could be 'sqlite', or 'pysqlite'
+        if 'sqlite' in engine.driver:  # could be 'sqlite', or 'pysqlite'
             fn = cast(func.julianday(cls.created_on), Integer)
         elif engine.driver == 'postgresql':
             fn = cast(cls.created_on, sqlalchemy.types.Date)
@@ -516,6 +519,7 @@ class Bookmark(db.Base):
     def __repr__(self):
         return "<Bookmark(title={0}, created_on={1}, private={2}".format(
             self.title, self.created_on, self.private)
+
 
 def get_stats():
     tot_bookmarks = db.Session.query(func.count(Bookmark.id)).\

@@ -70,12 +70,12 @@ def timesince(dt, default=None):
     diff = now_dt - user_dt
 
     periods = (
-        (diff.days / 365, _('year'), _('years')),
-        (diff.days / 30, _('month'), _('months')),
-        (diff.days / 7, _('week'), _('weeks')),
+        (diff.days // 365, _('year'), _('years')),
+        (diff.days // 30, _('month'), _('months')),
+        (diff.days // 7, _('week'), _('weeks')),
         (diff.days, _('day'), _('days')),
-        (diff.seconds / 3600, _('hour'), _('hours')),
-        (diff.seconds / 60, _('minute'), _('minutes')),
+        (diff.seconds // 3600, _('hour'), _('hours')),
+        (diff.seconds // 60, _('minute'), _('minutes')),
         (diff.seconds, _('second'), _('seconds')),
     )
 

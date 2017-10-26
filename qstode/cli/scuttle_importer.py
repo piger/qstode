@@ -15,6 +15,7 @@ import click
 from qstode.model import Bookmark, Tag, Link, User, TAG_MIN, TAG_MAX, tag_name_re
 from qstode.app import app, db
 from qstode.cli.helpers import ObjectCache, parse_datetime, unescape
+from qstode.utils import generate_password
 
 
 # Constants from Scuttle
@@ -88,7 +89,8 @@ def import_scuttle(filename):
         name = db_user.get('name', '').strip()
         if not name:
             name = username
-        password = 'secret'
+        # XXX why do we need to generate/set a new password here?
+        password = generate_password()
         if username is None:
             print "Skipping user without username: id=%r" % db_user['id']
             continue

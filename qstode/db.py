@@ -15,7 +15,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import orm
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.engine.url import make_url
-from . import utils
+from qstode import utils
 
 
 class BaseQuery(orm.Query):

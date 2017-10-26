@@ -12,8 +12,8 @@ import sys
 import json
 import codecs
 import iso8601
-from .. import model
-from .. import db
+from qstode import model
+from qstode import db
 
 
 # Default password for users

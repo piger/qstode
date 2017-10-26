@@ -12,7 +12,7 @@ from functools import wraps
 from flask import Flask, request, redirect, g, session
 from flask_babel import Babel
 from flask_login import LoginManager
-from . import db
+from qstode import db
 
 
 app = Flask('qstode')

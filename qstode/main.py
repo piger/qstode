@@ -15,14 +15,14 @@ import logging.handlers
 import argparse
 import jinja2
 from qstode.app import app, login_manager
-from . import exc
-from . import db
-from . import cli
-from . import utils
+from qstode import exc
+from qstode import db
+from qstode import cli
+from qstode import utils
 
 # import all views and models
-from . import views
-from . import model
+from qstode import views
+from qstode import model
 
 # import all Flask-scripts
 # import qstode.cli.importer

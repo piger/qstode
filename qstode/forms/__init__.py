@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-from .user import *
-from .bookmark import *
-from .misc import *
+from qstode.user import *
+from qstode.bookmark import *
+from qstode.misc import *

@@ -104,7 +104,7 @@ class Pagination(object):
                 last = num
 
 
-def generate_password(length=8):
+def generate_password(length=9):
     """
     Generate a random password suitable to be typed using alternated hands.
     """

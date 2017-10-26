@@ -8,7 +8,7 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
-from urlparse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin
 from flask import request, redirect, url_for
 from flask_wtf import Form
 from wtforms import HiddenField

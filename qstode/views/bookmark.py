@@ -11,7 +11,7 @@
 import re
 import os
 from datetime import datetime
-from urlparse import urljoin
+from urllib.parse import urljoin
 from flask import (render_template, redirect, request, flash,
                    abort, url_for, send_from_directory,
                    make_response)
@@ -74,7 +74,7 @@ def index(page):
 
 @app.route('/about')
 def about():
-    data = dict(zip(('num_bookmarks', 'num_tags'), model.get_stats()))
+    data = dict(list(zip(('num_bookmarks', 'num_tags'), model.get_stats())))
     return render_template('about.html', data=data)
 
 
@@ -139,9 +139,9 @@ def user_bookmarks(username, page):
 def post_bookmark():
     """Posts a new bookmark (with a popup window)"""
 
-    url = request.args.get('url', u'')
-    title = request.args.get('title', u'')
-    notes = request.args.get('notes', u'')
+    url = request.args.get('url', '')
+    title = request.args.get('title', '')
+    notes = request.args.get('notes', '')
 
     form = forms.BookmarkForm(request.form, url=url, title=title, notes=notes)
     if form.validate_on_submit():
@@ -170,7 +170,7 @@ def add():
         db.Session.commit()
         db.Session.refresh(bookmark)
 
-        flash(gettext(u"Bookmark added!"), "success")
+        flash(gettext("Bookmark added!"), "success")
         return redirect(url_for('index'))
 
     return render_template('post.html', form=form)
@@ -216,7 +216,7 @@ def edit_bookmark(bId):
         bookmark.notes = form.notes.data
 
         db.Session.commit()
-        flash(gettext(u"Bookmark modified"), 'success')
+        flash(gettext("Bookmark modified"), 'success')
 
         db.Session.refresh(bookmark)
         return form.redirect('index')
@@ -269,7 +269,7 @@ def rename_tag():
 
         db.Session.commit()
 
-        flash(gettext(u"Tag renamed successfully"), "success")
+        flash(gettext("Tag renamed successfully"), "success")
         return redirect(url_for('rename_tag'))
 
     return render_template('rename_tag.html', form=form)
@@ -313,7 +313,7 @@ def simple_search():
         ex_tags = []
         for tag_name in form.query.data:
             # The leading '-' must be stripped from the excluded tag names!
-            if tag_name.startswith(u'-'):
+            if tag_name.startswith('-'):
                 ex_tags.append(tag_name[1:])
             else:
                 in_tags.append(tag_name)
@@ -355,7 +355,7 @@ def feed_recent():
 
         feed.add(title=bookmark.title,
                  title_type='text',
-                 content=unicode(bookmark.notes),
+                 content=str(bookmark.notes),
                  content_type='text',
                  author=bookmark.user.username,
                  url=bookmark.href,

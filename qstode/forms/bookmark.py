@@ -46,9 +46,9 @@ class TagListField(Field):
 
     def _value(self):
         if self.data:
-            return u', '.join(self.data)
+            return ', '.join(self.data)
         else:
-            return u''
+            return ''
 
     def process_formdata(self, valuelist):
         if valuelist:
@@ -74,7 +74,7 @@ class TagListField(Field):
 
 
 class SimpleSearchForm(FlaskForm):
-    query = TagListField(_(u'Search tags'), [
+    query = TagListField(_('Search tags'), [
         DataRequired(),
         ItemsLength(TAG_MIN, TAG_MAX),
         ListLength(TAGLIST_MIN, TAGLIST_MAX),
@@ -87,23 +87,23 @@ class TypeaheadTextInput(TextInput):
     """A TextInput with javascript 'typeahead' support"""
 
     def __call__(self, field, **kwargs):
-        kwargs['data-provide'] = u'typeahead'
+        kwargs['data-provide'] = 'typeahead'
         return super(TypeaheadTextInput, self).__call__(field, **kwargs)
 
 
 class BookmarkForm(RedirectForm):
     """Form used to post new bookmarks"""
 
-    title = TextField(_(u'Title'), [DataRequired()])
-    url = URLField(_(u'URL'), [DataRequired(), URL()])
-    private = BooleanField(_(u'Private'), default=False)
-    tags = TagListField(_(u'Tag'), [
+    title = TextField(_('Title'), [DataRequired()])
+    url = URLField(_('URL'), [DataRequired(), URL()])
+    private = BooleanField(_('Private'), default=False)
+    tags = TagListField(_('Tag'), [
         DataRequired(),
         ItemsLength(TAG_MIN, TAG_MAX),
         ListLength(TAGLIST_MIN, TAGLIST_MAX),
         ListRegexp(tag_name_re),
     ])
-    notes = TextAreaField(_(u'Note'), [
+    notes = TextAreaField(_('Note'), [
         Optional(),
         Length(0, NOTES_MAX),
     ])
@@ -114,7 +114,7 @@ class BookmarkForm(RedirectForm):
             'url': self.url.data,
             'private': self.private.data,
             'tags': list(self.tags.data),
-            'notes': self.notes.data or u"",
+            'notes': self.notes.data or "",
             'user': user,
         }
         bookmark = Bookmark.create(data)
@@ -132,7 +132,7 @@ class BookmarkForm(RedirectForm):
 
 
 class TagSelectionForm(FlaskForm):
-    tag = SelectField(_(u"Tag"), coerce=int)
+    tag = SelectField(_("Tag"), coerce=int)
 
 
 class RenameTagForm(FlaskForm):

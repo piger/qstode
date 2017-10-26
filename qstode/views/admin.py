@@ -56,7 +56,7 @@ def admin_create_user():
         db.Session.add(user)
         db.Session.commit()
 
-        flash(gettext(u"Successfully created user %(username)s", username=user.username), "success")
+        flash(gettext("Successfully created user %(username)s", username=user.username), "success")
         return redirect(url_for("admin_users"))
 
     return render_template("admin/create_user.html", form=form)
@@ -73,7 +73,7 @@ def admin_delete_user(id):
         db.Session.delete(user)
         db.Session.commit()
 
-        flash(gettext(u"User %(username)s deleted", username=username),
+        flash(gettext("User %(username)s deleted", username=username),
               "success")
         return form.redirect()
 
@@ -104,7 +104,7 @@ def admin_edit_user(id):
         user.email = form.email.data
         db.Session.commit()
 
-        flash(gettext(u"User %(user)s updated", user=user.username), "success")
+        flash(gettext("User %(user)s updated", user=user.username), "success")
         return redirect(url_for('admin_users'))
 
     return render_template("admin/edit_user.html", user=user, form=form)

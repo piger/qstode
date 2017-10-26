@@ -46,8 +46,8 @@ def unescape(s):
     """Unescape a string containing \' or \" escapings"""
 
     corrections = (
-        (u"\\'", u"'"),
-        (u'\\"', u'"'))
+        ("\\'", "'"),
+        ('\\"', '"'))
 
     for pattern, repl in corrections:
         s = s.replace(pattern, repl)

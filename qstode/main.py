@@ -43,7 +43,7 @@ def create_app(cfg=None):
     try:
         db.init_db(app.config['SQLALCHEMY_DATABASE_URI'], app)
         login_manager.init_app(app)
-    except exc.InitializationError, ex:
+    except exc.InitializationError as ex:
         sys.stderr.write("Initialization error: %s\n" % str(ex))
         sys.exit(1)
 

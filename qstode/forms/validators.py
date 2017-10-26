@@ -28,8 +28,8 @@ def ItemsLength(min_length=1, max_length=100):
         for item in field.data:
             l = len(item)
             if l < min_length or l > max_length:
-                raise ValidationError(_(u"All elements must be between "
-                                        u"%(min)d and %(max)d characters" % {
+                raise ValidationError(_("All elements must be between "
+                                        "%(min)d and %(max)d characters" % {
                                             'min': min_length,
                                             'max': max_length,
                                         }))
@@ -45,8 +45,8 @@ def ListLength(min_length=1, max_length=100):
 
         l = len(field.data)
         if l < min_length or l > max_length:
-            raise ValidationError(_(u"All elements must be between "
-                                    u"%(min)d and %(max)d characters" % {
+            raise ValidationError(_("All elements must be between "
+                                    "%(min)d and %(max)d characters" % {
                                         'min': min_length,
                                         'max': max_length,
                                     }))
@@ -62,7 +62,7 @@ def ListRegexp(regex):
 
         for item in field.data:
             if regex.match(item) is None:
-                raise ValidationError(_(u"Invalid characters"))
+                raise ValidationError(_("Invalid characters"))
 
     return _ListRegexp
 
@@ -76,7 +76,7 @@ def unique_username(include_self=False):
 
         user = User.query.filter_by(username=field.data).first()
         if user is not None:
-            raise ValidationError(_(u"Username already taken"))
+            raise ValidationError(_("Username already taken"))
 
     return _unique_username
 
@@ -90,7 +90,7 @@ def unique_email(include_self=False):
 
         user = User.query.filter_by(email=field.data).first()
         if user is not None:
-            raise ValidationError(_(u"Email already taken"))
+            raise ValidationError(_("Email already taken"))
 
     return _unique_email
 

@@ -47,7 +47,7 @@ class BookmarkView(MethodView):
              first()
 
         if rv is None:
-            raise APIError(u"Bookmark not found", status_code=404)
+            raise APIError("Bookmark not found", status_code=404)
         else:
             return jsonify(bookmark=rv.to_dict())
 
@@ -62,7 +62,7 @@ class BookmarkListView(MethodView):
         try:
             page = int(request.args.get('page', 1))
         except ValueError:
-            raise APIError(u"Invalid page requested", status_code=400)
+            raise APIError("Invalid page requested", status_code=400)
 
         bookmarks = model.Bookmark.get_latest().\
                     paginate(page, app.config['PER_PAGE'])
@@ -96,7 +96,7 @@ app.add_url_rule('/api/tags/popular', view_func=taglist_view, methods=['GET'])
 
 @app.route('/_complete/tags')
 def complete_tags():
-    term = request.args.get("term", u"", type=unicode)
+    term = request.args.get("term", "", type=str)
     results = []
 
     if term:

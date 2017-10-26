@@ -22,7 +22,7 @@ from qstode import exc
 
 
 # Constants used in the Redis message queue
-OP_INDEX, OP_UPDATE, OP_DELETE = range(3)
+OP_INDEX, OP_UPDATE, OP_DELETE = list(range(3))
 
 # Queue names for Redis
 QUEUE_INDEX = "index_in"
@@ -45,10 +45,10 @@ def create_document(bookmark):
     """Creates a Document (a dict) for the search engine"""
 
     doc = {
-        'id': unicode(bookmark.id),
-        'title': bookmark.title or u"",
-        'notes': bookmark.notes or u"",
-        'tags': u", ".join([tag.name for tag in bookmark.tags]),
+        'id': str(bookmark.id),
+        'title': bookmark.title or "",
+        'notes': bookmark.notes or "",
+        'tags': ", ".join([tag.name for tag in bookmark.tags]),
     }
     return doc
 
@@ -159,7 +159,7 @@ class WhooshSearcher(object):
     def delete_bookmark(self, bookmark_id, writer=None):
         """Delete a Bookmark from the index"""
 
-        _id = unicode(bookmark_id)
+        _id = str(bookmark_id)
 
         if writer is None:
             writer = self.get_async_writer()

@@ -37,7 +37,7 @@ watched_table = None
 
 
 BOOKMARK_FILE_HEADER = \
-u"""<!DOCTYPE NETSCAPE-Bookmark-file-1>
+"""<!DOCTYPE NETSCAPE-Bookmark-file-1>
 <!--This is an automatically generated file.
 It will be read and overwritten.
 Do Not Edit! -->
@@ -47,11 +47,11 @@ Do Not Edit! -->
 """
 
 BOOKMARK_FILE_FOOTER_TPL = \
-u"""</DL><p><!-- Generated on: {today} -->
+"""</DL><p><!-- Generated on: {today} -->
 """
 
 BOOKMARK_TPL = \
-u"""<DT><A HREF="{href}" ADD_DATE="{add_date}" LAST_MODIFIED="{mod_date}" PRIVATE="{private}" TAGS="{tags}">{title}</A>
+"""<DT><A HREF="{href}" ADD_DATE="{add_date}" LAST_MODIFIED="{mod_date}" PRIVATE="{private}" TAGS="{tags}">{title}</A>
 """
 
 class BaseModel(object): pass
@@ -63,10 +63,10 @@ class User(BaseModel):
             'password': self.password,
             'created_at': self.uDatetime.isoformat(),
             'modified_at': self.uModified.isoformat(),
-            'name': self.name or u'',
+            'name': self.name or '',
             'email': self.email,
-            'homepage': self.homepage or u'',
-            'content': self.uContent or u'',
+            'homepage': self.homepage or '',
+            'content': self.uContent or '',
             'bookmarks': [],
             'watched_ids': [],
         }
@@ -83,11 +83,11 @@ class Bookmark(BaseModel):
         return {
             'id': self.bId,
             'status': self.bStatus,
-            'title': self.bTitle or u'',
+            'title': self.bTitle or '',
             'created_at': self.bDatetime.isoformat(),
             'modified_at': self.bModified.isoformat(),
             'url': self.bAddress,
-            'description': self.bDescription or u'',
+            'description': self.bDescription or '',
             'hash': self.bHash,
             'tags': [t.tag for t in self.tags],
         }
@@ -179,7 +179,7 @@ def export_scuttle(config_file, outfile='scuttle-export.json'):
 
     config = read_config(config_file)
     if os.path.exists(outfile):
-        print "Output file already exists!"
+        print("Output file already exists!")
         sys.exit(1)
 
     engine = init_db(config['uri'])
@@ -200,7 +200,7 @@ def export_scuttle(config_file, outfile='scuttle-export.json'):
         for bookmark in db_user.bookmarks:
             user['bookmarks'].append(bookmark.to_dict())
 
-    print "Writing output..."
+    print("Writing output...")
 
     with codecs.open(outfile, 'w', encoding='utf-8') as fd:
         json.dump(export, fd, ensure_ascii=False, encoding='utf-8')
@@ -230,14 +230,14 @@ def export_scuttle_html(config_file, outdir):
                 'add_date': dt_to_unix(bookmark.bDatetime),
                 'mod_date': dt_to_unix(bookmark.bModified),
                 'private': 1 if bookmark.bStatus == 2 else 0,
-                'tags': u','.join([t.name for t in bookmark.tags]),
+                'tags': ','.join([t.name for t in bookmark.tags]),
                 'title': cgi.escape(bookmark.bTitle),
             }
             data = BOOKMARK_TPL.format(**context)
 
             outfd.write(data)
             if bookmark.bDescription:
-                outfd.write(u"<DD>%s\n" % cgi.escape(bookmark.bDescription))
+                outfd.write("<DD>%s\n" % cgi.escape(bookmark.bDescription))
 
         outfd.write(BOOKMARK_FILE_FOOTER_TPL.format(
             today=datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
@@ -245,7 +245,7 @@ def export_scuttle_html(config_file, outdir):
         sys.stdout.write('.')
         sys.stdout.flush()
 
-    print
+    print()
 
 def main():
     from optparse import OptionParser

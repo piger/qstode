@@ -93,7 +93,7 @@ class Pagination(object):
             {% endmacro %}
         """
         last = 0
-        for num in xrange(1, self.pages + 1):
+        for num in range(1, self.pages + 1):
             if num <= left_edge or \
                (num > self.page - left_current - 1 and \
                 num < self.page + right_current) or \
@@ -115,7 +115,7 @@ def generate_password(length=9):
     first_hand = random.randint(0, 1)
     pw = []
 
-    for i in xrange(length):
+    for i in range(length):
         if (i + first_hand) % 2:
             pw.append(rng.choice(left_hand))
         else:

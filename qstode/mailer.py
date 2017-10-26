@@ -38,7 +38,7 @@ class Mailer(object):
             conn = smtplib.SMTP(server, port)
             conn.sendmail(self.sender, [to], msg.as_string())
             conn.quit()
-        except (smtplib.SMTPException, socket.error), ex:
+        except (smtplib.SMTPException, socket.error) as ex:
             app.logger.error("Unable to send mail: %s" % str(ex))
             app.logger.exception(ex)
             return False

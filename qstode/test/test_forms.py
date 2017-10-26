@@ -20,11 +20,11 @@ from ..forms.validators import *
 
 
 SAMPLE_DATA = {
-    'title': u"A Test title",
-    'url': u"http://www.example.com",
+    'title': "A Test title",
+    'url': "http://www.example.com",
     'private': False,
-    'tags': u"test, form validation, mordor",
-    'notes': u"A couple of notes",
+    'tags': "test, form validation, mordor",
+    'notes': "A couple of notes",
 }
 
 
@@ -32,7 +32,7 @@ class ValidatorsTest(test.FlaskTestCase):
     def setUp(self):
         super(ValidatorsTest, self).setUp()
         self._load_data([
-            model.User(u'pippo', 'pippo@example.com', 'secret')
+            model.User('pippo', 'pippo@example.com', 'secret')
         ])
 
     def test_unique_username_ok(self):
@@ -41,7 +41,7 @@ class ValidatorsTest(test.FlaskTestCase):
         class TestForm(Form):
             username = StringField("username", [unique_username()])
 
-        form = TestForm(username=u"charlie_root")
+        form = TestForm(username="charlie_root")
         self.assertTrue(form.validate())
 
     def test_unique_username_fail(self):
@@ -50,7 +50,7 @@ class ValidatorsTest(test.FlaskTestCase):
         class TestForm(Form):
             username = StringField("username", [unique_username()])
 
-        form = TestForm(username=u"pippo")
+        form = TestForm(username="pippo")
         self.assertFalse(form.validate())
 
     def test_unique_email_ok(self):
@@ -59,7 +59,7 @@ class ValidatorsTest(test.FlaskTestCase):
         class TestForm(Form):
             email = StringField("email", [unique_email()])
 
-        form = TestForm(email=u"charlie@root.com")
+        form = TestForm(email="charlie@root.com")
         self.assertTrue(form.validate())
 
     def test_unique_email_fail(self):
@@ -68,7 +68,7 @@ class ValidatorsTest(test.FlaskTestCase):
         class TestForm(Form):
             email = StringField("email", [unique_email()])
 
-        form = TestForm(email=u"pippo@example.com")
+        form = TestForm(email="pippo@example.com")
         self.assertFalse(form.validate())
 
 
@@ -76,12 +76,12 @@ class BookmarkFormBaseTest(test.FlaskTestCase):
     def setUp(self):
         super(BookmarkFormBaseTest, self).setUp()
         self._load_data([
-            model.User(u'pippo', 'pippo@example.com', 'secret')
+            model.User('pippo', 'pippo@example.com', 'secret')
         ])
 
     def _login(self):
         rv = self.client.post('/login', data={
-            "user": u"pippo@example.com",
+            "user": "pippo@example.com",
             "password": "secret"
         }, follow_redirects=False)
         self.assert_redirects(rv, url_for('index'))
@@ -100,7 +100,7 @@ class BookmarkFormTest(BookmarkFormBaseTest):
 
         b = model.Bookmark.query.filter_by(title=SAMPLE_DATA['title']).first()
         self.assertIsNotNone(b, "Non e' stato creato il Bookmark")
-        self.assertEquals(b.href, SAMPLE_DATA['url'])
+        self.assertEqual(b.href, SAMPLE_DATA['url'])
 
     def test_missing_fields(self):
         """Failed validation of Bookmark submission with missing fields"""
@@ -117,7 +117,7 @@ class BookmarkFormTest(BookmarkFormBaseTest):
     def test_notes_validation(self):
         self._login()
         data = SAMPLE_DATA.copy()
-        data['notes'] = u"A" * (model.NOTES_MAX + 1)
+        data['notes'] = "A" * (model.NOTES_MAX + 1)
 
         rv = self.client.post(url_for('add'), data=data)
         self.assert200(rv)
@@ -132,48 +132,48 @@ class TagListTest(BookmarkFormBaseTest):
             
         with self.app.test_request_context():
             data = MultiDict([
-                ("tags", u"fast, lazy, , ,,,"),
+                ("tags", "fast, lazy, , ,,,"),
             ])
             form = TestForm(data)
             self.assertTrue(form.validate())
-            self.assertEquals(form.tags.data, [u'fast', u'lazy'])
+            self.assertEqual(form.tags.data, ['fast', 'lazy'])
 
     def test_taglist_duplicates(self):
         """Duplicate and mixed-case handling of TagList field"""
 
         self._login()
         rv = self.client.post('/add', data={
-            'title': u'Un titolo',
-            'url': u'http://www.google.it',
+            'title': 'Un titolo',
+            'url': 'http://www.google.it',
             'private': False,
-            'tags': u"uno, uno, UNO, uNo, UnO",
-            'notes': u''
+            'tags': "uno, uno, UNO, uNo, UnO",
+            'notes': ''
         })
         self.assert_redirects(rv, url_for('index'))
 
-        b = model.Bookmark.query.filter_by(title=u'Un titolo').first()
+        b = model.Bookmark.query.filter_by(title='Un titolo').first()
         self.assertIsNotNone(b, "Non e' stato creato il Bookmark")
-        self.assertEquals(b.href, u'http://www.google.it')
+        self.assertEqual(b.href, 'http://www.google.it')
         tags = [tag.name for tag in b.tags]
         assert len(tags) == 1
-        assert tags[0] == u"uno"
+        assert tags[0] == "uno"
 
     def test_length_validator_exceed(self):
         """Validation of maximum number of tags for TagList field"""
 
         self._login()
         data = SAMPLE_DATA.copy()
-        tags = u', '.join([u"tag-%d" % i for i in xrange(forms.TAGLIST_MAX + 1)])
+        tags = ', '.join(["tag-%d" % i for i in range(forms.TAGLIST_MAX + 1)])
         data['tags'] = tags
         rv = self.client.post('/add', data=data)
-        self.assertEquals(rv.status_code, 200)
+        self.assertEqual(rv.status_code, 200)
 
     def test_length_validator_correct(self):
         """Validation of Bookmark submission"""
 
         self._login()
         data = SAMPLE_DATA.copy()
-        tags = u', '.join([u"tag-%d" % i for i in xrange(49)])
+        tags = ', '.join(["tag-%d" % i for i in range(49)])
         data['tags'] = tags
         rv = self.client.post('/add', data=data)
         self.assertTrue(rv.status_code in (301, 302), "Got %r instead (%r)" % (rv.status_code, rv.data))
@@ -197,8 +197,8 @@ class LoginFormTest(test.FlaskTestCase):
             g.lang = "en"
 
             data = MultiDict([
-                ('user', u'user@example.com'),
-                ('password', u'secret'),
+                ('user', 'user@example.com'),
+                ('password', 'secret'),
             ])
             form = forms.LoginForm(data)
             self.assertTrue(form.validate())
@@ -209,8 +209,8 @@ class PasswordChangeFormTest(test.FlaskTestCase):
         with self.app.test_request_context():
             g.lang = "en"
             data = MultiDict([
-                ('password', u''),
-                ('password_confirm', u'')])
+                ('password', ''),
+                ('password_confirm', '')])
             form = forms.PasswordChangeForm(data)
             self.assertFalse(form.validate())
 
@@ -218,8 +218,8 @@ class PasswordChangeFormTest(test.FlaskTestCase):
         with self.app.test_request_context():
             g.lang = "en"
             data = MultiDict([
-                ('password', u'abcd1234'),
-                ('password_confirm', u'abcd1234')])
+                ('password', 'abcd1234'),
+                ('password_confirm', 'abcd1234')])
             form = forms.PasswordChangeForm(data)
             self.assertTrue(form.validate())
 
@@ -227,7 +227,7 @@ class PasswordChangeFormTest(test.FlaskTestCase):
         with self.app.test_request_context():
             g.lang = "en"
             data = MultiDict([
-                ('password', u'abcd'),
-                ('password_confirm', u'abcd')])
+                ('password', 'abcd'),
+                ('password_confirm', 'abcd')])
             form = forms.PasswordChangeForm(data)
             self.assertFalse(form.validate())

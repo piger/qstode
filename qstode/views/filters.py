@@ -10,7 +10,7 @@
 """
 import os
 import re
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import calendar
 from datetime import datetime
 from flask import request, url_for
@@ -35,7 +35,7 @@ def get_domain(s):
 @app.template_filter('urlencode')
 def tf_urlencode(s):
     """Returns the URL encoded version of a string"""
-    return urllib2.quote(s.encode('utf-8'))
+    return urllib.parse.quote(s.encode('utf-8'))
 
 
 def url_for_other_page(page):
@@ -63,7 +63,7 @@ def timesince(dt, default=None):
     """
 
     if default is None:
-        default = _(u'now')
+        default = _('now')
 
     user_dt = to_user_timezone(dt)
     now_dt = to_user_timezone(datetime.utcnow())
@@ -71,13 +71,13 @@ def timesince(dt, default=None):
     diff = now_dt - user_dt
 
     periods = (
-        (diff.days / 365, _(u'year'), _(u'years')),
-        (diff.days / 30, _(u'month'), _(u'months')),
-        (diff.days / 7, _(u'week'), _(u'weeks')),
-        (diff.days, _(u'day'), _(u'days')),
-        (diff.seconds / 3600, _(u'hour'), _(u'hours')),
-        (diff.seconds / 60, _(u'minute'), _(u'minutes')),
-        (diff.seconds, _(u'second'), _(u'seconds')),
+        (diff.days / 365, _('year'), _('years')),
+        (diff.days / 30, _('month'), _('months')),
+        (diff.days / 7, _('week'), _('weeks')),
+        (diff.days, _('day'), _('days')),
+        (diff.seconds / 3600, _('hour'), _('hours')),
+        (diff.seconds / 60, _('minute'), _('minutes')),
+        (diff.seconds, _('second'), _('seconds')),
     )
 
     for period, singular, plural in periods:
@@ -102,7 +102,7 @@ def versioned_url_processor():
         static_filename = os.path.join(app.static_folder, filename)
         modtime = os.path.getmtime(static_filename)
         static_url = url_for('static', filename=filename)
-        return u"%s?v=%d" % (static_url, modtime)
+        return "%s?v=%d" % (static_url, modtime)
 
     return dict(versioned_url=versioned_url)
 

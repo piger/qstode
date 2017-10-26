@@ -8,7 +8,7 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
-from urlparse import urljoin
+from urllib.parse import urljoin
 from flask import session, request, redirect, flash, render_template, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_babel import gettext as _
@@ -45,14 +45,14 @@ def login():
     login_failed = False
 
     if form.validate_on_submit():
-        if u'@' in form.user.data:
+        if '@' in form.user.data:
             user = User.query.filter_by(email=form.user.data).first()
         else:
             user = User.query.filter_by(username=form.user.data).first()
 
         if user and user.active and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            flash(_(u"Successfully logged in as %(user)s", user=user.username), "success")
+            flash(_("Successfully logged in as %(user)s", user=user.username), "success")
             return redirect(url_for('index'))
 
         login_failed = True
@@ -82,7 +82,7 @@ def user_details():
             current_user.set_password(form.password.data)
 
         db.Session.commit()
-        flash(_(u"Profile successfully updated"), 'success')
+        flash(_("Profile successfully updated"), 'success')
         return redirect(url_for('user_details'))
 
     return render_template('user_details.html', form=form)
@@ -186,7 +186,7 @@ def register_user():
         db.Session.add(user)
         db.Session.commit()
 
-        flash(_(u"Welcome to QStode!"), "success")
+        flash(_("Welcome to QStode!"), "success")
         return redirect(url_for('login'))
 
     return render_template('register_user.html', form=form,

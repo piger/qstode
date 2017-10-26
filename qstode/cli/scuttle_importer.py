@@ -39,9 +39,9 @@ def list_duplicate_emails(data):
             emails.setdefault(email, 0)
             emails[email] += 1
 
-    for email, tot in emails.iteritems():
+    for email, tot in emails.items():
         if tot > 1:
-            print email, tot
+            print(email, tot)
 
 
 def cleanup_tags(tags):
@@ -50,7 +50,7 @@ def cleanup_tags(tags):
     rv = []
     for tag in tags:
         # strip commas
-        tag = tag.replace(u",", u"")
+        tag = tag.replace(",", "")
 
         # unescape, strip
         tag = unescape(tag)
@@ -82,7 +82,7 @@ def import_scuttle(filename):
 
     tot = len(data['users'])
     for i, db_user in enumerate(data['users']):
-        print "Importing user %d of %d" % (i+1, tot)
+        print("Importing user %d of %d" % (i+1, tot))
 
         username = db_user.get('username')
         email = db_user.get('email', '').lower()
@@ -92,10 +92,10 @@ def import_scuttle(filename):
         # XXX why do we need to generate/set a new password here?
         password = generate_password()
         if username is None:
-            print "Skipping user without username: id=%r" % db_user['id']
+            print("Skipping user without username: id=%r" % db_user['id'])
             continue
         elif not email:
-            print "Skipping user without email address: id=%r" % db_user['id']
+            print("Skipping user without email address: id=%r" % db_user['id'])
             continue
 
         # We merge bookmarks for users with the same e-mail address
@@ -134,7 +134,7 @@ def import_scuttle(filename):
     db.Session.add_all(all_users)
     try:
         db.Session.commit()
-    except Exception, e:
-        print "Caught exception!"
-        print e
+    except Exception as e:
+        print("Caught exception!")
+        print(e)
         db.Session.rollback()

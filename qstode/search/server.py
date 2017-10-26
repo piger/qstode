@@ -60,7 +60,7 @@ class IndexerDaemon(object):
         try:
             payload = json.loads(msg)
             op, _id = payload
-        except ValueError, ex:
+        except ValueError as ex:
             log.error("Invalid job in queue: {0}: {1}".format(msg, str(ex)))
         else:
             self.process(op, _id)
@@ -118,7 +118,7 @@ def main():
     try:
         srv.main_loop()
     except KeyboardInterrupt:
-        print "Interrupt"
+        print("Interrupt")
 
 
 if __name__ == '__main__':

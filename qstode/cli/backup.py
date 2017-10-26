@@ -79,7 +79,7 @@ def backup(filename):
 
         users.append(user_dict)
 
-    print "Writing backup to: {}".format(filename)
+    click.echo("Writing backup to: {}".format(filename))
     with codecs.open(filename, 'w', encoding='utf-8') as fd:
         json.dump(dict(backup=users), fd, ensure_ascii=False, indent=4)
 
@@ -95,12 +95,12 @@ def import_file(filename):
         data = json.load(fd)
 
     if data is None:
-        print "Error: Invalid bakcup file"
+        click.echo("Error: Invalid bakcup file")
         sys.exit(1)
 
     users_data = data.get('backup')
     if users_data is None:
-        print "Error: Invalid backup file format"
+        click.echo("Error: Invalid backup file format")
         sys.exit(1)
 
     for user_data in users_data:

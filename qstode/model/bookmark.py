@@ -324,7 +324,7 @@ class Bookmark(db.Base):
             self.created_on = created_on
         if modified_on is not None:
             self.modified_on = modified_on
-        self.notes = notes or u""
+        self.notes = notes or ""
 
     @classmethod
     def create(cls, data):

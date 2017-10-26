@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     qstode.cli.scuttle_importer
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~

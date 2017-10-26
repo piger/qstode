@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     qstode.test.test_api
     ~~~~~~~~~~~~~~~~~~~~

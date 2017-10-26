@@ -46,7 +46,7 @@ class FrontendViewsTest(FlaskTestCase):
     def test_index_content(self):
         rv = self.client.get(url_for('index'))
         self.assert200(rv)
-        assert "Python website" in rv.data
+        assert b"Python website" in rv.data
 
     def test_login_failure(self):
         form_data = {

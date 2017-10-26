@@ -111,7 +111,7 @@ class BookmarkFormTest(BookmarkFormBaseTest):
             data.pop(field)
             rv = self.client.post('/add', data=data)
             self.assert200(rv)
-            res = "field is required" in rv.data or "Invalid URL" in rv.data
+            res = b"field is required" in rv.data or b"Invalid URL" in rv.data
             self.assertTrue(res, rv.data)
 
     def test_notes_validation(self):

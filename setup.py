@@ -22,7 +22,6 @@ setup(
     license="BSD",
     long_description=__doc__,
     install_requires=[
-        'argparse',
         'Babel==2.5.1',
         'Flask==0.12.2',
         'Flask-Babel==0.11.2',
@@ -39,10 +38,8 @@ setup(
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),
-    entry_points={
-        "console_scripts": [
-            "qstode = qstode.main:main",
-            "qstode-scuttle-export = qstode.cli.scuttle_exporter:main",
-        ],
-    },
+    entry_points="""
+    [console_scripts]
+    qstode-scuttle-export = qstode.cli.scuttle_exporter:main
+    """,
 )

@@ -30,7 +30,7 @@ setup(
         'SQLAlchemy==1.1.14',
         'WTForms==2.1',
         'alembic==0.8.4',
-        'MySQL-Python>=1.2.4',
+        'mysqlclient==1.3.12',
         'iso8601==0.1.12',
         'pytz',
     ],

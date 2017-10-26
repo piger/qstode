@@ -12,6 +12,8 @@ import sys
 import json
 import codecs
 import iso8601
+import click
+from qstode.app import app
 from qstode import model
 from qstode import db
 
@@ -51,7 +53,9 @@ def _parse_date(d):
     return d
 
 
-def backup_db(args):
+@app.cli.command()
+@click.argument('filename')
+def backup(filename):
     users = []
 
     for user in model.User.query.all():
@@ -75,17 +79,19 @@ def backup_db(args):
 
         users.append(user_dict)
 
-    print "Writing backup to: {}".format(args.filename)
-    with codecs.open(args.filename, 'w', encoding='utf-8') as fd:
+    print "Writing backup to: {}".format(filename)
+    with codecs.open(filename, 'w', encoding='utf-8') as fd:
         json.dump(dict(backup=users), fd, ensure_ascii=False, indent=4)
 
 
-def import_file(args):
+@app.cli.command()
+@click.argument('filename')
+def import_file(filename):
     tag_cache = TagCache()
     link_cache = LinkCache()
     data = None
 
-    with codecs.open(args.filename, 'rb', encoding='utf-8') as fd:
+    with codecs.open(filename, 'rb', encoding='utf-8') as fd:
         data = json.load(fd)
 
     if data is None:
@@ -143,6 +149,3 @@ def import_file(args):
             user.bookmarks.append(bookmark)
 
     db.Session.commit()
-
-
-__all__ = ['backup_db', 'import_file']

@@ -11,14 +11,10 @@
 import json
 import codecs
 import os
-import iso8601
-import re
-from ..model import Bookmark, Tag, Link, User, TAG_MIN, TAG_MAX, tag_name_re
-from ..app import db
-from .helpers import ObjectCache, parse_datetime, unescape
-
-
-__all__ = ['import_scuttle']
+import click
+from qstode.model import Bookmark, Tag, Link, User, TAG_MIN, TAG_MAX, tag_name_re
+from qstode.app import app, db
+from qstode.cli.helpers import ObjectCache, parse_datetime, unescape
 
 
 # Constants from Scuttle
@@ -66,21 +62,21 @@ def cleanup_tags(tags):
             continue
         rv.append(tag)
 
-    rv = set([tag.lower() for tag in rv])
-    return rv
+    return set([tag.lower() for tag in rv])
 
 
-def import_scuttle(args):
+@app.cli.command()
+@click.argument('filename')
+def import_scuttle(filename):
     """Import data from a Scuttle JSON export file"""
 
     data = None
     tag_cache = TagCache()
     link_cache = LinkCache()
     users = {}
-    emails = {}
     all_users = []
 
-    with codecs.open(args.filename, 'r', encoding='utf-8') as fd:
+    with codecs.open(filename, 'r', encoding='utf-8') as fd:
         data = json.load(fd, encoding='utf-8')
 
     tot = len(data['users'])
@@ -140,25 +136,3 @@ def import_scuttle(args):
         print "Caught exception!"
         print e
         db.Session.rollback()
-
-
-def main():
-    from optparse import OptionParser
-    from qstode.main import create_app
-
-    parser = OptionParser()
-    parser.add_option('-c', '--config')
-    (opts, args) = parser.parse_args()
-    if not args:
-        parser.error("You must specify a json export file")
-    if not opts.config:
-        parser.error("You must specify a configuration file")
-
-    os.environ['APP_CONFIG'] = os.path.abspath(opts.config)
-
-    app = create_app()
-    import_scuttle(args[0])
-
-
-if __name__ == '__main__':
-    main()

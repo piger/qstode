@@ -10,8 +10,6 @@
 """
 import sys
 import os
-import logging
-import logging.handlers
 import argparse
 import jinja2
 from qstode.app import app, login_manager
@@ -31,16 +29,6 @@ from qstode import model
 # import qstode.cli.index
 
 
-def _get_syslog_socket():
-    if sys.platform.startswith('linux'):
-        return '/dev/log'
-    elif sys.platform.startswith('darwin'):
-        return '/var/run/syslog'
-    else:
-        raise RuntimeError("Unsupported syslog platform; see SYSLOG_SOCKET "
-                           "configuration option.")
-
-
 def create_app(cfg=None):
     """Configure the Flask application object and run initialization tasks
 
@@ -57,18 +45,6 @@ def create_app(cfg=None):
             jinja2.FileSystemLoader(app.config['EXTRA_TEMPLATES']),
             app.jinja_loader])
         app.jinja_loader = tpl_loader
-
-    # setup logging to syslog in production
-    if not app.debug:
-        syslog_socket = app.config.get('SYSLOG_SOCKET')
-        if syslog_socket is None:
-            syslog_socket = _get_syslog_socket()
-
-        level = app.config.get('LOGGING_LEVEL', logging.INFO)
-
-        handler = logging.handlers.SysLogHandler(address=syslog_socket)
-        handler.setLevel(level)
-        app.logger.addHandler(handler)
 
     try:
         db.init_db(app.config['SQLALCHEMY_DATABASE_URI'], app)

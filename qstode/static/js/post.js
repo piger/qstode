@@ -1,3 +1,3 @@
 $(function() {
-	setupAutocomplete($("#tags"));
+    setupAutocomplete($("#tags"));
 });

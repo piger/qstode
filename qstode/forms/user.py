@@ -12,15 +12,13 @@ import re
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.recaptcha import RecaptchaField
-from wtforms import (TextField, PasswordField, ValidationError, BooleanField,
-                     HiddenField)
-from wtforms.validators import (DataRequired, Email, EqualTo, Length, Regexp,
-                                Optional)
+from wtforms import TextField, PasswordField, ValidationError, BooleanField, HiddenField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, Optional
 from wtforms.fields.html5 import EmailField
 from flask_babel import lazy_gettext as _
-from .misc import RedirectForm
-from .validators import unique_username, unique_email
-from ..model import User
+from qstode.forms.misc import RedirectForm
+from qstode.forms.validators import unique_username, unique_email, friendly_email
+from qstode.model import User
 
 
 # Length limit for password validation
@@ -126,6 +124,7 @@ class RegistrationForm(FlaskForm):
     email = EmailField(_(u'Email'), [
         DataRequired(),
         Email(),
+        friendly_email,
         unique_email(),
     ])
     password = PasswordField(_(u'Password'), [

@@ -11,7 +11,11 @@
 from flask_login import current_user
 from flask_babel import lazy_gettext as _
 from wtforms import ValidationError
-from ..model import User
+from qstode.model import User
+from qstode.app import app
+
+
+ERR_FRIEND_EMAIL = _("Your email address is not part of the friendly domains list.")
 
 
 def ItemsLength(min_length=1, max_length=100):
@@ -89,3 +93,14 @@ def unique_email(include_self=False):
             raise ValidationError(_(u"Email already taken"))
 
     return _unique_email
+
+
+def friendly_email():
+    def _friendly_email(form, field):
+        friend_domains = app.config.get('FRIEND_DOMAINS', [])
+        if friend_domains:
+            domain = field.data.rsplit('@', 1)[1]
+            if domain not in friend_domains:
+                raise ValidationError(ERR_FRIEND_EMAIL)
+    return _friendly_email
+

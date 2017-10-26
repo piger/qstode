@@ -30,3 +30,6 @@ ENABLE_RECAPTCHA = False
 
 # Autocomplete API: number of tag returned
 TAG_AUTOCOMPLETE_MAX = 15
+
+# Restrict registration to the following domains: (empty list disable this feature)
+FRIEND_DOMAINS = []

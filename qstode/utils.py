@@ -32,7 +32,7 @@ class Pagination(object):
         if self.per_page == 0:
             pages = 0
         else:
-            pages = int(math.ceil(self.total / float(self.per_page)))
+            pages = int(math.ceil(self.total / self.per_page))
         return pages
 
     def prev(self, error_out=False):

@@ -6,6 +6,7 @@ whoosh/
 oid_store/
 doc/_build/
 venv/
+venv3/
 qstode/static/font
 /node_modules/
 .tox/

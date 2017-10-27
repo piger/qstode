@@ -1,3 +1,6 @@
+distro: trusty
+addons:
+  chrome: stable
 sudo: false
 language: python
 python:

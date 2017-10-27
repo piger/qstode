@@ -3,9 +3,10 @@ addons:
   chrome: stable
 install:
   - wget -N https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip -P /tmp
-  - unzip /tmp/chromedriver_linux64.zip -d /tmp
-  - sudo mv /tmp/chromedriver /usr/local/bin/
-  - sudo chmod 755 /usr/local/bin/chromedriver
+  - mkdir /tmp/chromedriver
+  - unzip /tmp/chromedriver_linux64.zip -d /tmp/chromedriver
+  - sudo mv /tmp/chromedriver /tmp/chromedriver/chromedriver
+  - export PATH=$PATH:/tmp/chromedriver/
 sudo: false
 language: python
 python:

@@ -1,6 +1,11 @@
 distro: trusty
 addons:
   chrome: stable
+install:
+  - wget -N https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip -P /tmp
+  - unzip /tmp/chromedriver_linux64.zip -d /tmp
+  - sudo mv /tmp/chromedriver /usr/local/bin/
+  - sudo chmod 755 /usr/local/bin/chromedriver
 sudo: false
 language: python
 python:

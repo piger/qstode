@@ -5,7 +5,6 @@ before_install:
   - wget -N https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip -P /tmp
   - mkdir /tmp/chromedriver
   - unzip /tmp/chromedriver_linux64.zip -d /tmp/chromedriver
-  - sudo mv /tmp/chromedriver /tmp/chromedriver/chromedriver
   - export PATH=$PATH:/tmp/chromedriver/
 sudo: false
 language: python

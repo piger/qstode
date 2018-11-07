@@ -23,7 +23,7 @@ setup(
     long_description=__doc__,
     install_requires=[
         'Babel==2.5.1',
-        'Flask==0.12.2',
+        'Flask==0.12.4',
         'Flask-Babel==0.11.2',
         'Flask-Login==0.4',
         'Flask-WTF==0.14.2',

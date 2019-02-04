@@ -44,9 +44,7 @@ def parse_datetime(dt):
 def unescape(s):
     """Unescape a string containing \' or \" escapings"""
 
-    corrections = (
-        ("\\'", "'"),
-        ('\\"', '"'))
+    corrections = (("\\'", "'"), ('\\"', '"'))
 
     for pattern, repl in corrections:
         s = s.replace(pattern, repl)

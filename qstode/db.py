@@ -67,8 +67,9 @@ class BaseQuery(orm.Query):
         return utils.Pagination(self, page, per_page, total, items)
 
 
-Session = orm.scoped_session(orm.sessionmaker(autocommit=False, autoflush=False,
-                                              query_cls=BaseQuery))
+Session = orm.scoped_session(
+    orm.sessionmaker(autocommit=False, autoflush=False, query_cls=BaseQuery)
+)
 Base = declarative_base()
 Base.query = Session.query_property()
 
@@ -86,22 +87,23 @@ def init_alembic(config_file="alembic.ini"):
 
 def init_db(uri, app=None, create=False):
     # we must import all SQLAlchemy models here
-    from qstode import model # noqa
+    from qstode import model  # noqa
 
-    options = {'convert_unicode': True}
+    options = {"convert_unicode": True}
 
-    if app is not None and app.config.get('DEBUG'):
-        options['echo'] = True
+    if app is not None and app.config.get("DEBUG"):
+        options["echo"] = True
 
     info = make_url(uri)
-    if info.drivername.startswith('mysql'):
+    if info.drivername.startswith("mysql"):
         info.query.setdefault("charset", "utf8")
         options.setdefault("pool_size", 10)
         options.setdefault("pool_recycle", 7200)
-    elif info.drivername == 'sqlite':
-        if info.database not in (None, '', ':memory:'):
+    elif info.drivername == "sqlite":
+        if info.database not in (None, "", ":memory:"):
             from sqlalchemy.pool import NullPool
-            options['poolclass'] = NullPool
+
+            options["poolclass"] = NullPool
 
     engine = create_engine(info, **options)
     Session.configure(bind=engine)

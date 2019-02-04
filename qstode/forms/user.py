@@ -27,27 +27,25 @@ PASSWORD_MIN = 8
 PASSWORD_MAX = 64
 
 # username validation regexp
-username_re = re.compile(r'^[A-Za-z0-9_-]+$')
+username_re = re.compile(r"^[A-Za-z0-9_-]+$")
 
 
 class CreateUserForm(FlaskForm):
-    username = TextField(_("Username"), [
-        DataRequired(),
-        Length(USERNAME_MIN, USERNAME_MAX),
-        Regexp(username_re),
-        unique_username(),
-    ])
-    display_name = TextField(_("Display name"), [
-        DataRequired(), Length(1, 128)
-    ])
-    email = EmailField(_("Email"), [
-        DataRequired(),
-        unique_email(),
-    ])
-    password = PasswordField(_("Password"), [
-        DataRequired(),
-        Length(PASSWORD_MIN, PASSWORD_MAX),
-        EqualTo("password_confirm")])
+    username = TextField(
+        _("Username"),
+        [
+            DataRequired(),
+            Length(USERNAME_MIN, USERNAME_MAX),
+            Regexp(username_re),
+            unique_username(),
+        ],
+    )
+    display_name = TextField(_("Display name"), [DataRequired(), Length(1, 128)])
+    email = EmailField(_("Email"), [DataRequired(), unique_email()])
+    password = PasswordField(
+        _("Password"),
+        [DataRequired(), Length(PASSWORD_MIN, PASSWORD_MAX), EqualTo("password_confirm")],
+    )
     password_confirm = PasswordField(_("Confirm password"), [DataRequired()])
     active = BooleanField(_("Active"), default=True)
     admin = BooleanField(_("Administrator"), default=False)
@@ -61,24 +59,20 @@ class EditUserForm(CreateUserForm):
     """Admin: modify an existing user"""
 
     # username uniqueness is validated inline
-    username = TextField(_("Username"), [
-        DataRequired(),
-        Length(USERNAME_MIN, USERNAME_MAX),
-        Regexp(username_re),
-    ])
+    username = TextField(
+        _("Username"), [DataRequired(), Length(USERNAME_MIN, USERNAME_MAX), Regexp(username_re)]
+    )
     # email uniqueness is validated inline
     email = EmailField(_("Email"), [DataRequired()])
-    password = PasswordField(_("Password"), [
-        Optional(),
-        Length(PASSWORD_MIN, PASSWORD_MAX),
-        EqualTo("password_confirm")])
+    password = PasswordField(
+        _("Password"), [Optional(), Length(PASSWORD_MIN, PASSWORD_MAX), EqualTo("password_confirm")]
+    )
     password_confirm = PasswordField(_("Confirm password"))
 
     def __init__(self, username, email, *args, **kwargs):
         self._username = username
         self._email = email
-        super(EditUserForm, self).__init__(*args, username=username, email=email,
-                                           **kwargs)
+        super(EditUserForm, self).__init__(*args, username=username, email=email, **kwargs)
 
     def validate_username(self, field):
         if field.data != self._username:
@@ -92,46 +86,43 @@ class EditUserForm(CreateUserForm):
 
 
 class LoginForm(FlaskForm):
-    user = TextField(_('User'), [DataRequired()])
-    password = PasswordField(_('Password'), [DataRequired()])
-    remember_me = BooleanField(_('Remember me'))
+    user = TextField(_("User"), [DataRequired()])
+    password = PasswordField(_("Password"), [DataRequired()])
+    remember_me = BooleanField(_("Remember me"))
 
 
 class PasswordResetForm(FlaskForm):
-    email = EmailField(_('Email'), [DataRequired(), Email()])
+    email = EmailField(_("Email"), [DataRequired(), Email()])
 
 
 class PasswordChangeForm(FlaskForm):
-    password = PasswordField(_('New password'), [
-        DataRequired(),
-        Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
-        EqualTo('password_confirm', message=_("Passwords must match"))
-    ])
-    password_confirm = PasswordField(_('Confirm new password'))
+    password = PasswordField(
+        _("New password"),
+        [
+            DataRequired(),
+            Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
+            EqualTo("password_confirm", message=_("Passwords must match")),
+        ],
+    )
+    password_confirm = PasswordField(_("Confirm new password"))
 
 
 class RegistrationForm(FlaskForm):
-    display_name = TextField(_("Display name"), [
-        DataRequired(), Length(1, 128)
-    ])
-    username = TextField(_('Username'), [
-        DataRequired(),
-        Length(min=3, max=20),
-        Regexp(username_re),
-        unique_username(),
-    ])
-    email = EmailField(_('Email'), [
-        DataRequired(),
-        Email(),
-        friendly_email,
-        unique_email(),
-    ])
-    password = PasswordField(_('Password'), [
-        DataRequired(),
-        Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
-        EqualTo('password_confirm', message=_("Passwords must match"))
-    ])
-    password_confirm = PasswordField(_('Confirm password'), [DataRequired()])
+    display_name = TextField(_("Display name"), [DataRequired(), Length(1, 128)])
+    username = TextField(
+        _("Username"),
+        [DataRequired(), Length(min=3, max=20), Regexp(username_re), unique_username()],
+    )
+    email = EmailField(_("Email"), [DataRequired(), Email(), friendly_email, unique_email()])
+    password = PasswordField(
+        _("Password"),
+        [
+            DataRequired(),
+            Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
+            EqualTo("password_confirm", message=_("Passwords must match")),
+        ],
+    )
+    password_confirm = PasswordField(_("Confirm password"), [DataRequired()])
 
 
 class RecaptchaRegistrationForm(RegistrationForm):
@@ -140,16 +131,17 @@ class RecaptchaRegistrationForm(RegistrationForm):
 
 # unique_username ???
 class UserDetailsForm(FlaskForm):
-    display_name = TextField(_("Display name"), [
-        DataRequired(), Length(1, 128)
-    ])
+    display_name = TextField(_("Display name"), [DataRequired(), Length(1, 128)])
     password_old = PasswordField(_("Current password"))
-    password = PasswordField(_('Password'), [
-        Optional(),
-        Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
-        EqualTo('password_confirm', message=_("Passwords must match"))
-    ])
-    password_confirm = PasswordField(_('Confirm new password'))
+    password = PasswordField(
+        _("Password"),
+        [
+            Optional(),
+            Length(min=PASSWORD_MIN, max=PASSWORD_MAX),
+            EqualTo("password_confirm", message=_("Passwords must match")),
+        ],
+    )
+    password_confirm = PasswordField(_("Confirm new password"))
 
     def validate(self):
         """Additional validation for `password_old` and `password` fields"""
@@ -164,18 +156,14 @@ class UserDetailsForm(FlaskForm):
 
         # If only the new password was specified
         elif self.password.data and not self.password_old.data:
-            self.password_old.errors.append(_("You must specify your current "
-                                              "password"))
+            self.password_old.errors.append(_("You must specify your current " "password"))
             success = False
 
         return success
 
 
 class CreateProfileForm(FlaskForm):
-    username = TextField(_('Username'), [
-        DataRequired(),
-        Length(min=3, max=20),
-        Regexp(username_re),
-        unique_username,
-    ])
+    username = TextField(
+        _("Username"), [DataRequired(), Length(min=3, max=20), Regexp(username_re), unique_username]
+    )
     email = EmailField(_("Email"), [DataRequired(), Email(), unique_email])

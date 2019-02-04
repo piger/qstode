@@ -33,10 +33,12 @@ def generate_schema():
 
     text_analyzer = RegexTokenizer() | LowercaseFilter() | CharsetFilter(accent_map)
 
-    schema = Schema(id=ID(stored=True, unique=True),
-                    title=TEXT(stored=False, analyzer=text_analyzer),
-                    tags=KEYWORD(stored=False, lowercase=True, commas=True),
-                    notes=TEXT(stored=False, analyzer=text_analyzer))
+    schema = Schema(
+        id=ID(stored=True, unique=True),
+        title=TEXT(stored=False, analyzer=text_analyzer),
+        tags=KEYWORD(stored=False, lowercase=True, commas=True),
+        notes=TEXT(stored=False, analyzer=text_analyzer),
+    )
     return schema
 
 
@@ -44,10 +46,10 @@ def create_document(bookmark):
     """Creates a Document (a dict) for the search engine"""
 
     doc = {
-        'id': str(bookmark.id),
-        'title': bookmark.title or "",
-        'notes': bookmark.notes or "",
-        'tags': ", ".join([tag.name for tag in bookmark.tags]),
+        "id": str(bookmark.id),
+        "title": bookmark.title or "",
+        "notes": bookmark.notes or "",
+        "tags": ", ".join([tag.name for tag in bookmark.tags]),
     }
     return doc
 
@@ -55,10 +57,12 @@ def create_document(bookmark):
 def redis_connect(config):
     """Connects to a Redis database as specified by the dictionary `config`"""
 
-    r = redis.Redis(host=config.get('REDIS_HOST', 'localhost'),
-                    port=config.get('REDIS_PORT', 6379),
-                    db=config.get('REDIS_DB', 0),
-                    password=config.get('REDIS_PASSWORD'))
+    r = redis.Redis(
+        host=config.get("REDIS_HOST", "localhost"),
+        port=config.get("REDIS_PORT", 6379),
+        db=config.get("REDIS_DB", 0),
+        password=config.get("REDIS_PASSWORD"),
+    )
     return r
 
 
@@ -66,7 +70,7 @@ class WhooshSearcher(object):
     """Interface to a Whoosh based Search Engine"""
 
     # default search fields for user queries
-    search_fields = ('notes', 'title', 'tags')
+    search_fields = ("notes", "title", "tags")
 
     def __init__(self, app=None, index_dir=None):
         self.app = app
@@ -94,9 +98,10 @@ class WhooshSearcher(object):
         """Initialize module and checks if the index exists"""
 
         self.app = app
-        if 'WHOOSH_INDEX_PATH' not in self.app.config:
-            raise exc.InitializationError("You must set the WHOOSH_INDEX_PATH option "
-                                          "in the configuration")
+        if "WHOOSH_INDEX_PATH" not in self.app.config:
+            raise exc.InitializationError(
+                "You must set the WHOOSH_INDEX_PATH option " "in the configuration"
+            )
         self.index_dir = self.app.config["WHOOSH_INDEX_PATH"]
         if not exists_in(self.index_dir):
             self.setup_index()
@@ -162,10 +167,10 @@ class WhooshSearcher(object):
 
         if writer is None:
             writer = self.get_async_writer()
-            writer.delete_by_term('id', _id)
+            writer.delete_by_term("id", _id)
             writer.commit()
         else:
-            writer.delete_by_term('id', _id)
+            writer.delete_by_term("id", _id)
 
     def search(self, query, page=1, page_len=10, fields=None):
         """Returns the results of a search engine query ordered by
@@ -181,12 +186,12 @@ class WhooshSearcher(object):
             parser = MultifieldParser(fields, self.ix.schema)
             whoosh_query = parser.parse(query)
             facets = Facets()
-            facets.add_field('tags', allow_overlap=True)
+            facets.add_field("tags", allow_overlap=True)
 
             # this can raise a ValueError
-            search_results = searcher.search_page(whoosh_query, page,
-                                                  pagelen=page_len,
-                                                  groupedby=facets)
-            results = [int(result['id']) for result in search_results]
+            search_results = searcher.search_page(
+                whoosh_query, page, pagelen=page_len, groupedby=facets
+            )
+            results = [int(result["id"]) for result in search_results]
 
         return results or []

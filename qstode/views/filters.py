@@ -17,10 +17,10 @@ from flask_babel import to_user_timezone, lazy_gettext as _
 from qstode.app import app
 
 
-domain_re = re.compile(r'https?://((?:[^\/]+|$))')
+domain_re = re.compile(r"https?://((?:[^\/]+|$))")
 
 
-@app.template_filter('get_domain')
+@app.template_filter("get_domain")
 def get_domain(s):
     """Extracts the hostname from a URL"""
 
@@ -28,25 +28,25 @@ def get_domain(s):
     if match:
         return match.group(1)
     else:
-        return ''
+        return ""
 
 
-@app.template_filter('urlencode')
+@app.template_filter("urlencode")
 def tf_urlencode(s):
     """Returns the URL encoded version of a string"""
-    return urllib.parse.quote(s.encode('utf-8'))
+    return urllib.parse.quote(s.encode("utf-8"))
 
 
 def url_for_other_page(page):
     """Get the URL for "other page" for Pagination menu"""
 
     args = request.view_args.copy()
-    args['page'] = page
+    args["page"] = page
     args.update(request.args)
     return url_for(request.endpoint, **args)
 
 
-app.jinja_env.globals['url_for_other_page'] = url_for_other_page
+app.jinja_env.globals["url_for_other_page"] = url_for_other_page
 
 
 @app.template_filter()
@@ -62,7 +62,7 @@ def timesince(dt, default=None):
     """
 
     if default is None:
-        default = _('now')
+        default = _("now")
 
     user_dt = to_user_timezone(dt)
     now_dt = to_user_timezone(datetime.utcnow())
@@ -70,13 +70,13 @@ def timesince(dt, default=None):
     diff = now_dt - user_dt
 
     periods = (
-        (diff.days // 365, _('year'), _('years')),
-        (diff.days // 30, _('month'), _('months')),
-        (diff.days // 7, _('week'), _('weeks')),
-        (diff.days, _('day'), _('days')),
-        (diff.seconds // 3600, _('hour'), _('hours')),
-        (diff.seconds // 60, _('minute'), _('minutes')),
-        (diff.seconds, _('second'), _('seconds')),
+        (diff.days // 365, _("year"), _("years")),
+        (diff.days // 30, _("month"), _("months")),
+        (diff.days // 7, _("week"), _("weeks")),
+        (diff.days, _("day"), _("days")),
+        (diff.seconds // 3600, _("hour"), _("hours")),
+        (diff.seconds // 60, _("minute"), _("minutes")),
+        (diff.seconds, _("second"), _("seconds")),
     )
 
     for period, singular, plural in periods:
@@ -100,7 +100,7 @@ def versioned_url_processor():
     def versioned_url(filename):
         static_filename = os.path.join(app.static_folder, filename)
         modtime = os.path.getmtime(static_filename)
-        static_url = url_for('static', filename=filename)
+        static_url = url_for("static", filename=filename)
         return "%s?v=%d" % (static_url, modtime)
 
     return dict(versioned_url=versioned_url)
@@ -110,8 +110,9 @@ def versioned_url_processor():
 def active_if_processor():
     def active_if(endpoint):
         if request.endpoint == endpoint:
-            return 'active'
-        return ''
+            return "active"
+        return ""
+
     return dict(active_if=active_if)
 
 

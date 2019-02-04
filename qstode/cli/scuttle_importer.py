@@ -32,8 +32,8 @@ class LinkCache(ObjectCache):
 
 def list_duplicate_emails(data):
     emails = {}
-    for user in data['users']:
-        email = user.get('email')
+    for user in data["users"]:
+        email = user.get("email")
         if email:
             emails.setdefault(email, 0)
             emails[email] += 1
@@ -66,7 +66,7 @@ def cleanup_tags(tags):
 
 
 @app.cli.command()
-@click.argument('filename')
+@click.argument("filename")
 def import_scuttle(filename):
     """Import data from a Scuttle JSON export file"""
 
@@ -76,25 +76,25 @@ def import_scuttle(filename):
     users = {}
     all_users = []
 
-    with codecs.open(filename, 'r', encoding='utf-8') as fd:
-        data = json.load(fd, encoding='utf-8')
+    with codecs.open(filename, "r", encoding="utf-8") as fd:
+        data = json.load(fd, encoding="utf-8")
 
-    tot = len(data['users'])
-    for i, db_user in enumerate(data['users']):
-        print("Importing user %d of %d" % (i+1, tot))
+    tot = len(data["users"])
+    for i, db_user in enumerate(data["users"]):
+        print("Importing user %d of %d" % (i + 1, tot))
 
-        username = db_user.get('username')
-        email = db_user.get('email', '').lower()
-        name = db_user.get('name', '').strip()
+        username = db_user.get("username")
+        email = db_user.get("email", "").lower()
+        name = db_user.get("name", "").strip()
         if not name:
             name = username
         # XXX why do we need to generate/set a new password here?
         password = generate_password()
         if username is None:
-            print("Skipping user without username: id=%r" % db_user['id'])
+            print("Skipping user without username: id=%r" % db_user["id"])
             continue
         elif not email:
-            print("Skipping user without email address: id=%r" % db_user['id'])
+            print("Skipping user without email address: id=%r" % db_user["id"])
             continue
 
         # We merge bookmarks for users with the same e-mail address
@@ -102,26 +102,25 @@ def import_scuttle(filename):
         # name is the "display_name".
         if not email in users:
             user = User(username, email, password, display_name=name)
-            user.password = db_user['password']
-            user.created_at = parse_datetime(db_user['created_at'])
+            user.password = db_user["password"]
+            user.created_at = parse_datetime(db_user["created_at"])
             users[email] = user
         else:
             user = users[email]
 
-        for db_bookmark in db_user['bookmarks']:
-            title = unescape(db_bookmark['title'])
-            private = (db_bookmark['status'] == SCUTTLE_PRIVATE)
-            notes = unescape(db_bookmark['description'])
-            created_on = parse_datetime(db_bookmark['created_at'])
-            modified_on = parse_datetime(db_bookmark['modified_at'])
+        for db_bookmark in db_user["bookmarks"]:
+            title = unescape(db_bookmark["title"])
+            private = db_bookmark["status"] == SCUTTLE_PRIVATE
+            notes = unescape(db_bookmark["description"])
+            created_on = parse_datetime(db_bookmark["created_at"])
+            modified_on = parse_datetime(db_bookmark["modified_at"])
 
-            bookmark = Bookmark(title, private=private,
-                                created_on=created_on,
-                                modified_on=modified_on,
-                                notes=notes)
-            bookmark.link = link_cache.get(db_bookmark['url'])
-                     
-            tags = cleanup_tags(db_bookmark['tags'])
+            bookmark = Bookmark(
+                title, private=private, created_on=created_on, modified_on=modified_on, notes=notes
+            )
+            bookmark.link = link_cache.get(db_bookmark["url"])
+
+            tags = cleanup_tags(db_bookmark["tags"])
             for tag_name in tags:
                 tag = tag_cache.get(tag_name)
                 bookmark.tags.append(tag)

@@ -21,17 +21,20 @@ def ItemsLength(min_length=1, max_length=100):
     """Validate the length of each str element in a list"""
 
     def _ItemsLength(form, field):
-        assert isinstance(field.data, list) is True, \
-            "This validator must be used with a `list` field"
+        assert (
+            isinstance(field.data, list) is True
+        ), "This validator must be used with a `list` field"
 
         for item in field.data:
             l = len(item)
             if l < min_length or l > max_length:
-                raise ValidationError(_("All elements must be between "
-                                        "%(min)d and %(max)d characters" % {
-                                            'min': min_length,
-                                            'max': max_length,
-                                        }))
+                raise ValidationError(
+                    _(
+                        "All elements must be between "
+                        "%(min)d and %(max)d characters" % {"min": min_length, "max": max_length}
+                    )
+                )
+
     return _ItemsLength
 
 
@@ -39,16 +42,19 @@ def ListLength(min_length=1, max_length=100):
     """Validate the length of a list of elements"""
 
     def _ListLength(form, field):
-        assert isinstance(field.data, list) is True, \
-            "This validator must be used with a `list` field"
+        assert (
+            isinstance(field.data, list) is True
+        ), "This validator must be used with a `list` field"
 
         l = len(field.data)
         if l < min_length or l > max_length:
-            raise ValidationError(_("All elements must be between "
-                                    "%(min)d and %(max)d characters" % {
-                                        'min': min_length,
-                                        'max': max_length,
-                                    }))
+            raise ValidationError(
+                _(
+                    "All elements must be between "
+                    "%(min)d and %(max)d characters" % {"min": min_length, "max": max_length}
+                )
+            )
+
     return _ListLength
 
 
@@ -56,8 +62,9 @@ def ListRegexp(regex):
     """Validate every item of list with a regex match operation"""
 
     def _ListRegexp(form, field):
-        assert isinstance(field.data, list) is True, \
-            "This validator must be used with a `list` field"
+        assert (
+            isinstance(field.data, list) is True
+        ), "This validator must be used with a `list` field"
 
         for item in field.data:
             if regex.match(item) is None:
@@ -96,10 +103,10 @@ def unique_email(include_self=False):
 
 def friendly_email():
     def _friendly_email(form, field):
-        friend_domains = app.config.get('FRIEND_DOMAINS', [])
+        friend_domains = app.config.get("FRIEND_DOMAINS", [])
         if friend_domains:
-            domain = field.data.rsplit('@', 1)[1]
+            domain = field.data.rsplit("@", 1)[1]
             if domain not in friend_domains:
                 raise ValidationError(ERR_FRIEND_EMAIL)
-    return _friendly_email
 
+    return _friendly_email

@@ -23,34 +23,38 @@ class ApiTestBase(FlaskTestCase):
         db.Session.add_all([user_1, user_2])
         db.Session.commit()
 
-        b1 = model.Bookmark.create({
-            'url': "http://www.python.org",
-            'title': "Python",
-            'notes': "Python website",
-            'tags': ["programming", "python", "guido"],
-            'user': user_1,
-        })
+        b1 = model.Bookmark.create(
+            {
+                "url": "http://www.python.org",
+                "title": "Python",
+                "notes": "Python website",
+                "tags": ["programming", "python", "guido"],
+                "user": user_1,
+            }
+        )
         db.Session.add(b1)
         db.Session.commit()
 
-        b2 = model.Bookmark.create({
-            'url': "https://github.com/piger/qstode",
-            'title': "QStode",
-            'notes': "QStode source code",
-            'tags': ["web", "python", "tags", "flask"],
-            'user': user_1,
-        })
+        b2 = model.Bookmark.create(
+            {
+                "url": "https://github.com/piger/qstode",
+                "title": "QStode",
+                "notes": "QStode source code",
+                "tags": ["web", "python", "tags", "flask"],
+                "user": user_1,
+            }
+        )
         db.Session.add(b2)
         db.Session.commit()
 
 
 class TaglistViewTest(ApiTestBase):
     def test_taglist(self):
-        rv = self.client.get(url_for('api_taglist'))
+        rv = self.client.get(url_for("api_taglist"))
         self.assert200(rv)
-        self.assertEqual(rv.mimetype, 'application/json')
+        self.assertEqual(rv.mimetype, "application/json")
 
-        tags = rv.json.get('tags', [])
+        tags = rv.json.get("tags", [])
         first = tags[0]
-        self.assertEqual(first['tag'], "python")
+        self.assertEqual(first["tag"], "python")
         self.assertEqual(len(tags), 6)

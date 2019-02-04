@@ -53,95 +53,95 @@ def _parse_date(d):
 
 
 @app.cli.command()
-@click.argument('filename')
+@click.argument("filename")
 def backup(filename):
     users = []
 
     for user in model.User.query.all():
         user_dict = {
-            'username': user.username,
-            'email': user.email,
-            'password': user.password,
-            'created_at': user.created_at.isoformat(),
-            'active': user.active,
-            'bookmarks': [],
+            "username": user.username,
+            "email": user.email,
+            "password": user.password,
+            "created_at": user.created_at.isoformat(),
+            "active": user.active,
+            "bookmarks": [],
         }
 
-        if hasattr(user, 'roles'):
-            user_dict['roles'] = [role.name for role in user.roles]
+        if hasattr(user, "roles"):
+            user_dict["roles"] = [role.name for role in user.roles]
 
-        query = model.Bookmark.by_user(user.id, include_private=True).\
-                order_by(model.Bookmark.created_on.asc())
+        query = model.Bookmark.by_user(user.id, include_private=True).order_by(
+            model.Bookmark.created_on.asc()
+        )
         for bookmark in query.all():
             bookmark_dict = bookmark.to_dict()
-            user_dict['bookmarks'].append(bookmark_dict)
+            user_dict["bookmarks"].append(bookmark_dict)
 
         users.append(user_dict)
 
     click.echo("Writing backup to: {}".format(filename))
-    with codecs.open(filename, 'w', encoding='utf-8') as fd:
+    with codecs.open(filename, "w", encoding="utf-8") as fd:
         json.dump(dict(backup=users), fd, ensure_ascii=False, indent=4)
 
 
 @app.cli.command()
-@click.argument('filename')
+@click.argument("filename")
 def import_file(filename):
     tag_cache = TagCache()
     link_cache = LinkCache()
     data = None
 
-    with codecs.open(filename, 'rb', encoding='utf-8') as fd:
+    with codecs.open(filename, "rb", encoding="utf-8") as fd:
         data = json.load(fd)
 
     if data is None:
         click.echo("Error: Invalid bakcup file")
         sys.exit(1)
 
-    users_data = data.get('backup')
+    users_data = data.get("backup")
     if users_data is None:
         click.echo("Error: Invalid backup file format")
         sys.exit(1)
 
     for user_data in users_data:
-        user = model.User.query.filter_by(email=user_data['email']).first()
+        user = model.User.query.filter_by(email=user_data["email"]).first()
         if user is None:
-            user = model.User(user_data['username'],
-                              user_data['email'],
-                              password=DEFAULT_PASSWORD)
-            user.created_at = _parse_date(user_data['created_at'])
-            user.active = user_data.get('active', True)
+            user = model.User(user_data["username"], user_data["email"], password=DEFAULT_PASSWORD)
+            user.created_at = _parse_date(user_data["created_at"])
+            user.active = user_data.get("active", True)
             db.Session.add(user)
 
-        user.password = user_data['password']
+        user.password = user_data["password"]
 
         # roles
-        roles = user_data.get('roles', [])
-        if 'admin' in roles:
+        roles = user_data.get("roles", [])
+        if "admin" in roles:
             user.admin = True
 
         # bookmarks
-        for bm in user_data['bookmarks']:
-            link = link_cache.get_item(bm['url'])
+        for bm in user_data["bookmarks"]:
+            link = link_cache.get_item(bm["url"])
 
-            if 'last_modified' in bm:
-                mod_date = _parse_date(bm['last_modified'])
+            if "last_modified" in bm:
+                mod_date = _parse_date(bm["last_modified"])
             else:
-                mod_date = _parse_date(bm['modified_on'])
+                mod_date = _parse_date(bm["modified_on"])
 
-            if 'creation_date' in bm:
-                create_date = _parse_date(bm['creation_date'])
+            if "creation_date" in bm:
+                create_date = _parse_date(bm["creation_date"])
             else:
-                create_date = _parse_date(bm['created_on'])
+                create_date = _parse_date(bm["created_on"])
 
             bookmark = model.Bookmark(
-                title=bm['title'],
-                private=bm['private'],
+                title=bm["title"],
+                private=bm["private"],
                 created_on=create_date,
                 modified_on=mod_date,
-                notes=bm['notes'])
+                notes=bm["notes"],
+            )
             bookmark.link = link
 
-            for name in bm['tags']:
+            for name in bm["tags"]:
                 tag = tag_cache.get_item(name)
                 bookmark.tags.append(tag)
 

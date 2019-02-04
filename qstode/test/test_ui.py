@@ -11,13 +11,13 @@ from qstode import db
 
 @pytest.fixture
 def chrome_options(chrome_options):
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--window-size=1920x1080')
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1920x1080")
     return chrome_options
 
 
 @pytest.mark.skip("all tests still WIP")
-@pytest.mark.usefixtures('selenium')
+@pytest.mark.usefixtures("selenium")
 class IntegrationTestCase(LiveServerTestCase):
     def __init__(self, *args, **kwargs):
         super(IntegrationTestCase, self).__init__(*args, **kwargs)
@@ -28,11 +28,11 @@ class IntegrationTestCase(LiveServerTestCase):
         self.db_filename = os.path.join(self.tmp_dir, "db.sqlite")
 
         config = {
-            'WTF_CSRF_ENABLED': False,
-            'SQLALCHEMY_DATABASE_URI': "sqlite:///%s" % self.db_filename,
-            'SECRET_KEY': 'test',
-            'TESTING': True,
-            'LIVESERVER_PORT': 0,
+            "WTF_CSRF_ENABLED": False,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///%s" % self.db_filename,
+            "SECRET_KEY": "test",
+            "TESTING": True,
+            "LIVESERVER_PORT": 0,
         }
 
         return main.create_app(config)
@@ -54,7 +54,7 @@ class IntegrationTestCase(LiveServerTestCase):
         return self.s.get(urljoin(self.get_server_url(), url_tail))
 
     def test_home(self):
-        self.get('/')
+        self.get("/")
         assert "QStode" in self.s.page_source
 
         search_box = self.s.find_element_by_id("query")
@@ -64,5 +64,5 @@ class IntegrationTestCase(LiveServerTestCase):
         assert "No matching bookmark was found." in self.s.page_source
 
     def test_reset(self):
-        self.get('/user/reset/request')
+        self.get("/user/reset/request")
         assert "If you have lost your password you can request a reset" in self.s.page_source

@@ -31,16 +31,16 @@ def create_app(cfg=None):
 
     if cfg is not None:
         app.config.update(cfg)
-    app.config.from_envvar('APP_CONFIG', silent=True)
+    app.config.from_envvar("APP_CONFIG", silent=True)
 
-    if 'EXTRA_TEMPLATES' in app.config:
-        tpl_loader = jinja2.ChoiceLoader([
-            jinja2.FileSystemLoader(app.config['EXTRA_TEMPLATES']),
-            app.jinja_loader])
+    if "EXTRA_TEMPLATES" in app.config:
+        tpl_loader = jinja2.ChoiceLoader(
+            [jinja2.FileSystemLoader(app.config["EXTRA_TEMPLATES"]), app.jinja_loader]
+        )
         app.jinja_loader = tpl_loader
 
     try:
-        db.init_db(app.config['SQLALCHEMY_DATABASE_URI'], app)
+        db.init_db(app.config["SQLALCHEMY_DATABASE_URI"], app)
         login_manager.init_app(app)
     except exc.InitializationError as ex:
         sys.stderr.write("Initialization error: %s\n" % str(ex))
@@ -62,7 +62,6 @@ def setup():
     if model.User.query.filter_by(admin=True).first() is None:
         admin_pw = utils.generate_password()
         click.echo("Creating 'admin' user with password '%s'" % admin_pw)
-        admin_user = model.User('admin', 'root@localhost', admin_pw,
-                                admin=True)
+        admin_user = model.User("admin", "root@localhost", admin_pw, admin=True)
         db.Session.add(admin_user)
         db.Session.commit()

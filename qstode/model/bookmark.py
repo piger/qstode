@@ -23,23 +23,24 @@ from qstode.model.user import User, watched_users
 
 # Automatically delete orphan tags on database flush.
 # http://stackoverflow.com/questions/9234082/setting-delete-orphan-on-sqlalchemy-relationship-causes-assertionerror-this-att
-@event.listens_for(db.Session, 'after_flush')
+@event.listens_for(db.Session, "after_flush")
 def delete_tag_orphans(session, ctx):
-    session.query(Tag).\
-        filter(~Tag.bookmarks.any()).\
-        delete(synchronize_session=False)
+    session.query(Tag).filter(~Tag.bookmarks.any()).delete(synchronize_session=False)
 
 
 # Many-to-many mapping between Bookmarks and Tags
 bookmark_tags = Table(
-    'bookmark_tags', db.Base.metadata,
-    Column('bookmark_id', Integer, ForeignKey('bookmarks.id', ondelete='cascade'),
-           primary_key=True),
-    Column('tag_id', Integer, ForeignKey('tags.id', ondelete='cascade'), primary_key=True))
+    "bookmark_tags",
+    db.Base.metadata,
+    Column(
+        "bookmark_id", Integer, ForeignKey("bookmarks.id", ondelete="cascade"), primary_key=True
+    ),
+    Column("tag_id", Integer, ForeignKey("tags.id", ondelete="cascade"), primary_key=True),
+)
 
 
 # Tag names must be validated by this regex
-tag_name_re = re.compile(r'^\w[\w!?.,$-_ ]*$', re.U)
+tag_name_re = re.compile(r"^\w[\w!?.,$-_ ]*$", re.U)
 
 # Validation for length of each tag
 TAG_MIN = 1
@@ -67,10 +68,11 @@ class Tag(db.Base):
 
     See also: http://sourceforge.net/p/mysql-python/bugs/289/
     """
+
     # Uncomment this line to enable the "right" collation for tag names.
     # __table_args__ = {'mysql_collate': 'utf8_bin'}
 
-    __tablename__ = 'tags'
+    __tablename__ = "tags"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(TAG_MAX), nullable=False, index=True, unique=True)
@@ -89,8 +91,7 @@ class Tag(db.Base):
 
     @classmethod
     def search(cls, term):
-        query = cls.query.filter(cls.name.startswith(term)).\
-                order_by(cls.name.asc())
+        query = cls.query.filter(cls.name.startswith(term)).order_by(cls.name.asc())
         return query
 
     @classmethod
@@ -106,23 +107,22 @@ class Tag(db.Base):
         # get the IDs for 'tags'
         tags_ids = [tag.id for tag in Tag.get_many(tags)]
 
-        subq = db.Session.query(bookmark_tags.c.bookmark_id).\
-               filter(bookmark_tags.c.tag_id.in_(tags_ids)).\
-               group_by(bookmark_tags.c.bookmark_id).\
-               having(func.count(bookmark_tags.c.tag_id)==len(tags_ids))
+        subq = (
+            db.Session.query(bookmark_tags.c.bookmark_id)
+            .filter(bookmark_tags.c.tag_id.in_(tags_ids))
+            .group_by(bookmark_tags.c.bookmark_id)
+            .having(func.count(bookmark_tags.c.tag_id) == len(tags_ids))
+        )
 
-        q = db.Session.query(cls.id, cls.name, func.count('*').label('tot')).\
-            select_from(bookmark_tags).\
-            join(cls, bookmark_tags.c.tag_id==cls.id).\
-            filter(
-                and_(
-                    bookmark_tags.c.bookmark_id.in_(subq),
-                    not_(cls.id.in_(tags_ids))
-                )
-            ).\
-            group_by(cls.id).\
-            order_by(desc('tot')).\
-            limit(max_results)
+        q = (
+            db.Session.query(cls.id, cls.name, func.count("*").label("tot"))
+            .select_from(bookmark_tags)
+            .join(cls, bookmark_tags.c.tag_id == cls.id)
+            .filter(and_(bookmark_tags.c.bookmark_id.in_(subq), not_(cls.id.in_(tags_ids))))
+            .group_by(cls.id)
+            .order_by(desc("tot"))
+            .limit(max_results)
+        )
 
         return q.all()
 
@@ -141,20 +141,24 @@ class Tag(db.Base):
         # get the IDs for 'tags'
         tags_ids = [tag.id for tag in Tag.get_many(tags)]
 
-        subq = db.Session.query(bookmark_tags.c.bookmark_id).\
-               filter(bookmark_tags.c.tag_id.in_(tags_ids)).\
-               group_by(bookmark_tags.c.bookmark_id).\
-               having(func.count(bookmark_tags.c.tag_id)==len(tags_ids)).\
-               subquery()
+        subq = (
+            db.Session.query(bookmark_tags.c.bookmark_id)
+            .filter(bookmark_tags.c.tag_id.in_(tags_ids))
+            .group_by(bookmark_tags.c.bookmark_id)
+            .having(func.count(bookmark_tags.c.tag_id) == len(tags_ids))
+            .subquery()
+        )
 
-        q = db.Session.query(cls.id, cls.name, func.count('*').label('tot')).\
-            select_from(bookmark_tags).\
-            join(cls, cls.id==bookmark_tags.c.tag_id).\
-            join(subq, subq.c.bookmark_id==bookmark_tags.c.bookmark_id).\
-            filter(not_(cls.id.in_(tags_ids))).\
-            group_by(cls.id).\
-            order_by(desc('tot')).\
-            limit(max_results)
+        q = (
+            db.Session.query(cls.id, cls.name, func.count("*").label("tot"))
+            .select_from(bookmark_tags)
+            .join(cls, cls.id == bookmark_tags.c.tag_id)
+            .join(subq, subq.c.bookmark_id == bookmark_tags.c.bookmark_id)
+            .filter(not_(cls.id.in_(tags_ids)))
+            .group_by(cls.id)
+            .order_by(desc("tot"))
+            .limit(max_results)
+        )
 
         return q.all()
 
@@ -190,8 +194,7 @@ class Tag(db.Base):
         return query
 
     @classmethod
-    def tagcloud(cls, limit=15, min_font_size=2, max_font_size=10,
-                 user_id=None):
+    def tagcloud(cls, limit=15, min_font_size=2, max_font_size=10, user_id=None):
         """
         Generates a tag cloud.
 
@@ -204,17 +207,16 @@ class Tag(db.Base):
         for the top `limit` popular Tags.
         """
 
-        query = db.Session.query(Tag, func.count(Tag.id).label('total')).\
-                join(Tag.bookmarks).\
-                filter(Bookmark.private == False)
+        query = (
+            db.Session.query(Tag, func.count(Tag.id).label("total"))
+            .join(Tag.bookmarks)
+            .filter(Bookmark.private == False)
+        )
 
         if user_id is not None:
-            query = query.join(Bookmark.user).\
-                    filter(User.id == user_id)
+            query = query.join(Bookmark.user).filter(User.id == user_id)
 
-        query = query.group_by(Tag.id).\
-                order_by('total DESC').\
-                limit(limit)
+        query = query.group_by(Tag.id).order_by("total DESC").limit(limit)
 
         tags = query.all()
         if len(tags) < limit:
@@ -231,15 +233,14 @@ class Tag(db.Base):
             log_max = math.log(tot_max) - math.log(tot_min)
             weight = log_count / log_max
             tag_dict = {
-                'name': tag.name,
-                'weight': weight,
-                'tot': tag_count,
-                'size': int(min_font_size + round((max_font_size - min_font_size) * weight),)
+                "name": tag.name,
+                "weight": weight,
+                "tot": tag_count,
+                "size": int(min_font_size + round((max_font_size - min_font_size) * weight)),
             }
             tag_cloud_weighted.append(tag_dict)
 
-        tag_cloud_weighted = sorted(tag_cloud_weighted, key=lambda x: x['name'],
-                                    reverse=False)
+        tag_cloud_weighted = sorted(tag_cloud_weighted, key=lambda x: x["name"], reverse=False)
 
         return tag_cloud_weighted
 
@@ -250,13 +251,15 @@ class Tag(db.Base):
         tags.
         """
 
-        q = db.Session.query(cls, func.count(bookmark_tags.c.bookmark_id).label('tot')).\
-            join(bookmark_tags).\
-            join(Bookmark).\
-            filter(Bookmark.private==False).\
-            group_by(cls).\
-            order_by(desc('tot')).\
-            limit(max_results)
+        q = (
+            db.Session.query(cls, func.count(bookmark_tags.c.bookmark_id).label("tot"))
+            .join(bookmark_tags)
+            .join(Bookmark)
+            .filter(Bookmark.private == False)
+            .group_by(cls)
+            .order_by(desc("tot"))
+            .limit(max_results)
+        )
 
         return q.all()
 
@@ -265,7 +268,7 @@ class Tag(db.Base):
 
 
 class Link(db.Base):
-    __tablename__ = 'links'
+    __tablename__ = "links"
 
     id = Column(Integer, primary_key=True)
     href = Column(String(2000), nullable=False)
@@ -295,28 +298,30 @@ class Bookmark(db.Base):
     timezone in the view.
     """
 
-    __tablename__ = 'bookmarks'
+    __tablename__ = "bookmarks"
 
     id = Column(Integer, primary_key=True)
     title = Column(String(300), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), index=True)
-    link = relationship("Link", lazy='joined', backref=backref('bookmarks'))
-    link_id = Column(Integer, ForeignKey('links.id'))
-    href = association_proxy('link', 'href')
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    link = relationship("Link", lazy="joined", backref=backref("bookmarks"))
+    link_id = Column(Integer, ForeignKey("links.id"))
+    href = association_proxy("link", "href")
     private = Column(Boolean, default=False)
 
     created_on = Column(DateTime, default=datetime.utcnow)
-    modified_on = Column(DateTime, default=datetime.utcnow,
-                         onupdate=datetime.utcnow)
+    modified_on = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     indexed_on = Column(DateTime)
 
-    tags = relationship('Tag', secondary=bookmark_tags,
-                        backref=backref('bookmarks', lazy='dynamic'),
-                        order_by="Tag.name", lazy='subquery')
+    tags = relationship(
+        "Tag",
+        secondary=bookmark_tags,
+        backref=backref("bookmarks", lazy="dynamic"),
+        order_by="Tag.name",
+        lazy="subquery",
+    )
     notes = Column(String(NOTES_MAX))
 
-    def __init__(self, title, private=False, created_on=None,
-                 modified_on=None, notes=None):
+    def __init__(self, title, private=False, created_on=None, modified_on=None, notes=None):
         self.title = title
         self.private = private
         if created_on is not None:
@@ -340,13 +345,13 @@ class Bookmark(db.Base):
 
         :returns: the bookmark just created
         """
-        user = data.get('user')
-        link = Link.get_or_create(data.get('url'))
-        bookmark = Bookmark(title=data.get('title'),
-                            private=data.get("private", False),
-                            notes=data.get('notes'))
+        user = data.get("user")
+        link = Link.get_or_create(data.get("url"))
+        bookmark = Bookmark(
+            title=data.get("title"), private=data.get("private", False), notes=data.get("notes")
+        )
         bookmark.link = link
-        for tag in Tag.get_or_create_many(data.get('tags')):
+        for tag in Tag.get_or_create_many(data.get("tags")):
             bookmark.tags.append(tag)
         user.bookmarks.append(bookmark)
 
@@ -358,21 +363,20 @@ class Bookmark(db.Base):
         the private bookmarks for the current user"""
 
         if current_user.is_authenticated:
-            return cls.query.filter(or_(
-                and_(cls.private == True, cls.user_id == current_user.id),
-                cls.private == False))
+            return cls.query.filter(
+                or_(and_(cls.private == True, cls.user_id == current_user.id), cls.private == False)
+            )
         else:
             return cls.query.filter(cls.private == False)
 
     @classmethod
     def get_latest(cls):
-        query = cls.get_public().\
-            order_by(cls.created_on.desc())
+        query = cls.get_public().order_by(cls.created_on.desc())
         return query
 
     @classmethod
     def by_user(cls, userid, include_private=False):
-        where = (cls.user_id == userid)
+        where = cls.user_id == userid
         if not include_private:
             where = where & (cls.private == False)
         return cls.query.filter(where).order_by(cls.created_on.desc())
@@ -382,11 +386,13 @@ class Bookmark(db.Base):
         """Get the latest bookmarks from the users followed by
         the current user"""
 
-        q = cls.query.join(User).\
-            outerjoin(watched_users, User.id == watched_users.c.other_user_id).\
-            filter(watched_users.c.user_id == current_user.id).\
-            filter(cls.private == False).\
-            order_by(cls.created_on.desc())
+        q = (
+            cls.query.join(User)
+            .outerjoin(watched_users, User.id == watched_users.c.other_user_id)
+            .filter(watched_users.c.user_id == current_user.id)
+            .filter(cls.private == False)
+            .order_by(cls.created_on.desc())
+        )
 
         return q
 
@@ -394,12 +400,14 @@ class Bookmark(db.Base):
     def by_tags_user(cls, tags, user_id):
         assert isinstance(tags, list), "`tags` parameter must be a list"
 
-        query = cls.query.filter(cls.user_id == user_id).\
-                join(cls.tags).\
-                filter(Tag.name.in_(tags)).\
-                group_by(cls.id).\
-                having(func.count(cls.id)==len(tags)).\
-                order_by(cls.created_on.desc())
+        query = (
+            cls.query.filter(cls.user_id == user_id)
+            .join(cls.tags)
+            .filter(Tag.name.in_(tags))
+            .group_by(cls.id)
+            .having(func.count(cls.id) == len(tags))
+            .order_by(cls.created_on.desc())
+        )
 
         return query
 
@@ -428,36 +436,43 @@ class Bookmark(db.Base):
         # If no tags was specified for exclusion we can work out a much
         # simplier SQL query.
         if not exclude:
-            query = cls.get_public().join(cls.tags).\
-                    filter(Tag.name.in_(tags)).\
-                    group_by(cls.id).\
-                    having(func.count(cls.id) == len(tags)).\
-                    order_by(cls.created_on.desc())
+            query = (
+                cls.get_public()
+                .join(cls.tags)
+                .filter(Tag.name.in_(tags))
+                .group_by(cls.id)
+                .having(func.count(cls.id) == len(tags))
+                .order_by(cls.created_on.desc())
+            )
 
             if user_id is not None:
                 query = query.filter(cls.user_id == user_id)
 
             return query
 
-        exclude_query = db.Session.query(bookmark_tags.c.bookmark_id).\
-                        join(Tag).\
-                        filter(Tag.name.in_(exclude)).\
-                        subquery('exclude')
+        exclude_query = (
+            db.Session.query(bookmark_tags.c.bookmark_id)
+            .join(Tag)
+            .filter(Tag.name.in_(exclude))
+            .subquery("exclude")
+        )
 
-        include_query = db.Session.query(bookmark_tags.c.bookmark_id).\
-                        join(Tag).\
-                        filter(Tag.name.in_(tags)).\
-                        group_by(bookmark_tags.c.bookmark_id).\
-                        having(func.count(distinct(Tag.name)) == len(tags)).\
-                        subquery('include')
+        include_query = (
+            db.Session.query(bookmark_tags.c.bookmark_id)
+            .join(Tag)
+            .filter(Tag.name.in_(tags))
+            .group_by(bookmark_tags.c.bookmark_id)
+            .having(func.count(distinct(Tag.name)) == len(tags))
+            .subquery("include")
+        )
 
-        query = cls.get_public().\
-                outerjoin(exclude_query,
-                          cls.id == exclude_query.c.bookmark_id).\
-                join(include_query,
-                     cls.id == include_query.c.bookmark_id).\
-                filter(exclude_query.c.bookmark_id == None).\
-                order_by(cls.created_on.desc())
+        query = (
+            cls.get_public()
+            .outerjoin(exclude_query, cls.id == exclude_query.c.bookmark_id)
+            .join(include_query, cls.id == include_query.c.bookmark_id)
+            .filter(exclude_query.c.bookmark_id == None)
+            .order_by(cls.created_on.desc())
+        )
 
         if user_id is not None:
             query = query.filter(cls.user_id == user_id)
@@ -473,12 +488,10 @@ class Bookmark(db.Base):
         # order_by FIELD() function.
         # http://dev.mysql.com/doc/refman/5.0/en/string-functions.html#function_field
         engine = db.Session.get_bind()
-        if engine.driver.startswith('mysql'):
-            query = cls.get_public().filter(cls.id.in_(ids)).\
-                    order_by(func.field(cls.id, *ids))
+        if engine.driver.startswith("mysql"):
+            query = cls.get_public().filter(cls.id.in_(ids)).order_by(func.field(cls.id, *ids))
         else:
-            query = cls.get_public().filter(cls.id.in_(ids)).\
-                    order_by(cls.created_on.desc())
+            query = cls.get_public().filter(cls.id.in_(ids)).order_by(cls.created_on.desc())
         return query
 
     @classmethod
@@ -487,49 +500,53 @@ class Bookmark(db.Base):
 
         # multi-database support (MySQL, PostgreSQL, SQLite) for date conversion
         engine = db.Session.get_bind()
-        if 'sqlite' in engine.driver:  # could be 'sqlite', or 'pysqlite'
+        if "sqlite" in engine.driver:  # could be 'sqlite', or 'pysqlite'
             fn = cast(func.julianday(cls.created_on), Integer)
-        elif engine.driver == 'postgresql':
+        elif engine.driver == "postgresql":
             fn = cast(cls.created_on, sqlalchemy.types.Date)
         else:
             fn = func.to_days(cls.created_on)
 
-        query = db.Session.query(
-            fn.label('day'), func.count('*').label('count')
-        ).filter(
-            cls.created_on > date_limit
-        ).group_by('day').order_by('day ASC')
+        query = (
+            db.Session.query(fn.label("day"), func.count("*").label("count"))
+            .filter(cls.created_on > date_limit)
+            .group_by("day")
+            .order_by("day ASC")
+        )
 
         results = [row.count for row in query.all()]
         return results
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'url': self.href,
-            'title': self.title,
-            'notes': self.notes,
-            'tags': [tag.name for tag in self.tags],
-            'private': self.private,
-            'created_on': self.created_on.isoformat(),
-            'modified_on': self.modified_on.isoformat(),
+            "id": self.id,
+            "url": self.href,
+            "title": self.title,
+            "notes": self.notes,
+            "tags": [tag.name for tag in self.tags],
+            "private": self.private,
+            "created_on": self.created_on.isoformat(),
+            "modified_on": self.modified_on.isoformat(),
         }
 
     def __repr__(self):
         return "<Bookmark(title={0}, created_on={1}, private={2}".format(
-            self.title, self.created_on, self.private)
+            self.title, self.created_on, self.private
+        )
 
 
 def get_stats():
-    tot_bookmarks = db.Session.query(func.count(Bookmark.id)).\
-                    filter(Bookmark.private==False).\
-                    scalar()
+    tot_bookmarks = (
+        db.Session.query(func.count(Bookmark.id)).filter(Bookmark.private == False).scalar()
+    )
 
-    tot_tags = db.Session.query(Tag).\
-               join(bookmark_tags).\
-               join(Bookmark).\
-               filter(Bookmark.private==False).\
-               group_by(Tag.id).\
-               count()
+    tot_tags = (
+        db.Session.query(Tag)
+        .join(bookmark_tags)
+        .join(Bookmark)
+        .filter(Bookmark.private == False)
+        .group_by(Tag.id)
+        .count()
+    )
 
     return (tot_bookmarks, tot_tags)

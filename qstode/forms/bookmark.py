@@ -26,7 +26,7 @@ TAGLIST_MAX = 50
 # Tag names in a search form must be validated by this regex, which allows
 # a '-' in front of the tag names to indicate tags to be excluded from the
 # search
-_tag_search_re = re.compile(r'^[\w-][\w!?.,$-_]*$', re.U)
+_tag_search_re = re.compile(r"^[\w-][\w!?.,$-_]*$", re.U)
 
 
 class TagListField(Field):
@@ -38,20 +38,19 @@ class TagListField(Field):
 
     widget = TextInput()
 
-    def __init__(self, label='', _validators=None, remove_duplicates=True,
-                 **kwargs):
+    def __init__(self, label="", _validators=None, remove_duplicates=True, **kwargs):
         super(TagListField, self).__init__(label, _validators, **kwargs)
         self.remove_duplicates = remove_duplicates
 
     def _value(self):
         if self.data:
-            return ', '.join(self.data)
+            return ", ".join(self.data)
         else:
-            return ''
+            return ""
 
     def process_formdata(self, valuelist):
         if valuelist:
-            self.data = [x.strip() for x in valuelist[0].split(',')]
+            self.data = [x.strip() for x in valuelist[0].split(",")]
         else:
             self.data = []
 
@@ -73,12 +72,15 @@ class TagListField(Field):
 
 
 class SimpleSearchForm(FlaskForm):
-    query = TagListField(_('Search tags'), [
-        DataRequired(),
-        ItemsLength(TAG_MIN, TAG_MAX),
-        ListLength(TAGLIST_MIN, TAGLIST_MAX),
-        ListRegexp(_tag_search_re),
-    ])
+    query = TagListField(
+        _("Search tags"),
+        [
+            DataRequired(),
+            ItemsLength(TAG_MIN, TAG_MAX),
+            ListLength(TAGLIST_MIN, TAGLIST_MAX),
+            ListRegexp(_tag_search_re),
+        ],
+    )
     page = HiddenField()
 
 
@@ -86,47 +88,49 @@ class TypeaheadTextInput(TextInput):
     """A TextInput with javascript 'typeahead' support"""
 
     def __call__(self, field, **kwargs):
-        kwargs['data-provide'] = 'typeahead'
+        kwargs["data-provide"] = "typeahead"
         return super(TypeaheadTextInput, self).__call__(field, **kwargs)
 
 
 class BookmarkForm(RedirectForm):
     """Form used to post new bookmarks"""
 
-    title = TextField(_('Title'), [DataRequired()])
-    url = URLField(_('URL'), [DataRequired(), URL()])
-    private = BooleanField(_('Private'), default=False)
-    tags = TagListField(_('Tag'), [
-        DataRequired(),
-        ItemsLength(TAG_MIN, TAG_MAX),
-        ListLength(TAGLIST_MIN, TAGLIST_MAX),
-        ListRegexp(tag_name_re),
-    ])
-    notes = TextAreaField(_('Note'), [
-        Optional(),
-        Length(0, NOTES_MAX),
-    ])
+    title = TextField(_("Title"), [DataRequired()])
+    url = URLField(_("URL"), [DataRequired(), URL()])
+    private = BooleanField(_("Private"), default=False)
+    tags = TagListField(
+        _("Tag"),
+        [
+            DataRequired(),
+            ItemsLength(TAG_MIN, TAG_MAX),
+            ListLength(TAGLIST_MIN, TAGLIST_MAX),
+            ListRegexp(tag_name_re),
+        ],
+    )
+    notes = TextAreaField(_("Note"), [Optional(), Length(0, NOTES_MAX)])
 
     def create_bookmark(self, user):
         data = {
-            'title': self.title.data,
-            'url': self.url.data,
-            'private': self.private.data,
-            'tags': list(self.tags.data),
-            'notes': self.notes.data or "",
-            'user': user,
+            "title": self.title.data,
+            "url": self.url.data,
+            "private": self.private.data,
+            "tags": list(self.tags.data),
+            "notes": self.notes.data or "",
+            "user": user,
         }
         bookmark = Bookmark.create(data)
         return bookmark
 
     @classmethod
     def from_bookmark(cls, bookmark, data=None):
-        form = cls(data,
-                   url=bookmark.href,
-                   title=bookmark.title,
-                   private=bookmark.private,
-                   notes=bookmark.notes,
-                   tags=[t.name for t in bookmark.tags])
+        form = cls(
+            data,
+            url=bookmark.href,
+            title=bookmark.title,
+            private=bookmark.private,
+            notes=bookmark.notes,
+            tags=[t.name for t in bookmark.tags],
+        )
         return form
 
 
@@ -135,11 +139,5 @@ class TagSelectionForm(FlaskForm):
 
 
 class RenameTagForm(FlaskForm):
-    old_name = TextField(_("Tag name"), [
-        DataRequired(),
-        Length(TAG_MIN, TAG_MAX),
-    ])
-    new_name = TextField(_("New tag name"), [
-        DataRequired(),
-        Length(TAG_MIN, TAG_MAX),
-    ])
+    old_name = TextField(_("Tag name"), [DataRequired(), Length(TAG_MIN, TAG_MAX)])
+    new_name = TextField(_("New tag name"), [DataRequired(), Length(TAG_MIN, TAG_MAX)])

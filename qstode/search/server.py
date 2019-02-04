@@ -24,12 +24,11 @@ log = logging.getLogger(__name__)
 class IndexerDaemon(object):
     def __init__(self):
         self.config = Config(root_path="/")
-        self.config.from_envvar('APP_CONFIG')
+        self.config.from_envvar("APP_CONFIG")
 
         self.redis = searcher.redis_connect(self.config)
-        db.init_db(self.config['SQLALCHEMY_DATABASE_URI'])
-        self.searcher = searcher.WhooshSearcher(
-            index_dir=self.config['WHOOSH_INDEX_PATH'])
+        db.init_db(self.config["SQLALCHEMY_DATABASE_URI"])
+        self.searcher = searcher.WhooshSearcher(index_dir=self.config["WHOOSH_INDEX_PATH"])
         self.running = False
 
     def _get_writer(self):
@@ -120,5 +119,5 @@ def main():
         print("Interrupt")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

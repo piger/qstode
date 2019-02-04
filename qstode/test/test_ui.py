@@ -16,6 +16,7 @@ def chrome_options(chrome_options):
     return chrome_options
 
 
+@pytest.mark.skip("all tests still WIP")
 @pytest.mark.usefixtures('selenium')
 class IntegrationTestCase(LiveServerTestCase):
     def __init__(self, *args, **kwargs):

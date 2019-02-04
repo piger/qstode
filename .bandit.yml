@@ -1,0 +1,3 @@
+tests:
+skips:
+  - B101 # ignore warnings about assert

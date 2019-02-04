@@ -9,7 +9,9 @@
 """
 import os
 import re
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 import calendar
 from datetime import datetime
 from flask import request, url_for

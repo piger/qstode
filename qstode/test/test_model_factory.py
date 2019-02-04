@@ -81,15 +81,15 @@ class BookmarkFactory(factory.alchemy.SQLAlchemyModelFactory):
                 self.tags.append(Tag.get_or_create(tag))
 
 
-class FactoryModelTest(FlaskTestCase):    
+class FactoryModelTest(FlaskTestCase):
     def test_factory_model(self):
-        user = UserFactory()
+        _ = UserFactory()
         db.Session.commit()
         users = User.query.all()
         assert len(users) == 1
 
     def test_factory_many_models(self):
-        users = UserFactory.create_batch(10)
+        _ = UserFactory.create_batch(10)
         db.Session.commit()
 
         assert User.query.count() == 10
@@ -100,7 +100,7 @@ class FactoryModelTest(FlaskTestCase):
         user = UserFactory()
         db.Session.commit()
 
-        bookmarks = BookmarkFactory.create_batch(10, user=user)
+        _ = BookmarkFactory.create_batch(10, user=user)
         db.Session.commit()
 
         result = Bookmark.by_user(user.id)
@@ -117,14 +117,17 @@ class FactoryModelTest(FlaskTestCase):
 
         user1 = UserFactory(username="pippo")
         user2 = UserFactory(username="gladiolo")
-        db.Session.commit()
+        # I don't need commit() here...
+        # db.Session.commit()
 
         tags1 = ['web', '2.0']
         tags2 = ['search', 'apocalypse']
 
         # TODO: qui sarebbe figo poter passare delle tag
-        user1_bks = BookmarkFactory.create_batch(2, user=user1, tags=tags1)
-        user2_bks = BookmarkFactory.create_batch(1, user=user2, tags=tags2)
+        BookmarkFactory.create_batch(2, user=user1, tags=tags1)
+        BookmarkFactory.create_batch(1, user=user2, tags=tags2)
+        # but I need commit() here, why?
+        # because I'm calling Tag.get_or_create() which doesn't save to the database!
         db.Session.commit()
 
         for tags, count in ((['web'], 2), (['search'], 1)):

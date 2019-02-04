@@ -26,8 +26,8 @@ def ItemsLength(min_length=1, max_length=100):
         ), "This validator must be used with a `list` field"
 
         for item in field.data:
-            l = len(item)
-            if l < min_length or l > max_length:
+            item_len = len(item)
+            if item_len < min_length or item_len > max_length:
                 raise ValidationError(
                     _(
                         "All elements must be between "
@@ -46,8 +46,8 @@ def ListLength(min_length=1, max_length=100):
             isinstance(field.data, list) is True
         ), "This validator must be used with a `list` field"
 
-        l = len(field.data)
-        if l < min_length or l > max_length:
+        list_len = len(field.data)
+        if list_len < min_length or list_len > max_length:
             raise ValidationError(
                 _(
                     "All elements must be between "

@@ -8,7 +8,6 @@
     :license: BSD, see LICENSE for more details.
 """
 import json
-import os
 import click
 from qstode.model import Bookmark, Tag, Link, User, TAG_MIN, TAG_MAX, tag_name_re
 from qstode.app import app, db
@@ -99,7 +98,7 @@ def import_scuttle(filename):
         # We merge bookmarks for users with the same e-mail address
         # XXX users in scuttle are identified by their username while their
         # name is the "display_name".
-        if not email in users:
+        if email not in users:
             user = User(username, email, password, display_name=name)
             user.password = db_user["password"]
             user.created_at = parse_datetime(db_user["created_at"])

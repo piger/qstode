@@ -17,12 +17,10 @@ import json
 import calendar
 import cgi
 from datetime import datetime
-from sqlalchemy import *
+from sqlalchemy import Table, Column, ForeignKey, Integer, create_engine
 from sqlalchemy.orm import sessionmaker, relationship, joinedload, mapper
 from sqlalchemy.schema import MetaData
-from sqlalchemy.engine import reflection
 from sqlalchemy.engine.url import make_url
-from sqlalchemy.ext.declarative import declarative_base
 
 
 meta = MetaData()
@@ -197,7 +195,7 @@ def export_scuttle(config_file, outfile="scuttle-export.json"):
         print("Output file already exists!")
         sys.exit(1)
 
-    engine = init_db(config["uri"])
+    _ = init_db(config["uri"])
     session = Session()
 
     export = {}
@@ -224,7 +222,7 @@ def export_scuttle_html(config_file, outdir):
     Netscape Bookmark Format"""
 
     config = read_config(config_file)
-    engine = init_db(config["uri"])
+    _ = init_db(config["uri"])
     session = Session()
 
     os.mkdir(outdir)

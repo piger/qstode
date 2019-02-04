@@ -10,12 +10,11 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import StringField
 from flask import url_for, g
-from mock import patch
 from werkzeug.datastructures import MultiDict
 from .. import test
 from .. import model
 from .. import forms
-from ..forms.validators import *
+from ..forms.validators import unique_username, unique_email
 
 
 SAMPLE_DATA = {

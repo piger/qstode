@@ -8,7 +8,6 @@
     :license: BSD, see LICENSE for more details.
 """
 import sys
-import os
 import click
 import jinja2
 from qstode.app import app, login_manager
@@ -17,9 +16,9 @@ from qstode import db
 from qstode import utils
 
 # some circular imports needed to have nice things
-from qstode import views
-from qstode import model
-from qstode import cli
+from qstode import views  # noqa
+from qstode import model  # noqa
+from qstode import cli  # noqa
 
 
 def create_app(cfg=None):

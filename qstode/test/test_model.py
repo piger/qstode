@@ -9,6 +9,7 @@
 """
 from datetime import datetime
 from sqlalchemy import func
+import factory
 from qstode.test import FlaskTestCase
 from qstode import db
 from ..model import User, Bookmark, Tag, Link
@@ -137,3 +138,28 @@ class BookmarkTest(ModelTest):
         rv = Bookmark.get_latest()
         x = rv.count()
         assert x == 2
+
+
+class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = User
+        sqlalchemy_session = db.Session
+
+    # id = factory.Sequence(lambda n: n)
+    username = factory.Sequence(lambda n: "User_{}".format(n))
+    email = factory.LazyAttribute(lambda obj: "{}@example.com".format(obj.username))
+    password = factory.Sequence(lambda n: "xxxx{}".format(n))
+
+
+class FactoryModelTest(FlaskTestCase):    
+    def test_factory_model(self):
+        user = UserFactory()
+        db.Session.commit()
+        users = User.query.all()
+        assert len(users) == 1
+
+    def test_factory_many_models(self):
+        users = UserFactory.create_batch(10)
+        db.Session.commit()
+
+        assert User.query.count() == 10

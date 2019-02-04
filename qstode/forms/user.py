@@ -11,7 +11,7 @@ import re
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.recaptcha import RecaptchaField
-from wtforms import TextField, PasswordField, ValidationError, BooleanField, HiddenField
+from wtforms import StringField, PasswordField, ValidationError, BooleanField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp, Optional
 from wtforms.fields.html5 import EmailField
 from flask_babel import lazy_gettext as _
@@ -31,7 +31,7 @@ username_re = re.compile(r"^[A-Za-z0-9_-]+$")
 
 
 class CreateUserForm(FlaskForm):
-    username = TextField(
+    username = StringField(
         _("Username"),
         [
             DataRequired(),
@@ -40,7 +40,7 @@ class CreateUserForm(FlaskForm):
             unique_username(),
         ],
     )
-    display_name = TextField(_("Display name"), [DataRequired(), Length(1, 128)])
+    display_name = StringField(_("Display name"), [DataRequired(), Length(1, 128)])
     email = EmailField(_("Email"), [DataRequired(), unique_email()])
     password = PasswordField(
         _("Password"),
@@ -59,7 +59,7 @@ class EditUserForm(CreateUserForm):
     """Admin: modify an existing user"""
 
     # username uniqueness is validated inline
-    username = TextField(
+    username = StringField(
         _("Username"), [DataRequired(), Length(USERNAME_MIN, USERNAME_MAX), Regexp(username_re)]
     )
     # email uniqueness is validated inline
@@ -86,7 +86,7 @@ class EditUserForm(CreateUserForm):
 
 
 class LoginForm(FlaskForm):
-    user = TextField(_("User"), [DataRequired()])
+    user = StringField(_("User"), [DataRequired()])
     password = PasswordField(_("Password"), [DataRequired()])
     remember_me = BooleanField(_("Remember me"))
 
@@ -108,8 +108,8 @@ class PasswordChangeForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    display_name = TextField(_("Display name"), [DataRequired(), Length(1, 128)])
-    username = TextField(
+    display_name = StringField(_("Display name"), [DataRequired(), Length(1, 128)])
+    username = StringField(
         _("Username"),
         [DataRequired(), Length(min=3, max=20), Regexp(username_re), unique_username()],
     )
@@ -131,7 +131,7 @@ class RecaptchaRegistrationForm(RegistrationForm):
 
 # unique_username ???
 class UserDetailsForm(FlaskForm):
-    display_name = TextField(_("Display name"), [DataRequired(), Length(1, 128)])
+    display_name = StringField(_("Display name"), [DataRequired(), Length(1, 128)])
     password_old = PasswordField(_("Current password"))
     password = PasswordField(
         _("Password"),
@@ -163,7 +163,7 @@ class UserDetailsForm(FlaskForm):
 
 
 class CreateProfileForm(FlaskForm):
-    username = TextField(
+    username = StringField(
         _("Username"), [DataRequired(), Length(min=3, max=20), Regexp(username_re), unique_username]
     )
     email = EmailField(_("Email"), [DataRequired(), Email(), unique_email])

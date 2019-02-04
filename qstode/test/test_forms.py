@@ -7,7 +7,7 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
-from wtforms import Form
+from flask_wtf import FlaskForm
 from wtforms.fields import StringField
 from flask import url_for, g
 from mock import patch
@@ -35,7 +35,7 @@ class ValidatorsTest(test.FlaskTestCase):
     def test_unique_username_ok(self):
         """Validation: unique username"""
 
-        class TestForm(Form):
+        class TestForm(FlaskForm):
             username = StringField("username", [unique_username()])
 
         form = TestForm(username="charlie_root")
@@ -44,7 +44,7 @@ class ValidatorsTest(test.FlaskTestCase):
     def test_unique_username_fail(self):
         """Failed validation: unique username"""
 
-        class TestForm(Form):
+        class TestForm(FlaskForm):
             username = StringField("username", [unique_username()])
 
         form = TestForm(username="pippo")
@@ -53,7 +53,7 @@ class ValidatorsTest(test.FlaskTestCase):
     def test_unique_email_ok(self):
         """Validation: unique email address"""
 
-        class TestForm(Form):
+        class TestForm(FlaskForm):
             email = StringField("email", [unique_email()])
 
         form = TestForm(email="charlie@root.com")
@@ -62,7 +62,7 @@ class ValidatorsTest(test.FlaskTestCase):
     def test_unique_email_fail(self):
         """Failed validation: unique email address"""
 
-        class TestForm(Form):
+        class TestForm(FlaskForm):
             email = StringField("email", [unique_email()])
 
         form = TestForm(email="pippo@example.com")
@@ -124,7 +124,7 @@ class TagListTest(BookmarkFormBaseTest):
     def test_empty_values(self):
         """Validation of empty values as tag list (i.e. ",,,")"""
 
-        class TestForm(Form):
+        class TestForm(FlaskForm):
             tags = forms.TagListField()
 
         with self.app.test_request_context():

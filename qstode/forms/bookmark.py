@@ -9,7 +9,7 @@
 """
 import re
 from flask_wtf import FlaskForm
-from wtforms import TextField, Field, BooleanField, TextAreaField, HiddenField, SelectField
+from wtforms import StringField, Field, BooleanField, TextAreaField, HiddenField, SelectField
 from wtforms.fields.html5 import URLField
 from wtforms.validators import DataRequired, Length, URL, Optional
 from wtforms.widgets import TextInput
@@ -30,7 +30,7 @@ _tag_search_re = re.compile(r"^[\w-][\w!?.,$-_]*$", re.U)
 
 
 class TagListField(Field):
-    """A TextField suitable for comma separated words
+    """A StringField suitable for comma separated words
 
     By default each word is stripped from extra whitespaces and duplicates
     are deleted.
@@ -95,7 +95,7 @@ class TypeaheadTextInput(TextInput):
 class BookmarkForm(RedirectForm):
     """Form used to post new bookmarks"""
 
-    title = TextField(_("Title"), [DataRequired()])
+    title = StringField(_("Title"), [DataRequired()])
     url = URLField(_("URL"), [DataRequired(), URL()])
     private = BooleanField(_("Private"), default=False)
     tags = TagListField(
@@ -139,5 +139,5 @@ class TagSelectionForm(FlaskForm):
 
 
 class RenameTagForm(FlaskForm):
-    old_name = TextField(_("Tag name"), [DataRequired(), Length(TAG_MIN, TAG_MAX)])
-    new_name = TextField(_("New tag name"), [DataRequired(), Length(TAG_MIN, TAG_MAX)])
+    old_name = StringField(_("Tag name"), [DataRequired(), Length(TAG_MIN, TAG_MAX)])
+    new_name = StringField(_("New tag name"), [DataRequired(), Length(TAG_MIN, TAG_MAX)])

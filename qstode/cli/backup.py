@@ -9,7 +9,6 @@
 """
 import sys
 import json
-import codecs
 import iso8601
 import click
 from qstode.app import app
@@ -80,7 +79,7 @@ def backup(filename):
         users.append(user_dict)
 
     click.echo("Writing backup to: {}".format(filename))
-    with codecs.open(filename, "w", encoding="utf-8") as fd:
+    with open(filename, "w", encoding="utf-8") as fd:
         json.dump(dict(backup=users), fd, ensure_ascii=False, indent=4)
 
 
@@ -91,7 +90,7 @@ def import_file(filename):
     link_cache = LinkCache()
     data = None
 
-    with codecs.open(filename, "rb", encoding="utf-8") as fd:
+    with open(filename, "rb", encoding="utf-8") as fd:
         data = json.load(fd)
 
     if data is None:

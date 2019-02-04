@@ -12,7 +12,6 @@
 """
 import sys
 import os
-import codecs
 import re
 import json
 import calendar
@@ -216,7 +215,7 @@ def export_scuttle(config_file, outfile="scuttle-export.json"):
 
     print("Writing output...")
 
-    with codecs.open(outfile, "w", encoding="utf-8") as fd:
+    with open(outfile, "w", encoding="utf-8") as fd:
         json.dump(export, fd, ensure_ascii=False, encoding="utf-8")
 
 
@@ -235,7 +234,7 @@ def export_scuttle_html(config_file, outdir):
             continue
 
         outfile = os.path.join(outdir, db_user.email)
-        outfd = codecs.open(outfile, "w", encoding="utf-8")
+        outfd = open(outfile, "w", encoding="utf-8")
         outfd.write(BOOKMARK_FILE_HEADER)
 
         for bookmark in db_user.bookmarks:

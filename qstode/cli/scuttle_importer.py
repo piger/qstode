@@ -8,7 +8,6 @@
     :license: BSD, see LICENSE for more details.
 """
 import json
-import codecs
 import os
 import click
 from qstode.model import Bookmark, Tag, Link, User, TAG_MIN, TAG_MAX, tag_name_re
@@ -76,7 +75,7 @@ def import_scuttle(filename):
     users = {}
     all_users = []
 
-    with codecs.open(filename, "r", encoding="utf-8") as fd:
+    with open(filename, "r", encoding="utf-8") as fd:
         data = json.load(fd, encoding="utf-8")
 
     tot = len(data["users"])

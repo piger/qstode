@@ -31,9 +31,9 @@ setup(
         'alembic==1.0.7',
         'iso8601==0.1.12',
     ],
-    extras_require=[
-        'mysql-connector-python',
-    ],
+    extras_require={
+        'mysql': 'mysql-connector-python',
+    },
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),

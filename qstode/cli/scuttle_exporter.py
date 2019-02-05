@@ -33,19 +33,18 @@ watched_table = None
 
 
 BOOKMARK_FILE_HEADER = """<!DOCTYPE NETSCAPE-Bookmark-file-1>
-<!--This is an automatically generated file.
-It will be read and overwritten.
-Do Not Edit! -->
+<!-- This is an automatically generated file.
+     It will be read and overwritten.
+     Do Not Edit! -->
 <Title>Bookmarks</Title>
 <H1>Bookmarks</H1>
 <DL><p>
 """
 
-BOOKMARK_FILE_FOOTER_TPL = """</DL><p><!-- Generated on: {today} -->
-"""
+BOOKMARK_FILE_FOOTER_TPL = '</DL><p><!-- Generated on: {today} -->\n'
 
-BOOKMARK_TPL = """<DT><A HREF="{href}" ADD_DATE="{add_date}" LAST_MODIFIED="{mod_date}" PRIVATE="{private}" TAGS="{tags}">{title}</A>
-"""
+BOOKMARK_TPL = ('<DT><A HREF="{href}" ADD_DATE="{add_date}" LAST_MODIFIED="{mod_date}"'
+                ' PRIVATE="{private}" TAGS="{tags}">{title}</A>\n')
 
 
 class BaseModel(object):

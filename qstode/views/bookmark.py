@@ -27,7 +27,8 @@ from werkzeug.contrib.atom import AtomFeed
 
 from qstode.app import app
 from qstode import forms
-from qstode import model
+from ..model.bookmark import Tag, Bookmark, Link, get_stats
+from ..model.user import User
 from qstode import db
 from qstode.views import helpers
 
@@ -49,7 +50,7 @@ def inject_globals():
     else:
         search_form = forms.SimpleSearchForm()
 
-    return dict(search_form=search_form, taglist=model.Tag.taglist(app.config["TAGLIST_ITEMS"]))
+    return dict(search_form=search_form, taglist=Tag.taglist(app.config["TAGLIST_ITEMS"]))
 
 
 @app.errorhandler(404)
@@ -72,19 +73,19 @@ def permission_denied(e):
 @app.route("/", defaults={"page": 1})
 @app.route("/page/<int:page>")
 def index(page):
-    bookmarks = model.Bookmark.get_latest().paginate(page, app.config["PER_PAGE"])
+    bookmarks = Bookmark.get_latest().paginate(page, app.config["PER_PAGE"])
 
     return render_template("index.html", bookmarks=bookmarks)
 
 
 @app.route("/about")
 def about():
-    data = dict(list(zip(("num_bookmarks", "num_tags"), model.get_stats())))
+    data = dict(list(zip(("num_bookmarks", "num_tags"), get_stats())))
     return render_template("about.html", data=data)
 
 
 @app.route("/help")
-def help_page():
+def help():
     return render_template("help.html")
 
 
@@ -97,14 +98,14 @@ def tagged(tags, page):
 
     # 'p' is for 'personal'
     if "p" in request.args and current_user.is_authenticated:
-        bookmarks = model.Bookmark.by_tags_user(tags, current_user.id)
+        bookmarks = Bookmark.by_tags_user(tags, current_user.id)
     else:
-        bookmarks = model.Bookmark.by_tags(tags)
+        bookmarks = Bookmark.by_tags(tags)
 
     bookmarks = bookmarks.paginate(page, app.config["PER_PAGE"])
 
     if app.config["ENABLE_RELATED_TAGS"]:
-        related = model.Tag.get_related(tags)
+        related = Tag.get_related(tags)
     else:
         related = []
 
@@ -116,21 +117,21 @@ def tagged(tags, page):
 def user_bookmarks(username, page):
     """Shows all bookmarks for a specific user"""
 
-    user = model.User.query.filter_by(username=username).first_or_404()
+    user = User.query.filter_by(username=username).first_or_404()
 
     if current_user.is_authenticated and user.id == current_user.id:
         include_private = True
     else:
         include_private = False
 
-    results = model.Bookmark.by_user(user.id, include_private=include_private).paginate(
+    results = Bookmark.by_user(user.id, include_private=include_private).paginate(
         page, app.config["PER_PAGE"]
     )
 
     try:
         # the tagcloud() method is fragily; at the moment the best fix
         # is to catch the 0 division exception... :(
-        tag_cloud = model.Tag.tagcloud(user_id=user.id)
+        tag_cloud = Tag.tagcloud(user_id=user.id)
     except ZeroDivisionError:
         tag_cloud = []
 
@@ -190,7 +191,7 @@ def close_popup():
 @app.route("/edit/<bId>", methods=["GET", "POST"])
 @login_required
 def edit_bookmark(bId):
-    bookmark = model.Bookmark.query.filter_by(id=bId).first()
+    bookmark = Bookmark.query.filter_by(id=bId).first()
 
     if bookmark is None or bookmark.user != current_user:
         abort(404)
@@ -199,8 +200,8 @@ def edit_bookmark(bId):
 
     if form.validate_on_submit():
         if form.url.data != bookmark.href:
-            new_url = model.Url.get_or_create(form.url.data)
-            bookmark.url = new_url
+            new_href = Link.get_or_create(form.url.data)
+            bookmark.href = new_href
         bookmark.title = form.title.data
         bookmark.private = form.private.data
 
@@ -210,7 +211,7 @@ def edit_bookmark(bId):
         #       bookmark.tags.remove(tag)
         #
         # So we must resort to this trick
-        tags = model.Tag.get_or_create_many(form.tags.data)
+        tags = Tag.get_or_create_many(form.tags.data)
         tags_to_delete = bookmark.tags[:]
         for tag in tags_to_delete:
             bookmark.tags.remove(tag)
@@ -230,7 +231,7 @@ def edit_bookmark(bId):
 @app.route("/delete/<int:bId>", methods=["GET", "POST"])
 @login_required
 def delete_bookmark(bId):
-    bookmark = model.Bookmark.query.get_or_404(bId)
+    bookmark = Bookmark.query.get_or_404(bId)
     form = forms.RedirectForm()
 
     if bookmark.user.id != current_user.id:
@@ -256,15 +257,15 @@ def rename_tag():
 
         assert old_name != new_name
 
-        old_tag = model.Tag.query.filter_by(name=old_name).first()
+        old_tag = Tag.query.filter_by(name=old_name).first()
         if old_tag is None:
             abort(404)
 
-        new_tag = model.Tag.get_or_create(new_name)
+        new_tag = Tag.get_or_create(new_name)
         assert new_tag is not None
 
-        query = model.Bookmark.by_tags([old_name])
-        query = query.filter(model.Bookmark.user_id == current_user.id)
+        query = Bookmark.by_tags([old_name])
+        query = query.filter(Bookmark.user_id == current_user.id)
 
         for bookmark in query:
             bookmark.tags.remove(old_tag)
@@ -280,7 +281,7 @@ def rename_tag():
 
 @app.route("/bookmark/<int:bookmark_id>")
 def single_bookmark(bookmark_id):
-    bookmark = model.Bookmark.query.get_or_404(bookmark_id)
+    bookmark = Bookmark.query.get_or_404(bookmark_id)
 
     if bookmark.private and bookmark.user.id != current_user.id:
         abort(404)
@@ -324,11 +325,11 @@ def simple_search():
         results = []
         related = []
         if in_tags:
-            results = model.Bookmark.by_tags(in_tags, ex_tags, user_id=user_id).paginate(
+            results = Bookmark.by_tags(in_tags, ex_tags, user_id=user_id).paginate(
                 page, app.config["PER_PAGE"]
             )
             if app.config["ENABLE_RELATED_TAGS"]:
-                related = model.Tag.get_related(in_tags)
+                related = Tag.get_related(in_tags)
 
         return render_template("tag_results.html", bookmarks=results, related=related)
     return redirect(url_for("index"))
@@ -337,7 +338,7 @@ def simple_search():
 @app.route("/followed", defaults={"page": 1})
 @app.route("/followed/<int:page>")
 def followed(page):
-    bookmarks = model.Bookmark.by_followed().paginate(page, app.config["PER_PAGE"])
+    bookmarks = Bookmark.by_followed().paginate(page, app.config["PER_PAGE"])
 
     return render_template("followed.html", bookmarks=bookmarks)
 
@@ -348,7 +349,7 @@ def feed_recent():
         "QStode", feed_url=request.url, url=request.url_root, subtitle="Recent bookmarks"
     )
 
-    bookmarks = model.Bookmark.get_latest().limit(app.config["FEED_NUM_ENTRIES"]).all()
+    bookmarks = Bookmark.get_latest().limit(app.config["FEED_NUM_ENTRIES"]).all()
 
     for bookmark in bookmarks:
         item_id = urljoin(request.url_root, url_for("single_bookmark", bookmark_id=bookmark.id))
@@ -371,7 +372,7 @@ def feed_recent():
 @app.route("/export_bookmarks")
 @login_required
 def export_bookmarks():
-    bookmarks = model.Bookmark.by_user(current_user.id, include_private=True)
+    bookmarks = Bookmark.by_user(current_user.id, include_private=True)
     today = datetime.now()
     filename = "qstode-backup-%s.html" % format_datetime(today, "dd-MM-yyyy")
 

@@ -17,7 +17,7 @@ from wtforms.fields.html5 import EmailField
 from flask_babel import lazy_gettext as _
 from qstode.forms.misc import RedirectForm
 from qstode.forms.validators import unique_username, unique_email, friendly_email
-from qstode.model import User
+from ..model.user import User
 
 
 # Length limit for password validation

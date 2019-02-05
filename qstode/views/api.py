@@ -13,7 +13,8 @@ from flask_login import current_user
 from sqlalchemy import and_
 from qstode.app import app
 from qstode import db
-from qstode import model
+from ..model.bookmark import Tag, Bookmark
+from ..model.user import User, watched_users
 
 
 class APIError(Exception):
@@ -41,7 +42,7 @@ def handle_api_error(error):
 
 class BookmarkView(MethodView):
     def get(self, bookmark_id):
-        rv = model.Bookmark.get_public().filter(model.Bookmark.id == bookmark_id).first()
+        rv = Bookmark.get_public().filter(Bookmark.id == bookmark_id).first()
 
         if rv is None:
             raise APIError("Bookmark not found", status_code=404)
@@ -60,7 +61,7 @@ class BookmarkListView(MethodView):
         except ValueError:
             raise APIError("Invalid page requested", status_code=400)
 
-        bookmarks = model.Bookmark.get_latest().paginate(page, app.config["PER_PAGE"])
+        bookmarks = Bookmark.get_latest().paginate(page, app.config["PER_PAGE"])
         rv = {
             "meta": {
                 "cur_page": bookmarks.page,
@@ -79,7 +80,7 @@ app.add_url_rule("/api/bookmarks/", view_func=bookmark_list_view, methods=["GET"
 
 class TaglistView(MethodView):
     def get(self):
-        taglist = model.Tag.taglist()
+        taglist = Tag.taglist()
         rv = [dict(tag=tag.name, count=count) for tag, count in taglist]
         return jsonify(tags=rv)
 
@@ -94,7 +95,7 @@ def complete_tags():
     results = []
 
     if term:
-        tags = model.Tag.search(term).limit(app.config["TAG_AUTOCOMPLETE_MAX"]).all()
+        tags = Tag.search(term).limit(app.config["TAG_AUTOCOMPLETE_MAX"]).all()
         results.extend([dict(id=tag.id, label=tag.name, value=tag.name) for tag in tags])
 
     return jsonify(results=results)
@@ -107,7 +108,7 @@ def is_following(user_id):
     if not current_user.is_authenticated or user_id == current_user.id:
         return jsonify(result=2)
 
-    other_user = model.User.query.get_or_404(user_id)
+    other_user = User.query.get_or_404(user_id)
     rv = current_user.is_following(other_user.id)
     if rv is True:
         return jsonify(result=1)
@@ -122,8 +123,8 @@ def follow_user(user_id):
     if not current_user.is_authenticated or user_id == current_user.id:
         return jsonify(result=2, msg="Invalid request")
 
-    wu = model.watched_users
-    other_user = model.User.query.get_or_404(user_id)
+    wu = watched_users
+    other_user = User.query.get_or_404(user_id)
     query = db.Session.query(wu).filter(
         and_(wu.c.user_id == current_user.id, wu.c.other_user_id == other_user.id)
     )

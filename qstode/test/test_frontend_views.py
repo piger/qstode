@@ -9,20 +9,21 @@
 """
 from flask import url_for
 from qstode.test import FlaskTestCase
-from qstode import model
+from ..model.user import User
+from ..model.bookmark import Bookmark
 from qstode import db
 
 
 class FrontendViewsTest(FlaskTestCase):
     def setUp(self):
         super(FrontendViewsTest, self).setUp()
-        user_1 = model.User("user1", "user1@example.com", "password")
-        user_2 = model.User("user2", "user2@example.com", "password")
+        user_1 = User("user1", "user1@example.com", "password")
+        user_2 = User("user2", "user2@example.com", "password")
 
         db.Session.add_all([user_1, user_2])
         db.Session.commit()
 
-        b1 = model.Bookmark.create(
+        b1 = Bookmark.create(
             {
                 "url": "http://www.python.org",
                 "title": "Python",
@@ -34,7 +35,7 @@ class FrontendViewsTest(FlaskTestCase):
         db.Session.add(b1)
         db.Session.commit()
 
-        b2 = model.Bookmark.create(
+        b2 = Bookmark.create(
             {
                 "url": "https://github.com/piger/qstode",
                 "title": "QStode",

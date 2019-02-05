@@ -14,7 +14,7 @@ from wtforms.fields.html5 import URLField
 from wtforms.validators import DataRequired, Length, URL, Optional
 from wtforms.widgets import TextInput
 from flask_babel import lazy_gettext as _
-from qstode.model import Bookmark, tag_name_re, TAG_MIN, TAG_MAX, NOTES_MAX
+from ..model.bookmark import Bookmark, tag_name_re, TAG_MIN, TAG_MAX, NOTES_MAX
 from qstode.forms.misc import RedirectForm
 from qstode.forms.validators import ItemsLength, ListLength, ListRegexp
 

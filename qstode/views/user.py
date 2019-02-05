@@ -15,7 +15,7 @@ from sqlalchemy.orm import joinedload
 from qstode.app import app, login_manager
 from qstode.mailer import Mailer
 from qstode import db
-from ..model import User, watched_users, ResetToken
+from ..model.user import User, watched_users, ResetToken
 from qstode import forms
 
 

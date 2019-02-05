@@ -16,5 +16,8 @@ from qstode.forms.bookmark import (  # noqa
     BookmarkForm,
     TagSelectionForm,
     RenameTagForm,
+    TagListField,
+    TAGLIST_MIN,
+    TAGLIST_MAX,
 )
 from qstode.forms.misc import RedirectForm  # noqa

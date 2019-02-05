@@ -9,7 +9,8 @@
 """
 from qstode.test import FlaskTestCase
 from qstode import db
-from ..model import User, Bookmark, Tag
+from ..model.user import User
+from ..model.bookmark import Bookmark, Tag
 
 
 sample_bookmarks = [

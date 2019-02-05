@@ -9,7 +9,8 @@
 """
 import json
 import click
-from qstode.model import Bookmark, Tag, Link, User, TAG_MIN, TAG_MAX, tag_name_re
+from ..model.bookmark import Bookmark, Tag, Link, TAG_MIN, TAG_MAX, tag_name_re
+from ..model.user import User
 from qstode.app import app, db
 from qstode.cli.helpers import ObjectCache, parse_datetime, unescape
 from qstode.utils import generate_password

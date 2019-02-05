@@ -12,7 +12,8 @@ import json
 import iso8601
 import click
 from qstode.app import app
-from qstode import model
+from ..model.bookmark import Link, Tag, Bookmark
+from ..model.user import User
 from qstode import db
 
 
@@ -35,11 +36,11 @@ class Cache(object):
 
 
 class LinkCache(Cache):
-    instance_class = model.Link
+    instance_class = Link
 
 
 class TagCache(Cache):
-    instance_class = model.Tag
+    instance_class = Tag
 
 
 def _parse_date(d):
@@ -56,7 +57,7 @@ def _parse_date(d):
 def backup(filename):
     users = []
 
-    for user in model.User.query.all():
+    for user in User.query.all():
         user_dict = {
             "username": user.username,
             "email": user.email,
@@ -69,8 +70,8 @@ def backup(filename):
         if hasattr(user, "roles"):
             user_dict["roles"] = [role.name for role in user.roles]
 
-        query = model.Bookmark.by_user(user.id, include_private=True).order_by(
-            model.Bookmark.created_on.asc()
+        query = Bookmark.by_user(user.id, include_private=True).order_by(
+            Bookmark.created_on.asc()
         )
         for bookmark in query.all():
             bookmark_dict = bookmark.to_dict()
@@ -103,9 +104,9 @@ def import_file(filename):
         sys.exit(1)
 
     for user_data in users_data:
-        user = model.User.query.filter_by(email=user_data["email"]).first()
+        user = User.query.filter_by(email=user_data["email"]).first()
         if user is None:
-            user = model.User(user_data["username"], user_data["email"], password=DEFAULT_PASSWORD)
+            user = User(user_data["username"], user_data["email"], password=DEFAULT_PASSWORD)
             user.created_at = _parse_date(user_data["created_at"])
             user.active = user_data.get("active", True)
             db.Session.add(user)
@@ -131,7 +132,7 @@ def import_file(filename):
             else:
                 create_date = _parse_date(bm["created_on"])
 
-            bookmark = model.Bookmark(
+            bookmark = Bookmark(
                 title=bm["title"],
                 private=bm["private"],
                 created_on=create_date,

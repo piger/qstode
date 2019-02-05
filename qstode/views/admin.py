@@ -11,10 +11,9 @@ from functools import wraps
 from flask import request, render_template, abort, redirect, url_for, flash
 from flask_login import current_user
 from flask_babel import gettext
-from qstode.app import app
-from qstode import db
-from qstode.model import User
-from qstode import forms
+from ..app import app
+from .. import db, forms
+from ..model.user import User
 
 
 def admin_required(f):

@@ -2,7 +2,8 @@ import factory
 
 from qstode.test import FlaskTestCase
 from qstode import db
-from ..model import User, Bookmark, Tag, Link
+from ..model.bookmark import Bookmark, Tag, Link
+from ..model.user import User
 
 
 class UserFactory(factory.alchemy.SQLAlchemyModelFactory):

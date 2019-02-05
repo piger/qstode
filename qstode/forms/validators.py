@@ -10,8 +10,8 @@
 from flask_login import current_user
 from flask_babel import lazy_gettext as _
 from wtforms import ValidationError
-from qstode.model import User
-from qstode.app import app
+from ..model.user import User
+from ..app import app
 
 
 ERR_FRIEND_EMAIL = _("Your email address is not part of the friendly domains list.")

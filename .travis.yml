@@ -1,3 +1,4 @@
+sudo: false
 distro: trusty
 addons:
   chrome: stable
@@ -6,9 +7,12 @@ before_install:
   - mkdir /tmp/chromedriver
   - unzip /tmp/chromedriver_linux64.zip -d /tmp/chromedriver
   - export PATH=$PATH:/tmp/chromedriver/
-sudo: false
 language: python
 python:
+  - "3.4"
+  - "3.5"
   - "3.6"
+cache: pip
 install: pip install tox-travis
+env: TOXENV="py3, flake8"
 script: tox

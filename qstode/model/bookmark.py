@@ -368,10 +368,7 @@ class Bookmark(db.Base):
             return cls.query.filter(cls.private == false())
 
         return cls.query.filter(
-            or_(
-                and_(cls.private == true(), cls.user_id == current_user.id),
-                cls.private == false(),
-            )
+            or_(and_(cls.private == true(), cls.user_id == current_user.id), cls.private == false())
         )
 
     @classmethod

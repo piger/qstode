@@ -9,15 +9,15 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = User
         sqlalchemy_session = db.Session
-        exclude = ('_profile',)
+        exclude = ("_profile",)
 
-    _profile = factory.Faker('profile')
+    _profile = factory.Faker("profile")
 
     username = factory.LazyAttribute(lambda obj: obj._profile["username"])
     # if we get a unique username, our email will be unique as well
     email = factory.LazyAttribute(lambda obj: "{.username}@example.com".format(obj))
     display_name = factory.LazyAttribute(lambda obj: obj._profile["name"])
-    password = factory.Faker('password')
+    password = factory.Faker("password")
     active = True
     admin = False
 
@@ -38,7 +38,7 @@ class LinkFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Link
         sqlalchemy_session = db.Session
 
-    href = factory.Faker('uri')
+    href = factory.Faker("uri")
 
 
 class BookmarkFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -46,8 +46,8 @@ class BookmarkFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Bookmark
         sqlalchemy_session = db.Session
 
-    title = factory.Faker('sentence', nb_words=6)
-    notes = factory.Faker('text')
+    title = factory.Faker("sentence", nb_words=6)
+    notes = factory.Faker("text")
     private = False
 
     @classmethod
@@ -120,8 +120,8 @@ class FactoryModelTest(FlaskTestCase):
         # I don't need commit() here...
         # db.Session.commit()
 
-        tags1 = ['web', '2.0']
-        tags2 = ['search', 'apocalypse']
+        tags1 = ["web", "2.0"]
+        tags2 = ["search", "apocalypse"]
 
         # TODO: qui sarebbe figo poter passare delle tag
         BookmarkFactory.create_batch(2, user=user1, tags=tags1)
@@ -130,7 +130,7 @@ class FactoryModelTest(FlaskTestCase):
         # because I'm calling Tag.get_or_create() which doesn't save to the database!
         db.Session.commit()
 
-        for tags, count in ((['web'], 2), (['search'], 1)):
+        for tags, count in ((["web"], 2), (["search"], 1)):
             result = Bookmark.by_tags(tags)
             assert result.count() == count
 

@@ -16,6 +16,7 @@ from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy import Boolean, event
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.sql.expression import false
 from flask_login import current_user
 from qstode import db
 from qstode.model.user import User, watched_users
@@ -210,7 +211,7 @@ class Tag(db.Base):
         query = (
             db.Session.query(Tag, func.count(Tag.id).label("total"))
             .join(Tag.bookmarks)
-            .filter(Bookmark.private == False)
+            .filter(Bookmark.private == false())
         )
 
         if user_id is not None:
@@ -255,7 +256,7 @@ class Tag(db.Base):
             db.Session.query(cls, func.count(bookmark_tags.c.bookmark_id).label("tot"))
             .join(bookmark_tags)
             .join(Bookmark)
-            .filter(Bookmark.private == False)
+            .filter(Bookmark.private == false())
             .group_by(cls)
             .order_by(desc("tot"))
             .limit(max_results)
@@ -364,10 +365,13 @@ class Bookmark(db.Base):
 
         if current_user.is_authenticated:
             return cls.query.filter(
-                or_(and_(cls.private == True, cls.user_id == current_user.id), cls.private == False)
+                or_(
+                    and_(cls.private == True, cls.user_id == current_user.id),
+                    cls.private == false(),
+                )
             )
         else:
-            return cls.query.filter(cls.private == False)
+            return cls.query.filter(cls.private == false())
 
     @classmethod
     def get_latest(cls):
@@ -378,7 +382,7 @@ class Bookmark(db.Base):
     def by_user(cls, userid, include_private=False):
         where = cls.user_id == userid
         if not include_private:
-            where = where & (cls.private == False)
+            where = where & (cls.private == false())
         return cls.query.filter(where).order_by(cls.created_on.desc())
 
     @classmethod
@@ -390,7 +394,7 @@ class Bookmark(db.Base):
             cls.query.join(User)
             .outerjoin(watched_users, User.id == watched_users.c.other_user_id)
             .filter(watched_users.c.user_id == current_user.id)
-            .filter(cls.private == False)
+            .filter(cls.private == false())
             .order_by(cls.created_on.desc())
         )
 
@@ -470,7 +474,7 @@ class Bookmark(db.Base):
             cls.get_public()
             .outerjoin(exclude_query, cls.id == exclude_query.c.bookmark_id)
             .join(include_query, cls.id == include_query.c.bookmark_id)
-            .filter(exclude_query.c.bookmark_id == None)
+            .filter(exclude_query.c.bookmark_id == None)  # noqa
             .order_by(cls.created_on.desc())
         )
 
@@ -537,14 +541,14 @@ class Bookmark(db.Base):
 
 def get_stats():
     tot_bookmarks = (
-        db.Session.query(func.count(Bookmark.id)).filter(Bookmark.private == False).scalar()
+        db.Session.query(func.count(Bookmark.id)).filter(Bookmark.private == false()).scalar()
     )
 
     tot_tags = (
         db.Session.query(Tag)
         .join(bookmark_tags)
         .join(Bookmark)
-        .filter(Bookmark.private == False)
+        .filter(Bookmark.private == false())
         .group_by(Tag.id)
         .count()
     )

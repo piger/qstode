@@ -1,3 +1,6 @@
 [run]
-source = zdops
-omit = qstode/test/*
+source = qstode/
+omit =
+     qstode/test/*
+     qstode/cli/scuttle*
+     qstode/default_config.py

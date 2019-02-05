@@ -1,0 +1,26 @@
+# qstode
+
+version: "3.2"
+services:
+  qstode:
+    build: .
+    image: qstode:latest
+    restart: always
+    ports:
+      # HOST[:HOST_PORT]:CONTAINER
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - .:/app/src
+    environment:
+      SQLALCHEMY_DATABASE_URI: mysql+mysqlconnector://qstode_user:capriolo@mysql/qstode
+  redis:
+    image: "redis:alpine"
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: scassacazzi
+      MYSQL_DATABASE: qstode
+      MYSQL_USER: qstode_user
+      MYSQL_PASSWORD: capriolo
+    volumes:
+      - ../qstode-data/qstode-mysql:/var/lib/mysql

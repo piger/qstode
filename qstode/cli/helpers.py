@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     qstode.cli.helpers
     ~~~~~~~~~~~~~~~~~~
@@ -45,9 +44,7 @@ def parse_datetime(dt):
 def unescape(s):
     """Unescape a string containing \' or \" escapings"""
 
-    corrections = (
-        (u"\\'", u"'"),
-        (u'\\"', u'"'))
+    corrections = (("\\'", "'"), ('\\"', '"'))
 
     for pattern, repl in corrections:
         s = s.replace(pattern, repl)

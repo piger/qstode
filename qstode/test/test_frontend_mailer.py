@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     qstode.test.test_frontend_mailer
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,12 +14,11 @@ from qstode.mailer import Mailer
 
 class MailerTestCase(FlaskTestCase):
     def test_sendmail(self):
-        with mock.patch('smtplib.SMTP') as MockSMTP:
+        with mock.patch("smtplib.SMTP") as MockSMTP:
             instance = MockSMTP.return_value
 
-            mailer = Mailer('sender@example.com')
-            rv = mailer.send('recipient@example.com',
-                             'test mail', 'test body', 'test body html')
+            mailer = Mailer("sender@example.com")
+            rv = mailer.send("recipient@example.com", "test mail", "test body", "test body html")
 
             assert rv
             assert instance.sendmail.called

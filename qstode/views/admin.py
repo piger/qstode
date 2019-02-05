@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     qstode.views.admin
     ~~~~~~~~~~~~~~~~~~
@@ -12,10 +11,9 @@ from functools import wraps
 from flask import request, render_template, abort, redirect, url_for, flash
 from flask_login import current_user
 from flask_babel import gettext
-from qstode.app import app
-from qstode import db
-from qstode.model import User
-from qstode import forms
+from ..app import app
+from .. import db, forms
+from ..model.user import User
 
 
 def admin_required(f):
@@ -25,6 +23,7 @@ def admin_required(f):
             return f(*args, **kwargs)
         # abort with FORBIDDEN
         abort(403)
+
     return decorated_function
 
 
@@ -34,38 +33,40 @@ def admin_home():
     return render_template("admin/index.html")
 
 
-@app.route('/admin/users', defaults={'page': 1})
-@app.route('/admin/users/<int:page>')
+@app.route("/admin/users", defaults={"page": 1})
+@app.route("/admin/users/<int:page>")
 @admin_required
 def admin_users(page):
-    users = User.query.paginate(page, app.config['PER_PAGE'])
+    users = User.query.paginate(page, app.config["PER_PAGE"])
     return render_template("admin/list_users.html", users=users)
 
 
-@app.route('/admin/create_user', methods=['GET', 'POST'])
+@app.route("/admin/create_user", methods=["GET", "POST"])
 @admin_required
 def admin_create_user():
     form = forms.CreateUserForm()
 
     if form.validate_on_submit():
-        user = User(form.username.data,
-                    form.email.data,
-                    form.password.data,
-                    admin=form.admin.data,
-                    active=form.active.data)
+        user = User(
+            form.username.data,
+            form.email.data,
+            form.password.data,
+            admin=form.admin.data,
+            active=form.active.data,
+        )
         db.Session.add(user)
         db.Session.commit()
 
-        flash(gettext(u"Successfully created user %(username)s", username=user.username), "success")
+        flash(gettext("Successfully created user %(username)s", username=user.username), "success")
         return redirect(url_for("admin_users"))
 
     return render_template("admin/create_user.html", form=form)
 
 
-@app.route('/admin/delete_user/<int:id>', methods=['GET', 'POST'])
+@app.route("/admin/delete_user/<int:user_id>", methods=["GET", "POST"])
 @admin_required
-def admin_delete_user(id):
-    user = User.query.get_or_404(id)
+def admin_delete_user(user_id):
+    user = User.query.get_or_404(user_id)
     form = forms.DeleteUserForm(next=request.referrer, user_id=user.id)
 
     if form.validate_on_submit():
@@ -73,25 +74,26 @@ def admin_delete_user(id):
         db.Session.delete(user)
         db.Session.commit()
 
-        flash(gettext(u"User %(username)s deleted", username=username),
-              "success")
+        flash(gettext("User %(username)s deleted", username=username), "success")
         return form.redirect()
 
     return render_template("admin/delete_user.html", user=user, form=form)
 
 
-@app.route('/admin/user/<int:id>', methods=['GET', 'POST'])
+@app.route("/admin/user/<int:user_id>", methods=["GET", "POST"])
 @admin_required
-def admin_edit_user(id):
-    user = User.query.get_or_404(id)
+def admin_edit_user(user_id):
+    user = User.query.get_or_404(user_id)
 
     # Create the required form, populating with data from the selected
     # user; update also the dynamic field `choices`.
-    form = forms.EditUserForm(username=user.username,
-                              email=user.email,
-                              display_name=user.display_name,
-                              admin=user.admin,
-                              active=user.active)
+    form = forms.EditUserForm(
+        username=user.username,
+        email=user.email,
+        display_name=user.display_name,
+        admin=user.admin,
+        active=user.active,
+    )
 
     if form.validate_on_submit():
         user.username = form.username.data
@@ -104,7 +106,7 @@ def admin_edit_user(id):
         user.email = form.email.data
         db.Session.commit()
 
-        flash(gettext(u"User %(user)s updated", user=user.username), "success")
-        return redirect(url_for('admin_users'))
+        flash(gettext("User %(user)s updated", user=user.username), "success")
+        return redirect(url_for("admin_users"))
 
     return render_template("admin/edit_user.html", user=user, form=form)

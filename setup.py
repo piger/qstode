@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 QStode
 ------
@@ -22,19 +21,20 @@ setup(
     license="BSD",
     long_description=__doc__,
     install_requires=[
-        'Babel==2.5.1',
-        'Flask==0.12.4',
-        'Flask-Babel==0.11.2',
-        'Flask-Login==0.4',
-        'Flask-WTF==0.14.2',
-        'SQLAlchemy==1.1.14',
-        'WTForms==2.1',
-        'alembic==0.8.4',
-        'MySQL-Python>=1.2.4',
-        'iso8601==0.1.12',
-        'pytz',
+        "Babel==2.6.0",
+        "Flask==1.0.2",
+        "Flask-Babel==0.12.2",
+        "Flask-Login==0.4.1",
+        "Flask-WTF==0.14.2",
+        "SQLAlchemy==1.2.17",
+        "WTForms==2.2.1",
+        "alembic==1.0.7",
+        "iso8601==0.1.12",
     ],
-    setup_requires=[],
+    extras_require={
+        "mysql": ["mysql-connector-python"],
+        "search": ["whoosh", "redis"],
+    },
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),

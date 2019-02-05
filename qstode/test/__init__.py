@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import tempfile
 import shutil
@@ -15,11 +14,11 @@ class FlaskTestCase(TestCase):
         config = {
             # I hate the author of Flask-WTF for changing the name of the
             # configuration parameter.
-            'WTF_CSRF_ENABLED': False,
-            'CSRF_ENABLED': False,
-            'SQLALCHEMY_DATABASE_URI': "sqlite:///%s" % self.db_filename,
-            'SECRET_KEY': 'test',
-            'TESTING': True,
+            "WTF_CSRF_ENABLED": False,
+            "CSRF_ENABLED": False,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///%s" % self.db_filename,
+            "SECRET_KEY": "test",
+            "TESTING": True,
         }
 
         return main.create_app(config)

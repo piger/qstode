@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     qstode.app
     ~~~~~~~~~~
@@ -15,11 +14,11 @@ from flask_login import LoginManager
 from qstode import db
 
 
-app = Flask('qstode')
+app = Flask("qstode")
 
 
 # Read the default configuration
-app.config.from_object('qstode.default_config')
+app.config.from_object("qstode.default_config")
 
 # initialize extensions
 babel = Babel(app)
@@ -32,8 +31,7 @@ def _guess_lang():
     if "lang" in session:
         return session["lang"]
     else:
-        return request.accept_languages.best_match(
-            app.config["SUPPORTED_LANGUAGES_ISO"])
+        return request.accept_languages.best_match(app.config["SUPPORTED_LANGUAGES_ISO"])
 
 
 @app.before_request
@@ -54,11 +52,12 @@ def ssl_required(fn):
 
     @wraps(fn)
     def decorated_view(*args, **kwargs):
-        if app.config['DEBUG'] or request.is_secure:
+        if app.config["DEBUG"] or request.is_secure:
             return fn(*args, **kwargs)
         else:
             return redirect(request.url.replace("http://", "https://"))
         return fn(*args, **kwargs)
+
     return decorated_view
 
 

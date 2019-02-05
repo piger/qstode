@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
 # QStode default configuration
 
 
 # Available translations
-SUPPORTED_LANGUAGES = [
-    ('en', 'English'),
-    ('it', 'Italiano'),
-]
+SUPPORTED_LANGUAGES = [("en", "English"), ("it", "Italiano")]
 
 SUPPORTED_LANGUAGES_ISO = [l[0] for l in SUPPORTED_LANGUAGES]
 

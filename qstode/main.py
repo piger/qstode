@@ -8,8 +8,10 @@
     :license: BSD, see LICENSE for more details.
 """
 import sys
+import logging
 import click
 import jinja2
+from flask.logging import default_handler
 from .app import app, login_manager
 from . import exc, db, utils
 from .model import user as user_model
@@ -23,6 +25,11 @@ from .views import admin  # noqa
 from .views import bookmark  # noqa
 from .views import filters  # noqa
 from .views import user  # noqa
+
+
+# Configure the root logger to pipe everything into the default Flask handler.
+rootLogger = logging.getLogger()
+rootLogger.addHandler(default_handler)
 
 
 def create_app(cfg=None):

@@ -16,7 +16,7 @@ from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy import Boolean, event
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.sql.expression import false
+from sqlalchemy.sql.expression import false, true
 from flask_login import current_user
 from qstode import db
 from qstode.model.user import User, watched_users
@@ -366,7 +366,7 @@ class Bookmark(db.Base):
         if current_user.is_authenticated:
             return cls.query.filter(
                 or_(
-                    and_(cls.private == True, cls.user_id == current_user.id),
+                    and_(cls.private == true(), cls.user_id == current_user.id),
                     cls.private == false(),
                 )
             )

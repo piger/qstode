@@ -1,8 +1,8 @@
-from qstode.forms.user import (
+from qstode.forms.user import (  # noqa
     CreateUserForm,
     DeleteUserForm,
     EditUserForm,
-    LoginForm,  # noqa
+    LoginForm,
     PasswordResetForm,
     PasswordChangeForm,
     RegistrationForm,
@@ -10,10 +10,10 @@ from qstode.forms.user import (
     UserDetailsForm,
     CreateProfileForm,
 )
-from qstode.forms.bookmark import (
+from qstode.forms.bookmark import (  # noqa
     SimpleSearchForm,
     TypeaheadTextInput,
-    BookmarkForm,  # noqa
+    BookmarkForm,
     TagSelectionForm,
     RenameTagForm,
 )

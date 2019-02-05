@@ -41,10 +41,12 @@ BOOKMARK_FILE_HEADER = """<!DOCTYPE NETSCAPE-Bookmark-file-1>
 <DL><p>
 """
 
-BOOKMARK_FILE_FOOTER_TPL = '</DL><p><!-- Generated on: {today} -->\n'
+BOOKMARK_FILE_FOOTER_TPL = "</DL><p><!-- Generated on: {today} -->\n"
 
-BOOKMARK_TPL = ('<DT><A HREF="{href}" ADD_DATE="{add_date}" LAST_MODIFIED="{mod_date}"'
-                ' PRIVATE="{private}" TAGS="{tags}">{title}</A>\n')
+BOOKMARK_TPL = (
+    '<DT><A HREF="{href}" ADD_DATE="{add_date}" LAST_MODIFIED="{mod_date}"'
+    ' PRIVATE="{private}" TAGS="{tags}">{title}</A>\n'
+)
 
 
 class BaseModel(object):

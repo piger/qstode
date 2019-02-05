@@ -70,9 +70,7 @@ def backup(filename):
         if hasattr(user, "roles"):
             user_dict["roles"] = [role.name for role in user.roles]
 
-        query = Bookmark.by_user(user.id, include_private=True).order_by(
-            Bookmark.created_on.asc()
-        )
+        query = Bookmark.by_user(user.id, include_private=True).order_by(Bookmark.created_on.asc())
         for bookmark in query.all():
             bookmark_dict = bookmark.to_dict()
             user_dict["bookmarks"].append(bookmark_dict)

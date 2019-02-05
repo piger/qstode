@@ -87,7 +87,8 @@ def init_alembic(config_file="alembic.ini"):
 
 def init_db(uri, app=None, create=False):
     # we must import all SQLAlchemy models here
-    from qstode import model  # noqa
+    from .model import bookmark  # noqa
+    from .model import user  # noqa
 
     options = {"convert_unicode": True}
 

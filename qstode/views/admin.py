@@ -64,10 +64,10 @@ def admin_create_user():
     return render_template("admin/create_user.html", form=form)
 
 
-@app.route("/admin/delete_user/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/delete_user/<int:user_id>", methods=["GET", "POST"])
 @admin_required
-def admin_delete_user(id):
-    user = User.query.get_or_404(id)
+def admin_delete_user(user_id):
+    user = User.query.get_or_404(user_id)
     form = forms.DeleteUserForm(next=request.referrer, user_id=user.id)
 
     if form.validate_on_submit():
@@ -81,10 +81,10 @@ def admin_delete_user(id):
     return render_template("admin/delete_user.html", user=user, form=form)
 
 
-@app.route("/admin/user/<int:id>", methods=["GET", "POST"])
+@app.route("/admin/user/<int:user_id>", methods=["GET", "POST"])
 @admin_required
-def admin_edit_user(id):
-    user = User.query.get_or_404(id)
+def admin_edit_user(user_id):
+    user = User.query.get_or_404(user_id)
 
     # Create the required form, populating with data from the selected
     # user; update also the dynamic field `choices`.

@@ -84,7 +84,7 @@ def about():
 
 
 @app.route("/help")
-def help():
+def help_page():
     return render_template("help.html")
 
 

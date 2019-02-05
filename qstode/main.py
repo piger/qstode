@@ -10,15 +10,19 @@
 import sys
 import click
 import jinja2
-from qstode.app import app, login_manager
-from qstode import exc
-from qstode import db
-from qstode import utils
+from .app import app, login_manager
+from . import exc, db, utils
+from .model import user as user_model
 
 # some circular imports needed to have nice things
-from qstode import views  # noqa
-from qstode import model  # noqa
-from qstode import cli  # noqa
+from qstode.cli.backup import backup, import_file  # noqa
+from qstode.cli.scuttle_importer import import_scuttle  # noqa
+
+from .views import api  # noqa
+from .views import admin  # noqa
+from .views import bookmark  # noqa
+from .views import filters  # noqa
+from .views import user  # noqa
 
 
 def create_app(cfg=None):
@@ -46,7 +50,7 @@ def create_app(cfg=None):
         sys.exit(1)
 
     # Register our public access handler, right *AFTER* flask-login
-    app.before_request(views.user.public_access_handler)
+    app.before_request(user.public_access_handler)
 
     return app
 
@@ -58,9 +62,9 @@ def setup():
     click.echo("Creating DB schema...")
     db.create_all()
 
-    if model.User.query.filter_by(admin=True).first() is None:
+    if user_model.User.query.filter_by(admin=True).first() is None:
         admin_pw = utils.generate_password()
         click.echo("Creating 'admin' user with password '%s'" % admin_pw)
-        admin_user = model.User("admin", "root@localhost", admin_pw, admin=True)
+        admin_user = user_model.User("admin", "root@localhost", admin_pw, admin=True)
         db.Session.add(admin_user)
         db.Session.commit()

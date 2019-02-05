@@ -1,3 +1,6 @@
-from qstode.forms.user import *
-from qstode.forms.bookmark import *
-from qstode.forms.misc import *
+from qstode.forms.user import (CreateUserForm, DeleteUserForm, EditUserForm, LoginForm,  # noqa
+                               PasswordResetForm, PasswordChangeForm, RegistrationForm,
+                               RecaptchaRegistrationForm, UserDetailsForm, CreateProfileForm)
+from qstode.forms.bookmark import (SimpleSearchForm, TypeaheadTextInput, BookmarkForm,  # noqa
+                                   TagSelectionForm, RenameTagForm)
+from qstode.forms.misc import RedirectForm  # noqa

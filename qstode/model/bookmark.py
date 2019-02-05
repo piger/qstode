@@ -331,6 +331,7 @@ class Bookmark(db.Base):
             self.modified_on = modified_on
         self.notes = notes or ""
 
+    # TODO: the signature of this method is atrocious
     @classmethod
     def create(cls, data):
         """Helper for creating new Bookmark objects.
@@ -363,15 +364,15 @@ class Bookmark(db.Base):
         """Return a query for the list of latest public Bookmarks, including
         the private bookmarks for the current user"""
 
-        if current_user.is_authenticated:
-            return cls.query.filter(
-                or_(
-                    and_(cls.private == true(), cls.user_id == current_user.id),
-                    cls.private == false(),
-                )
-            )
-        else:
+        if not current_user.is_authenticated:
             return cls.query.filter(cls.private == false())
+
+        return cls.query.filter(
+            or_(
+                and_(cls.private == true(), cls.user_id == current_user.id),
+                cls.private == false(),
+            )
+        )
 
     @classmethod
     def get_latest(cls):
@@ -390,7 +391,7 @@ class Bookmark(db.Base):
         """Get the latest bookmarks from the users followed by
         the current user"""
 
-        q = (
+        return (
             cls.query.join(User)
             .outerjoin(watched_users, User.id == watched_users.c.other_user_id)
             .filter(watched_users.c.user_id == current_user.id)
@@ -398,13 +399,11 @@ class Bookmark(db.Base):
             .order_by(cls.created_on.desc())
         )
 
-        return q
-
     @classmethod
     def by_tags_user(cls, tags, user_id):
         assert isinstance(tags, list), "`tags` parameter must be a list"
 
-        query = (
+        return (
             cls.query.filter(cls.user_id == user_id)
             .join(cls.tags)
             .filter(Tag.name.in_(tags))
@@ -412,8 +411,6 @@ class Bookmark(db.Base):
             .having(func.count(cls.id) == len(tags))
             .order_by(cls.created_on.desc())
         )
-
-        return query
 
     @classmethod
     def by_tags(cls, tags, exclude=None, user_id=None):
@@ -483,6 +480,7 @@ class Bookmark(db.Base):
 
         return query
 
+    # TODO: wat?
     @classmethod
     def by_ids(cls, ids):
         """Returns a list of Bookmarks matching the IDs in `ids`;
@@ -539,6 +537,7 @@ class Bookmark(db.Base):
         )
 
 
+# TODO: rename me
 def get_stats():
     tot_bookmarks = (
         db.Session.query(func.count(Bookmark.id)).filter(Bookmark.private == false()).scalar()

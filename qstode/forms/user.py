@@ -156,7 +156,7 @@ class UserDetailsForm(FlaskForm):
 
         # If only the new password was specified
         elif self.password.data and not self.password_old.data:
-            self.password_old.errors.append(_("You must specify your current " "password"))
+            self.password_old.errors.append(_("You must specify your current password"))
             success = False
 
         return success

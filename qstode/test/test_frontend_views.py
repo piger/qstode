@@ -8,10 +8,11 @@
     :license: BSD, see LICENSE for more details.
 """
 from flask import url_for
-from qstode.test import FlaskTestCase
+from . import FlaskTestCase
+from .. import db
 from ..model.user import User
 from ..model.bookmark import Bookmark
-from qstode import db
+from .model_factory import UserFactory
 
 
 class FrontendViewsTest(FlaskTestCase):
@@ -76,3 +77,52 @@ class FrontendViewsTest(FlaskTestCase):
         rv = self.client.get(url_for("complete_tags") + "?term=foobarbaz")
         self.assert200(rv)
         self.assertEqual(rv.json, expected)
+
+
+class AdminViewsTest(FlaskTestCase):
+    def setUp(self):
+        super(AdminViewsTest, self).setUp()
+
+        self.admin = UserFactory.create(username="admin", password="secret", admin=True)
+        self.user = UserFactory.create(password="hunter2")
+        UserFactory.create_batch(10)
+        db.Session.commit()
+
+    def admin_login(self):
+        form = {"user": "admin", "password": "secret", "next": url_for("index")}
+        result = self.client.post(url_for("login"), data=form)
+        self.assert_redirects(result, url_for("index"))
+
+    def user_login(self):
+        form = {"user": self.user.username, "password": "hunter2", "next": url_for("index")}
+        result = self.client.post(url_for("login"), data=form)
+        self.assert_redirects(result, url_for("index"))
+
+    def test_access_denied(self):
+        views = ("admin_users", "admin_create_user")
+
+        # non authenticated
+        for view in views:
+            result = self.client.get(url_for(view))
+            self.assert403(result)
+
+        result = self.client.get(url_for("admin_delete_user", user_id=1))
+        self.assert403(result)
+        result = self.client.get(url_for("admin_edit_user", user_id=1))
+        self.assert403(result)
+
+        # authenticated as normal user
+        self.user_login()
+        for view in views:
+            result = self.client.get(url_for(view))
+            self.assert403(result)
+
+        result = self.client.get(url_for("admin_delete_user", user_id=1))
+        self.assert403(result)
+        result = self.client.get(url_for("admin_edit_user", user_id=1))
+        self.assert403(result)
+
+    def test_list_users(self):
+        self.admin_login()
+        result = self.client.get(url_for("admin_users"))
+        self.assert200(result)

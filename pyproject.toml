@@ -21,12 +21,18 @@ SQLAlchemy = "^1.2"
 alembic = "^1.0"
 iso8601 = "^0.1.12"
 wtforms = "^2.2"
-mysql-connector-python = {version = "^8.0",optional = true}
+
+redis = {version = "^3.1", extras = ["search"]}
+whoosh = {version = "^2.7", extras = ["search"]}
+
+mysql-connector-python = {version = "^8.0", extras = ["mysql"]}
 
 [tool.poetry.dev-dependencies]
 tox = "^3.7"
 flake8 = "^3.7"
 factory_boy = "^2.11"
+pytest = "^4.2"
+Flask-Testing = "^0.7.1"
 
 [tool.poetry.scripts]
 qstode-scuttle-export = "qstode.cli.scuttle_exporter:main"

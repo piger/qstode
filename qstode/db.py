@@ -67,6 +67,7 @@ class BaseQuery(orm.Query):
         return utils.Pagination(self, page, per_page, total, items)
 
 
+# https://docs.sqlalchemy.org/en/latest/orm/contextual.html#implicit-method-access
 Session = orm.scoped_session(
     orm.sessionmaker(autocommit=False, autoflush=False, query_cls=BaseQuery)
 )

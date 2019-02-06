@@ -9,6 +9,7 @@
 """
 import re
 import math
+import warnings
 from datetime import datetime, timedelta
 import sqlalchemy.types
 from sqlalchemy import desc, func, and_, not_, or_, cast, distinct
@@ -347,6 +348,9 @@ class Bookmark(db.Base):
 
         :returns: the bookmark just created
         """
+
+        warnings.warn("This method is deprecated", DeprecationWarning, stacklevel=2)
+
         user = data.get("user")
         link = Link.get_or_create(data.get("url"))
         bookmark = Bookmark(

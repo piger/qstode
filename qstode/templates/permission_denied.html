@@ -1,0 +1,13 @@
+{% extends "_public_page.html" %}
+{% from "_helpers.html" import page_header %}
+{% set page_title = _("403 - Access denied") %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+
+    {{ page_header(page_title) }}
+
+    <p>{% trans %}You don't have permission to access this page.{% endtrans %}</p>
+
+    <p><a href="{{ url_for('index') }}">{{ _('Back') }}</a></p>
+
+{% endblock %}

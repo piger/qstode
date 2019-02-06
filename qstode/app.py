@@ -62,5 +62,6 @@ def ssl_required(fn):
 
 
 @app.teardown_appcontext
-def shutdown_session(exception=None):
+def shutdown_session(response_or_exc):
     db.Session.remove()
+    return response_or_exc

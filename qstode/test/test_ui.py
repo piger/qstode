@@ -16,6 +16,7 @@ def chrome_options(chrome_options):
     return chrome_options
 
 
+# @pytest.mark.skipif("TRAVIS" not in os.environ, reason="Only run on Travis CI")
 @pytest.mark.skip("all tests still WIP")
 @pytest.mark.usefixtures("selenium")
 class IntegrationTestCase(LiveServerTestCase):
@@ -32,6 +33,8 @@ class IntegrationTestCase(LiveServerTestCase):
             "SQLALCHEMY_DATABASE_URI": "sqlite:///%s" % self.db_filename,
             "SECRET_KEY": "test",
             "TESTING": True,
+            "BABEL_DEFAULT_LOCALE": "en",
+            "BABEL_DEFAULT_TIMEZONE": "UTC",
             "LIVESERVER_PORT": 0,
         }
 
@@ -58,10 +61,15 @@ class IntegrationTestCase(LiveServerTestCase):
         assert "QStode" in self.s.page_source
 
         search_box = self.s.find_element_by_id("query")
-        search_box.clear()
-        search_box.send_keys("suca")
-        search_box.send_keys(Keys.RETURN)
-        assert "No matching bookmark was found." in self.s.page_source
+        if search_box:
+            # select all in the field
+            # https://stackoverflow.com/questions/3249583/selenium-webdriver-i-want-to-overwrite-value-in-field-instead-of-appending-to-i/3254152
+            search_box.sendKeys(Keys.chord(Keys.CONTROL, "a"), "55")
+            search_box.send_keys("suca")
+            search_box.send_keys(Keys.RETURN)
+            assert "No matching bookmark was found." in self.s.page_source
+        else:
+            raise RuntimeError("search_box not found")
 
     def test_reset(self):
         self.get("/user/reset/request")

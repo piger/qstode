@@ -38,6 +38,31 @@ The suggested setup involves the use of a *virtual environment* created with
 
 NOTE: You can also run QStode with the built in http server, but it's not suitable for the open internet!
 
+## Docker
+
+A sample `docker-compose.yml` file is provided as a starting point to run your own instance in
+development mode.
+
+To start QStode run:
+
+``` shell
+docker-compose up --build
+```
+
+To setup the database and create the _admin_ user, run:
+
+``` shell
+docker-compose run qstode setup
+```
+
+To shutdown the containers run:
+
+``` powershell
+docker-compose down
+```
+
+Or run `docker-compose down -v` to also delete the MySQL data container.
+
 ## Author(s)
 
 QStode is written and maintained by Daniel Kertesz <daniel@spatof.org>.

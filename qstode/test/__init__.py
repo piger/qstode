@@ -19,6 +19,8 @@ class FlaskTestCase(TestCase):
             "SQLALCHEMY_DATABASE_URI": "sqlite:///%s" % self.db_filename,
             "SECRET_KEY": "test",
             "TESTING": True,
+            "BABEL_DEFAULT_LOCALE": "en",
+            "BABEL_DEFAULT_TIMEZONE": "UTC",
         }
 
         return main.create_app(config)

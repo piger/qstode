@@ -51,7 +51,7 @@ class FrontendViewsTest(FlaskTestCase):
     def test_index_content(self):
         rv = self.client.get(url_for("index"))
         self.assert200(rv)
-        assert b"Python website" in rv.data
+        self.assertTrue("Python website" in rv.data.decode("utf-8"))
 
     def test_login_failure(self):
         form_data = {"user": "not_user", "password": "password", "next": url_for("index")}
@@ -62,6 +62,11 @@ class FrontendViewsTest(FlaskTestCase):
         form_data = {"user": "user1", "password": "password", "next": url_for("index")}
         rv = self.client.post(url_for("login"), data=form_data)
         self.assert_redirects(rv, url_for("index"))
+
+    def test_access_denied(self):
+        result = self.client.get(url_for("user_details"))
+        self.assert200(result)
+        self.assertTrue("Authentication required" in result.data.decode("utf-8"))
 
     def test_complete_tags_success(self):
         rv = self.client.get(url_for("complete_tags") + "?term=pyt")

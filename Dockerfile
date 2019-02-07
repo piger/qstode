@@ -21,7 +21,7 @@ RUN python3 -m venv /app/venv && \
         /app/venv/bin/pip3 install --no-cache-dir -qU pip && \
         /app/venv/bin/pip3 install --no-cache-dir -e ".[mysql]"
 
-ENV FLASK_APP=qstode.wsgi:app \
+ENV FLASK_APP="qstode.main:create_app()" \
         APP_CONFIG=/app/src/config.py \
         FLASK_ENV=development \
         LC_ALL=C.UTF-8 \

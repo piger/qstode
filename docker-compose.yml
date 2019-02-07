@@ -30,4 +30,7 @@ services:
       MYSQL_USER: qstode_user
       MYSQL_PASSWORD: capriolo
     volumes:
-      - ../qstode-data/qstode-mysql:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

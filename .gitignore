@@ -12,3 +12,4 @@ qstode/static/font
 .tox/
 /messages.pot
 /venv/
+.cache/

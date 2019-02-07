@@ -8,6 +8,8 @@ RUN apt -q update && \
         python3-venv \
         git-core
 
+# Add "libev4" for bjoern
+
 RUN mkdir -p /app && \
         chown www-data:www-data /app
 
@@ -17,10 +19,9 @@ ADD --chown=www-data:www-data . /app/src
 WORKDIR /app/src
 RUN python3 -m venv /app/venv && \
         /app/venv/bin/pip3 install --no-cache-dir -qU pip && \
-        /app/venv/bin/pip3 install --no-cache-dir -qe .
+        /app/venv/bin/pip3 install --no-cache-dir -e ".[mysql]"
 
 ENV FLASK_APP=qstode.wsgi:app \
-        FLASK_DEBUG=1 \
         APP_CONFIG=/app/src/config.py \
         FLASK_ENV=development \
         LC_ALL=C.UTF-8 \

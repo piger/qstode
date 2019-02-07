@@ -13,6 +13,13 @@ services:
       - .:/app/src
     environment:
       SQLALCHEMY_DATABASE_URI: mysql+mysqlconnector://qstode_user:capriolo@mysql/qstode
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./qstode/static:/app/src/qstode/static
+    ports:
+      - "127.0.0.1:8080:80"
   mysql:
     image: mysql:5.7
     logging:

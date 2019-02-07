@@ -2,3 +2,4 @@
 .cache/
 .git/
 .pytest_cache/
+*.egg-info/

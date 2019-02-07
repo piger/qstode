@@ -26,6 +26,7 @@ redis = {version = "^3.1", extras = ["search"]}
 whoosh = {version = "^2.7", extras = ["search"]}
 
 mysql-connector-python = {version = "^8.0", extras = ["mysql"]}
+bjoern = {version = "^2.2",extras = ["wsgi"]}
 
 [tool.poetry.dev-dependencies]
 tox = "^3.7"

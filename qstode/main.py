@@ -17,8 +17,8 @@ from . import exc, db, utils
 from .model import user as user_model
 
 # some circular imports needed to have nice things
-from qstode.cli.backup import backup, import_file  # noqa
-from qstode.cli.scuttle_importer import import_scuttle  # noqa
+from .cli.backup import backup, import_file  # noqa
+from .cli.scuttle_importer import import_scuttle  # noqa
 
 from .views import api  # noqa
 from .views import admin  # noqa

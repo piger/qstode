@@ -31,7 +31,11 @@ setup(
         "alembic==1.0.7",
         "iso8601==0.1.12",
     ],
-    extras_require={"mysql": ["mysql-connector-python"], "search": ["whoosh", "redis"]},
+    extras_require={
+        "mysql": ["mysql-connector-python"],
+        "search": ["whoosh", "redis"],
+        "wsgi": ["bjoern"],
+    },
     tests_require=["pytest", "factory_boy", "Flask-Testing"],
     zip_safe=False,
     include_package_data=True,

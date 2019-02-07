@@ -41,6 +41,14 @@ pytz = ">=0a"
 
 [[package]]
 category = "main"
+description = "A screamingly fast Python 2 + 3 WSGI server written in C."
+name = "bjoern"
+optional = false
+python-versions = "*"
+version = "2.2.3"
+
+[[package]]
+category = "main"
 description = "Composable command line interface toolkit"
 name = "click"
 optional = false
@@ -471,7 +479,7 @@ python-versions = "*"
 version = "2.2.1"
 
 [metadata]
-content-hash = "e2040a1fb79ee6abce8d9821c3867329f2318dfecb73d50b5f08791474b76ff2"
+content-hash = "9d1a08c50ce800fa30343bd7443c801d788aa3f254a282648775d05f34317a5a"
 python-versions = "^3.4"
 
 [metadata.hashes]
@@ -479,6 +487,7 @@ alembic = ["16505782b229007ae905ef9e0ae6e880fddafa406f086ac7d442c1aaf712f8c2"]
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["10cbf6e27dbce8c30807caf056c8eb50917e0eaafe86347671b57254006c3e69", "ca4be454458f9dec299268d472aaa5a11f67a4ff70093396e1ceae9c76cf4bbb"]
 babel = ["6778d85147d5d85345c14a26aada5e478ab04e39b078b0745ee6870c2b5cf669", "8cba50f48c529ca3fa18cf81fa9403be176d374ac4d60738b839122dfaaa3d23"]
+bjoern = ["a273b1e2dd4f9962668d416409d7936bf5535d58ba3b07bfa3520c9a71c57cd1"]
 click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]

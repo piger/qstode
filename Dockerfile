@@ -1,4 +1,5 @@
 FROM debian:9
+LABEL maintainer="Daniel Kertesz <daniel@spatof.org>"
 
 RUN apt -q update && \
     env DEBIAN_FRONTEND=noninteractive apt upgrade -y && \

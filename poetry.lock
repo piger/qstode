@@ -43,7 +43,7 @@ pytz = ">=0a"
 category = "main"
 description = "A screamingly fast Python 2 + 3 WSGI server written in C."
 name = "bjoern"
-optional = false
+optional = true
 python-versions = "*"
 version = "2.2.3"
 
@@ -479,7 +479,7 @@ python-versions = "*"
 version = "2.2.1"
 
 [metadata]
-content-hash = "9d1a08c50ce800fa30343bd7443c801d788aa3f254a282648775d05f34317a5a"
+content-hash = "ec5f71f507903a06a07673f06574a1778e405019b031c211cd5afb14e60432c7"
 python-versions = "^3.4"
 
 [metadata.hashes]

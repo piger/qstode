@@ -67,6 +67,7 @@ class FrontendViewsTest(FlaskTestCase):
         result = self.client.get(url_for("user_details"))
         self.assert200(result)
         self.assertTrue("Authentication required" in result.data.decode("utf-8"))
+        self.assertTemplateUsed("unauthenticated.html")
 
     def test_complete_tags_success(self):
         rv = self.client.get(url_for("complete_tags") + "?term=pyt")

@@ -10,48 +10,33 @@
 from flask import url_for
 from . import FlaskTestCase
 from .. import db
-from ..model.user import User
-from ..model.bookmark import Bookmark
-from .model_factory import UserFactory
+from .model_factory import UserFactory, TagFactory, BookmarkFactory
 
 
 class FrontendViewsTest(FlaskTestCase):
     def setUp(self):
         super(FrontendViewsTest, self).setUp()
-        user_1 = User("user1", "user1@example.com", "password")
-        user_2 = User("user2", "user2@example.com", "password")
-
-        db.Session.add_all([user_1, user_2])
+        self.user1 = UserFactory.create(username="user1", password="password")
+        self.user2 = UserFactory.create(username="user2", password="password")
         db.Session.commit()
 
-        b1 = Bookmark.create(
-            {
-                "url": "http://www.python.org",
-                "title": "Python",
-                "notes": "Python website",
-                "tags": ["programming", "python", "guido"],
-                "user": user_1,
-            }
+        self.b1 = BookmarkFactory.create(
+            user=self.user1,
+            tags=[TagFactory.create(name=w) for w in ("programming", "python", "guido")],
         )
-        db.Session.add(b1)
         db.Session.commit()
 
-        b2 = Bookmark.create(
-            {
-                "url": "https://github.com/piger/qstode",
-                "title": "QStode",
-                "notes": "QStode source code",
-                "tags": ["web", "python", "tags", "flask"],
-                "user": user_1,
-            }
+        BookmarkFactory.create(
+            user=self.user1,
+            private=True,
+            tags=[TagFactory.create(name=w) for w in ("web", "python", "tags", "flask")],
         )
-        db.Session.add(b2)
         db.Session.commit()
 
     def test_index_content(self):
         rv = self.client.get(url_for("index"))
         self.assert200(rv)
-        self.assertTrue("Python website" in rv.data.decode("utf-8"))
+        self.assertTrue(self.b1.title in rv.data.decode("utf-8"))
 
     def test_login_failure(self):
         form_data = {"user": "not_user", "password": "password", "next": url_for("index")}

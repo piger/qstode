@@ -554,3 +554,24 @@ def get_stats():
     )
 
     return (tot_bookmarks, tot_tags)
+
+
+def create_bookmark(url, title, notes, tags, private=False):
+    """Helper for creating new Bookmark objects.
+
+    - url: the bookmark URL (e.g. http://www.example.com/)
+    - title: a string with the bookmark title
+    - notes: a string with the bookmark notes
+    - tags: a list of strings with the bookmark tags
+    - private: an optional boolean value to make the bookmark private
+
+    :returns: the bookmark just created
+    """
+
+    href = Link.get_or_create(url)
+    bookmark = Bookmark(title=title, notes=notes, private=private)
+    bookmark.link = href
+    for tag in Tag.get_or_create_many(tags):
+        bookmark.tags.append(tag)
+
+    return bookmark

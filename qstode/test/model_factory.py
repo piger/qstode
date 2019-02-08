@@ -107,9 +107,12 @@ class BookmarkFactory(BaseModelFactory):
             self.tags.extend(extracted)
 
     @factory.post_generation
-    def href(self, create, extracted, **kwargs):
+    def link(self, create, extracted, **kwargs):
         if not create:
             return
 
         if extracted:
-            self.href = extracted
+            self.link = extracted
+        else:
+            # let's provide a default for the link
+            self.link = LinkFactory()

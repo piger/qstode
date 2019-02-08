@@ -94,16 +94,16 @@ class BookmarkTest(ModelTest):
         # the other bookmark tagged with 'search' is private
         for tags, count in ((["web"], 2), (["search"], 1)):
             rv = Bookmark.by_tags(tags)
-            self.assertTrue(rv.count() == count)
+            self.assertEqual(rv.count(), count)
 
     def test_by_user(self):
         user = User.query.filter_by(username="pippo").first()
         rv = Bookmark.by_user(user.id)
-        self.assertTrue(rv.count() == 1)
+        self.assertEqual(rv.count(), 1)
 
         rv = Bookmark.by_user(user.id, include_private=True)
-        self.assertTrue(rv.count() == 2)
+        self.assertEqual(rv.count(), 2)
 
     def test_get_latest(self):
         rv = Bookmark.get_latest()
-        self.assertTrue(rv.count() == 2)
+        self.assertEqual(rv.count(), 2)

@@ -116,4 +116,4 @@ class BookmarkFactory(BaseModelFactory):
             self.link = extracted
         else:
             # let's provide a default for the link
-            self.link = LinkFactory()
+            self.link = LinkFactory.create()

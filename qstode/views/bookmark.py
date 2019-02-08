@@ -169,7 +169,9 @@ def edit_bookmark(bId):
         for tag in tags_to_delete:
             bookmark.tags.remove(tag)
 
-        tag_names_to_add = [name for name in form.tags.data if name not in [t.name for t in bookmark.tags]]
+        tag_names_to_add = [
+            name for name in form.tags.data if name not in [t.name for t in bookmark.tags]
+        ]
         for tag_name in tag_names_to_add:
             bookmark.tags.append(Tag.get_or_create(tag_name))
 

@@ -125,13 +125,13 @@ class BookmarkFormTest(BookmarkFormBaseTest):
         user = UserFactory.create(password="suca")
         db.Session.commit()
 
-        bookmark = BookmarkFactory.create(user=user, tags=[TagFactory.create(name=w) for w in ("mordor", "sauron", "web")])
+        bookmark = BookmarkFactory.create(
+            user=user, tags=[TagFactory.create(name=w) for w in ("mordor", "sauron", "web")]
+        )
         db.Session.commit()
 
         rv = self.client.post(
-            "/login",
-            data={"user": user.email, "password": "suca"},
-            follow_redirects=False,
+            "/login", data={"user": user.email, "password": "suca"}, follow_redirects=False
         )
 
         form = {
@@ -149,6 +149,7 @@ class BookmarkFormTest(BookmarkFormBaseTest):
         bookmark = Bookmark.query.filter_by(id=bookmark.id).one()
         self.assertEqual(len(bookmark.tags), 3)
         self.assertTrue("tolkien" in [t.name for t in bookmark.tags])
+
 
 class TagListTest(BookmarkFormBaseTest):
     def test_empty_values(self):

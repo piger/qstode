@@ -8,19 +8,9 @@
     :license: BSD, see LICENSE for more details.
 """
 import re
-import os
 from datetime import datetime
 from urllib.parse import urljoin
-from flask import (
-    render_template,
-    redirect,
-    request,
-    flash,
-    abort,
-    url_for,
-    send_from_directory,
-    make_response,
-)
+from flask import render_template, redirect, request, flash, abort, url_for, make_response
 from flask_login import login_required, current_user
 from flask_babel import gettext, format_datetime
 from werkzeug.contrib.atom import AtomFeed
@@ -31,14 +21,6 @@ from ..model.bookmark import Tag, Bookmark, Link, get_stats
 from ..model.user import User
 from qstode import db
 from qstode.views import helpers
-
-
-# robots.txt
-@app.route("/robots.txt")
-def robotstxt():
-    return send_from_directory(
-        os.path.join(app.root_path, "static"), "robots.txt", mimetype="text/plain"
-    )
 
 
 @app.context_processor
@@ -53,23 +35,6 @@ def inject_globals():
     return dict(search_form=search_form, taglist=Tag.taglist(app.config["TAGLIST_ITEMS"]))
 
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template("404.html"), 404
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    db.Session.rollback()
-    return render_template("500.html"), 500
-
-
-@app.errorhandler(403)
-def permission_denied(e):
-    """Handle the 403 error code for permission protected pages"""
-    return render_template("permission_denied.html"), 403
-
-
 @app.route("/", defaults={"page": 1})
 @app.route("/page/<int:page>")
 def index(page):
@@ -82,11 +47,6 @@ def index(page):
 def about():
     data = dict(list(zip(("num_bookmarks", "num_tags"), get_stats())))
     return render_template("about.html", data=data)
-
-
-@app.route("/help")
-def help():
-    return render_template("help.html")
 
 
 @app.route("/tagged/<tags>/<int:page>")

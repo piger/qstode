@@ -7,11 +7,12 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+import os
 from functools import wraps
-from flask import Flask, request, redirect, g, session
+from flask import Flask, request, redirect, g, session, send_from_directory, render_template
 from flask_babel import Babel
 from flask_login import LoginManager
-from qstode import db
+from . import db
 
 
 app = Flask("qstode")
@@ -65,3 +66,33 @@ def ssl_required(fn):
 def shutdown_session(response_or_exc):
     db.Session.remove()
     return response_or_exc
+
+
+# robots.txt
+@app.route("/robots.txt")
+def robotstxt():
+    return send_from_directory(
+        os.path.join(app.root_path, "static"), "robots.txt", mimetype="text/plain"
+    )
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.Session.rollback()
+    return render_template("500.html"), 500
+
+
+@app.errorhandler(403)
+def permission_denied(e):
+    """Handle the 403 error code for permission protected pages"""
+    return render_template("permission_denied.html"), 403
+
+
+@app.route("/help")
+def help():
+    return render_template("help.html")

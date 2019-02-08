@@ -8,6 +8,7 @@
     :license: BSD, see LICENSE for more details.
 """
 from datetime import datetime, timedelta
+import werkzeug
 from . import FlaskTestCase
 from .. import db
 from ..model.user import User, ResetToken, TOKEN_VALIDITY
@@ -37,6 +38,40 @@ class ModelTest(FlaskTestCase):
         )
         db.Session.commit()
 
+
+class DbTest(ModelTest):
+    def test_get_or_404(self):
+        b = Bookmark.query.get_or_404(1)
+        self.assertIsNotNone(b)
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            b = Bookmark.query.get_or_404(9000)
+
+    def test_first_or_404(self):
+        BookmarkFactory.create(title="Le fufferie del venerdi'")
+        db.Session.commit()
+        b = Bookmark.query.filter_by(title="Le fufferie del venerdi'").first_or_404()
+        self.assertIsNotNone(b)
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            b = Bookmark.query.filter_by(title="Le cazzatelle").first_or_404()
+
+    def test_paginate(self):
+        Bookmark.query.delete()
+        db.Session.commit()
+
+        BookmarkFactory.create_batch(30)
+        db.Session.commit()
+        p = Bookmark.query.paginate(1, per_page=10)
+        self.assertEqual(p.total, 30)
+        self.assertEqual(p.page, 1)
+        self.assertEqual(p.pages, 3)
+        self.assertEqual(p.next_num, 2)
+        self.assertFalse(p.has_prev)
+        self.assertTrue(p.has_next)
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            p.prev(error_out=True)
 
 class UserTest(ModelTest):
     def test_user_check_password(self):

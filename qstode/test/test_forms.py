@@ -195,7 +195,7 @@ class TagListTest(BookmarkFormBaseTest):
         data = SAMPLE_DATA.copy()
         tags = ", ".join(["tag-%d" % i for i in range(TAGLIST_MAX + 1)])
         data["tags"] = tags
-        rv = self.client.post("/add", data=data)
+        rv = self.client.post(url_for("add"), data=data)
         self.assertEqual(rv.status_code, 200)
 
     def test_length_validator_correct(self):
@@ -205,7 +205,7 @@ class TagListTest(BookmarkFormBaseTest):
         data = SAMPLE_DATA.copy()
         tags = ", ".join(["tag-%d" % i for i in range(49)])
         data["tags"] = tags
-        rv = self.client.post("/add", data=data)
+        rv = self.client.post(url_for("add"), data=data)
         self.assertTrue(
             rv.status_code in (301, 302), "Got %r instead (%r)" % (rv.status_code, rv.data)
         )

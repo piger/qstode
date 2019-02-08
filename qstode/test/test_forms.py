@@ -78,7 +78,7 @@ class BookmarkFormBaseTest(FlaskTestCase):
 
     def _login(self):
         rv = self.client.post(
-            "/login",
+            url_for("login"),
             data={"user": "pippo@example.com", "password": "secret"},
             follow_redirects=False,
         )
@@ -91,7 +91,7 @@ class BookmarkFormTest(BookmarkFormBaseTest):
 
         self._login()
 
-        rv = self.client.post("/add", data=SAMPLE_DATA)
+        rv = self.client.post(url_for("add"), data=SAMPLE_DATA)
         self.assertTrue(
             rv.status_code in (301, 302), "Got %r instead (%r)" % (rv.status_code, rv.data)
         )
@@ -108,7 +108,7 @@ class BookmarkFormTest(BookmarkFormBaseTest):
         for field in ("tags", "title", "url"):
             data = SAMPLE_DATA.copy()
             data.pop(field)
-            rv = self.client.post("/add", data=data)
+            rv = self.client.post(url_for("add"), data=data)
             self.assert200(rv)
             res = b"field is required" in rv.data or b"Invalid URL" in rv.data
             self.assertTrue(res, rv.data)
@@ -130,9 +130,10 @@ class BookmarkFormTest(BookmarkFormBaseTest):
         )
         db.Session.commit()
 
-        rv = self.client.post(
-            "/login", data={"user": user.email, "password": "suca"}, follow_redirects=False
+        result = self.client.post(
+            url_for("login"), data={"user": user.email, "password": "suca"}, follow_redirects=False
         )
+        self.assert_redirects(result, url_for("index"))
 
         form = {
             "title": "A new title",
@@ -169,7 +170,7 @@ class TagListTest(BookmarkFormBaseTest):
 
         self._login()
         rv = self.client.post(
-            "/add",
+            url_for("add"),
             data={
                 "title": "Un titolo",
                 "url": "http://www.google.it",

@@ -9,7 +9,6 @@
 """
 import re
 import math
-import warnings
 from datetime import datetime, timedelta
 import sqlalchemy.types
 from sqlalchemy import desc, func, and_, not_, or_, cast, distinct

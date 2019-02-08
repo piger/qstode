@@ -63,6 +63,17 @@ class TagTest(ModelTest):
         tag = Tag.search("new").first()
         self.assertTrue(tag.name == "news")
 
+    def test_get_or_create(self):
+        tag = TagFactory.create(name="search")
+        db.Session.commit()
+        t = Tag.query.filter_by(name="search").one_or_none()
+        self.assertTrue(t is not None)
+        self.assertEqual(tag.id, t.id)
+
+        t2 = Tag.get_or_create("search")
+        db.Session.commit()
+        self.assertEqual(t2.id, tag.id)
+
 
 class BookmarkTest(ModelTest):
     def test_by_tags(self):

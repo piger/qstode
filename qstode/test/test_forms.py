@@ -16,6 +16,8 @@ from ..model.user import User
 from ..model.bookmark import Bookmark, NOTES_MAX
 from ..forms import TagListField, LoginForm, PasswordChangeForm, TAGLIST_MAX
 from ..forms.validators import unique_username, unique_email
+from .model_factory import BookmarkFactory, UserFactory, TagFactory
+from .. import db
 
 
 SAMPLE_DATA = {
@@ -119,6 +121,34 @@ class BookmarkFormTest(BookmarkFormBaseTest):
         rv = self.client.post(url_for("add"), data=data)
         self.assert200(rv)
 
+    def test_edit_bookmark(self):
+        user = UserFactory.create(password="suca")
+        db.Session.commit()
+
+        bookmark = BookmarkFactory.create(user=user, tags=[TagFactory.create(name=w) for w in ("mordor", "sauron", "web")])
+        db.Session.commit()
+
+        rv = self.client.post(
+            "/login",
+            data={"user": user.email, "password": "suca"},
+            follow_redirects=False,
+        )
+
+        form = {
+            "title": "A new title",
+            "url": "http://internet.com",
+            "private": False,
+            # FUCK FUCK FUCK
+            # "tags": ["mordor", "ring", "tolkien"],
+            "tags": "mordor, ring, tolkien",
+            "notes": "it's beautiful",
+        }
+        result = self.client.post(url_for("edit_bookmark", bId=bookmark.id), data=form)
+        self.assertRedirects(result, url_for("index"))
+
+        bookmark = Bookmark.query.filter_by(id=bookmark.id).one()
+        self.assertEqual(len(bookmark.tags), 3)
+        self.assertTrue("tolkien" in [t.name for t in bookmark.tags])
 
 class TagListTest(BookmarkFormBaseTest):
     def test_empty_values(self):

@@ -148,6 +148,7 @@ def close_popup():
     return render_template("close.html")
 
 
+# TODO write a test for this
 @app.route("/edit/<bId>", methods=["GET", "POST"])
 @login_required
 def edit_bookmark(bId):
@@ -159,23 +160,18 @@ def edit_bookmark(bId):
     form = forms.BookmarkForm.from_bookmark(bookmark, request.form)
 
     if form.validate_on_submit():
-        if form.url.data != bookmark.href:
-            new_href = Link.get_or_create(form.url.data)
-            bookmark.href = new_href
+        if form.url.data != bookmark.link.href:
+            bookmark.link = Link.get_or_create(form.url.data)
         bookmark.title = form.title.data
         bookmark.private = form.private.data
 
-        # We can't do something like:
-        #
-        # for tag in bookmark.tags:
-        #       bookmark.tags.remove(tag)
-        #
-        # So we must resort to this trick
-        tags = Tag.get_or_create_many(form.tags.data)
-        tags_to_delete = bookmark.tags[:]
+        tags_to_delete = [t for t in bookmark.tags if t.name not in form.tags.data]
         for tag in tags_to_delete:
             bookmark.tags.remove(tag)
-        bookmark.tags.extend(tags)
+
+        tag_names_to_add = [name for name in form.tags.data if name not in [t.name for t in bookmark.tags]]
+        for tag_name in tag_names_to_add:
+            bookmark.tags.append(Tag.get_or_create(tag_name))
 
         bookmark.notes = form.notes.data
 

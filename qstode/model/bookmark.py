@@ -85,11 +85,7 @@ class Tag(db.Base):
 
     @classmethod
     def get_or_create(cls, name):
-        result = cls.query.filter_by(name=name).first()
-        if result is None:
-            return cls(name)
-        else:
-            return result
+        return super().get_or_create(name=name)
 
     @classmethod
     def search(cls, term):
@@ -174,9 +170,7 @@ class Tag(db.Base):
         names = set([n.lower() for n in names])
 
         for name in names:
-            tag = cls.query.filter_by(name=name).first()
-            if tag is None:
-                tag = cls(name)
+            tag = cls.get_or_create(name)
             results.append(tag)
 
         return results
@@ -280,11 +274,7 @@ class Link(db.Base):
 
     @classmethod
     def get_or_create(cls, href):
-        result = cls.query.filter_by(href=href).first()
-        if result is None:
-            return cls(href=href)
-        else:
-            return result
+        return super().get_or_create(href=href)
 
     def __repr__(self):
         return "<Link(href={})>".format(self.href)
@@ -331,37 +321,6 @@ class Bookmark(db.Base):
         if modified_on is not None:
             self.modified_on = modified_on
         self.notes = notes or ""
-
-    # TODO: the signature of this method is atrocious
-    @classmethod
-    def create(cls, data):
-        """Helper for creating new Bookmark objects.
-
-        :param data: a dict containing the following items:
-
-        - url: the bookmark URL (e.g. http://www.example.com/)
-        - title: a unicode string with the bookmark title
-        - notes: a unicode string with the bookmark notes
-        - tags: a list of unicode strings with the bookmark tags
-        - user: a `model.User` object with the owner of the bookmark
-        - private: an optional boolean value to make the bookmark private
-
-        :returns: the bookmark just created
-        """
-
-        warnings.warn("This method is deprecated", DeprecationWarning, stacklevel=2)
-
-        user = data.get("user")
-        link = Link.get_or_create(data.get("url"))
-        bookmark = Bookmark(
-            title=data.get("title"), private=data.get("private", False), notes=data.get("notes")
-        )
-        bookmark.link = link
-        for tag in Tag.get_or_create_many(data.get("tags")):
-            bookmark.tags.append(tag)
-        user.bookmarks.append(bookmark)
-
-        return bookmark
 
     @classmethod
     def get_public(cls):

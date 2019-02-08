@@ -67,6 +67,15 @@ class BaseQuery(orm.Query):
         return utils.Pagination(self, page, per_page, total, items)
 
 
+class Base:
+    @classmethod
+    def get_or_create(cls, **kwargs):
+        result = cls.query.filter_by(**kwargs).first()
+        if result is None:
+            return cls(**kwargs)
+        return result
+
+
 # NOTE: it is normal to see BEGIN and ROLLBACK calls in the app logs at the beginning and end of a
 # HTTP request; see https://docs.sqlalchemy.org/en/latest/orm/contextual.html for more details.
 #
@@ -74,7 +83,7 @@ class BaseQuery(orm.Query):
 Session = orm.scoped_session(
     orm.sessionmaker(autocommit=False, autoflush=False, query_cls=BaseQuery)
 )
-Base = declarative_base()
+Base = declarative_base(cls=Base)
 Base.query = Session.query_property()
 
 

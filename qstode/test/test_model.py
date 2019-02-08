@@ -73,6 +73,7 @@ class DbTest(ModelTest):
         with self.assertRaises(werkzeug.exceptions.NotFound):
             p.prev(error_out=True)
 
+
 class UserTest(ModelTest):
     def test_user_check_password(self):
         user = User.query.filter_by(username="pippo").first()

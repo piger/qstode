@@ -1,5 +1,10 @@
 import math
-import random
+
+try:
+    # secrets is available from 3.6+ as is preferred over random for security purposes.
+    from secrets import SystemRandom
+except ImportError:
+    from random import SystemRandom
 
 
 # Code by: Armin Ronacher, Daniel Neuhäuser.
@@ -106,10 +111,10 @@ def generate_password(length=9):
     Generate a random password suitable to be typed using alternated hands.
     """
 
-    rng = random.SystemRandom()
+    rng = SystemRandom()
     right_hand = "23456qwertasdfgzxcvbQWERTASDFGZXCVB"
     left_hand = "789yuiophjknmYUIPHJKLNM"
-    first_hand = random.randint(0, 1)
+    first_hand = rng.randint(0, 1)
     pw = []
 
     for i in range(length):

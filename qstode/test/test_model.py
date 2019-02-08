@@ -7,9 +7,10 @@
     :copyright: (c) 2012 by Daniel Kertesz
     :license: BSD, see LICENSE for more details.
 """
+from datetime import datetime, timedelta
 from . import FlaskTestCase
 from .. import db
-from ..model.user import User
+from ..model.user import User, ResetToken, TOKEN_VALIDITY
 from ..model.bookmark import Bookmark, Tag
 from .model_factory import UserFactory, TagFactory, BookmarkFactory
 
@@ -51,6 +52,18 @@ class UserTest(ModelTest):
 
         self.assertTrue(user1.is_following(user2.id))
         self.assertFalse(user2.is_following(user1.id))
+
+    def test_check_password(self):
+        self.assertTrue(self.user1.check_password("secret"))
+
+    def test_set_password(self):
+        self.user1.set_password("ilang ilang")
+        self.assertTrue(self.user1.check_password("ilang ilang"))
+
+    def test_expired_token(self):
+        past_date = datetime.now() - timedelta(hours=TOKEN_VALIDITY + 1)
+        token = ResetToken(created_at=past_date)
+        self.assertTrue(token.expired())
 
 
 # REMEMBER: tags with no bookmarks gets deleted automatically!

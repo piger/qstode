@@ -1,5 +1,5 @@
 sudo: false
-distro: trusty
+distro: xenial
 addons:
   chrome: stable
 before_install:
@@ -12,6 +12,7 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
 cache: pip
 install: pip install tox-travis
 env:

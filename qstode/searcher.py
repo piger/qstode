@@ -8,8 +8,8 @@
     :license: BSD, see LICENSE for more details.
 """
 import os
-import redis
 import json
+import redis
 from whoosh.fields import ID, TEXT, KEYWORD, Schema
 from whoosh.analysis import RegexTokenizer, LowercaseFilter, CharsetFilter
 from whoosh.support.charset import accent_map
@@ -17,7 +17,6 @@ from whoosh.index import create_in, open_dir, exists_in
 from whoosh.writing import AsyncWriter
 from whoosh.qparser import MultifieldParser
 from whoosh.sorting import Facets
-from qstode import exc
 
 
 # Constants used in the Redis message queue
@@ -45,25 +44,23 @@ def generate_schema():
 def create_document(bookmark):
     """Creates a Document (a dict) for the search engine"""
 
-    doc = {
+    return {
         "id": str(bookmark.id),
         "title": bookmark.title or "",
         "notes": bookmark.notes or "",
         "tags": ", ".join([tag.name for tag in bookmark.tags]),
     }
-    return doc
 
 
 def redis_connect(config):
     """Connects to a Redis database as specified by the dictionary `config`"""
 
-    r = redis.Redis(
+    return redis.Redis(
         host=config.get("REDIS_HOST", "localhost"),
         port=config.get("REDIS_PORT", 6379),
         db=config.get("REDIS_DB", 0),
         password=config.get("REDIS_PASSWORD"),
     )
-    return r
 
 
 class WhooshSearcher(object):
@@ -99,9 +96,7 @@ class WhooshSearcher(object):
 
         self.app = app
         if "WHOOSH_INDEX_PATH" not in self.app.config:
-            raise exc.InitializationError(
-                "You must set the WHOOSH_INDEX_PATH option " "in the configuration"
-            )
+            raise Exception("You must set the WHOOSH_INDEX_PATH option " "in the configuration")
         self.index_dir = self.app.config["WHOOSH_INDEX_PATH"]
         if not exists_in(self.index_dir):
             self.setup_index()

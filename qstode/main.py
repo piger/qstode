@@ -13,7 +13,7 @@ import click
 import jinja2
 from flask.logging import default_handler
 from .app import app, login_manager
-from . import exc, db, utils
+from . import db, utils
 from .model import user as user_model
 
 # some circular imports needed to have nice things
@@ -49,11 +49,15 @@ def create_app(cfg=None):
         )
         app.jinja_loader = tpl_loader
 
+    if "SQLALCHEMY_DATABASE_URI" not in app.config:
+        click.echo('You must set "SQLALCHEMY_DATABASE_URI" in the configuration file', err=True)
+        sys.exit(1)
+
     try:
         db.init_db(app.config["SQLALCHEMY_DATABASE_URI"], app)
         login_manager.init_app(app)
-    except exc.InitializationError as ex:
-        sys.stderr.write("Initialization error: %s\n" % str(ex))
+    except Exception as ex:
+        click.echo("Initialization error: {}".format(ex), err=True)
         sys.exit(1)
 
     # Register our public access handler, right *AFTER* flask-login
@@ -66,12 +70,12 @@ def create_app(cfg=None):
 def setup():
     """Initialize QSTode: create DB schema and admin user"""
 
-    click.echo("Creating DB schema...")
+    click.echo("Creating DB schema.")
     db.create_all()
 
     if user_model.User.query.filter_by(admin=True).first() is None:
         admin_pw = utils.generate_password()
-        click.echo("Creating 'admin' user with password '%s'" % admin_pw)
+        click.echo("Creating 'admin' user with password '%s'." % admin_pw)
         admin_user = user_model.User("admin", "root@localhost", admin_pw, admin=True)
         db.Session.add(admin_user)
         db.Session.commit()

@@ -104,7 +104,8 @@ class BookmarkFactory(BaseModelFactory):
             return
 
         if extracted:
-            self.tags.extend(extracted)
+            for tag in extracted:
+                self.tags.append(tag)
 
     @factory.post_generation
     def link(self, create, extracted, **kwargs):

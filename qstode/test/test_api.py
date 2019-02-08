@@ -8,44 +8,28 @@
     :license: BSD, see LICENSE for more details.
 """
 from flask import url_for
-from qstode.test import FlaskTestCase
-from ..model.bookmark import Bookmark
-from ..model.user import User
-from qstode import db
+from . import FlaskTestCase
+from .model_factory import UserFactory, TagFactory, BookmarkFactory
+from .. import db
 
 
 class ApiTestBase(FlaskTestCase):
     def setUp(self):
         super(ApiTestBase, self).setUp()
-
-        user_1 = User("user1", "user1@example.com", "password")
-        user_2 = User("user2", "user2@example.com", "password")
-
-        db.Session.add_all([user_1, user_2])
+        self.user1 = UserFactory.create(username="user1", password="password")
+        self.user2 = UserFactory.create(username="user2", password="password")
         db.Session.commit()
 
-        b1 = Bookmark.create(
-            {
-                "url": "http://www.python.org",
-                "title": "Python",
-                "notes": "Python website",
-                "tags": ["programming", "python", "guido"],
-                "user": user_1,
-            }
+        BookmarkFactory.create(
+            user=self.user1,
+            tags=[TagFactory.create(name=w) for w in ("programming", "python", "guido")],
         )
-        db.Session.add(b1)
         db.Session.commit()
 
-        b2 = Bookmark.create(
-            {
-                "url": "https://github.com/piger/qstode",
-                "title": "QStode",
-                "notes": "QStode source code",
-                "tags": ["web", "python", "tags", "flask"],
-                "user": user_1,
-            }
+        BookmarkFactory.create(
+            user=self.user1,
+            tags=[TagFactory.create(name=w) for w in ("web", "python", "tags", "flask")],
         )
-        db.Session.add(b2)
         db.Session.commit()
 
 
@@ -55,6 +39,7 @@ class TaglistViewTest(ApiTestBase):
         self.assert200(rv)
         self.assertEqual(rv.mimetype, "application/json")
 
+        # most popular tag will be "python"
         tags = rv.json.get("tags", [])
         first = tags[0]
         self.assertEqual(first["tag"], "python")

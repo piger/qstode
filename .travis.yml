@@ -1,5 +1,5 @@
 sudo: false
-distro: xenial
+dist: xenial
 addons:
   chrome: stable
 before_install:

@@ -53,6 +53,7 @@ class UserTest(ModelTest):
         self.assertFalse(user2.is_following(user1.id))
 
 
+# REMEMBER: tags with no bookmarks gets deleted automatically!
 class TagTest(ModelTest):
     def test_get_many(self):
         names = ["news", "web"]
@@ -73,6 +74,18 @@ class TagTest(ModelTest):
         t2 = Tag.get_or_create("search")
         db.Session.commit()
         self.assertEqual(t2.id, tag.id)
+
+    def test_search(self):
+        for n in ("programming", "programmers"):
+            BookmarkFactory.create(tags=[TagFactory.create(name=n)])
+        db.Session.commit()
+
+        result = Tag.search("programm")
+        self.assertEqual(result.count(), 2)
+
+    def test_get_related(self):
+        result = Tag.get_related(["search"])
+        self.assertEqual(result[0].name, "web")
 
 
 class BookmarkTest(ModelTest):

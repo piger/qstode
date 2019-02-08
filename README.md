@@ -1,5 +1,7 @@
 # QStode
 
+[![Build Status](https://travis-ci.org/piger/qstode.svg?branch=master)](https://travis-ci.org/piger/qstode)
+
 QStode is a web application that allows registered users to store bookmarks
 (like the good old del.icio.us) categorized by tags.
 
@@ -29,7 +31,7 @@ Documentation is available on [ReadTheDocs][rtd].
 
 ## Requirements
 
-- Python 2.6 or 2.7
+- Python 3.x
 - a WSGI server: gunicorn, uwsgi, etc.
 - a web server with reverse proxy support
 

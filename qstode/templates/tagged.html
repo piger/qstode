@@ -44,12 +44,12 @@
      });
      return result;
    }
-   
+
    $(document).ready(function() {
      if (getQueryStringParams()["p"] !== undefined) {
        $('#only-mine').prop('checked', true);
      }
-     
+
      $('#only-mine').click(function() {
        if (this.checked === false) {
          window.location.search = ""

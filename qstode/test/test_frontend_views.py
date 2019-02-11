@@ -11,6 +11,7 @@ from flask import url_for
 from . import FlaskTestCase
 from .. import db
 from .model_factory import UserFactory, TagFactory, BookmarkFactory
+from ..model.user import User
 
 
 class FrontendViewsTest(FlaskTestCase):
@@ -68,6 +69,35 @@ class FrontendViewsTest(FlaskTestCase):
         rv = self.client.get(url_for("complete_tags") + "?term=foobarbaz")
         self.assert200(rv)
         self.assertEqual(rv.json, expected)
+
+    def test_user_registration(self):
+        form = {
+            "display_name": "Piffero Pippo",
+            "username": "pippo",
+            "email": "pippo@pippolandia.pip",
+            "password": "oh-yuk!1234",
+            "password_confirm": "oh-yuk!1234",
+        }
+        result = self.client.post(url_for("register_user"), data=form)
+        self.assertRedirects(result, url_for("login"))
+
+        user = User.query.filter_by(username="pippo").one()
+        self.assertEqual(user.display_name, "Piffero Pippo")
+
+    def test_user_registration_short_password(self):
+        """Fail user registration when a short password is supplied
+
+        TODO: improve the test.
+        """
+        form = {
+            "display_name": "Piffero Pippo",
+            "username": "pippo",
+            "email": "pippo@pippolandia.pip",
+            "password": "abc",
+            "password_confirm": "abc",
+        }
+        result = self.client.post(url_for("register_user"), data=form)
+        self.assert200(result)
 
 
 class AdminViewsTest(FlaskTestCase):

@@ -113,7 +113,7 @@ class RegistrationForm(FlaskForm):
         _("Username"),
         [DataRequired(), Length(min=3, max=20), Regexp(username_re), unique_username()],
     )
-    email = EmailField(_("Email"), [DataRequired(), Email(), friendly_email, unique_email()])
+    email = EmailField(_("Email"), [DataRequired(), Email(), friendly_email(), unique_email()])
     password = PasswordField(
         _("Password"),
         [

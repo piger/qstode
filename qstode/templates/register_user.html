@@ -13,8 +13,8 @@
       <div class="col-md-6 col-md-offset-3">
 
 	{% call h.render_panel(_("Register")) %}
-	  <form method="post" role="form">
-	    {{ form.hidden_tag() }}
+	  <form method="post" role="form" {%- if form.errors %}class="error"{%- endif %}>
+	      {{ form.hidden_tag() }}
 
 	    {{ h.render_field(form.display_name) }}
 	    {{ h.render_field(form.username) }}

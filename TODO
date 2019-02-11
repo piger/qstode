@@ -1,1 +1,4 @@
 - Tag objects should be deleted when no related entry is found on bookmark_tags (i.e. when a tag is not used on any bookmark)
+- tag boxes: https://jsfiddle.net/2gvdsvos/4/
+- suggested tags
+  - if the URL was already posted and is public, suggest tags

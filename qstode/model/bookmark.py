@@ -10,6 +10,7 @@
 import re
 import math
 from datetime import datetime, timedelta
+from typing import List
 import sqlalchemy.types
 from sqlalchemy import desc, func, and_, not_, or_, cast, distinct
 from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
@@ -92,43 +93,14 @@ class Tag(db.Base):
         return query
 
     @classmethod
-    def broken_get_related(cls, tags, max_results=10):
+    def get_related(cls, tags: List[str], max_results=10, user=None):
         """
         Returns a list of tuples (Tag.id, Tag.name, count) for each Tag related
         to `tags`, which is a list of tag names.
-        """
-        assert isinstance(tags, list), "The 'tags' parameter must be a list"
 
-        # enforce lowercase
-        tags = [tag.lower() for tag in tags]
-        # get the IDs for 'tags'
-        tags_ids = [tag.id for tag in Tag.get_many(tags)]
+        The generated SQL query used to hang MySQL 5.5.46-0+deb7u1.
 
-        subq = (
-            db.Session.query(bookmark_tags.c.bookmark_id)
-            .filter(bookmark_tags.c.tag_id.in_(tags_ids))
-            .group_by(bookmark_tags.c.bookmark_id)
-            .having(func.count(bookmark_tags.c.tag_id) == len(tags_ids))
-        )
-
-        q = (
-            db.Session.query(cls.id, cls.name, func.count("*").label("tot"))
-            .select_from(bookmark_tags)
-            .join(cls, bookmark_tags.c.tag_id == cls.id)
-            .filter(and_(bookmark_tags.c.bookmark_id.in_(subq), not_(cls.id.in_(tags_ids))))
-            .group_by(cls.id)
-            .order_by(desc("tot"))
-            .limit(max_results)
-        )
-
-        return q.all()
-
-    @classmethod
-    def get_related(cls, tags, max_results=10):
-        """
-        A better version of that query which doesn't hang MySQL 5.5.46-0+deb7u1.
-
-        As explained here:
+        SQL query as explained here:
         http://stackoverflow.com/questions/4483357/join-instead-of-subquery-for-related-tags
         """
         assert isinstance(tags, list), "The 'tags' parameter must be a list"
@@ -138,14 +110,33 @@ class Tag(db.Base):
         # get the IDs for 'tags'
         tags_ids = [tag.id for tag in Tag.get_many(tags)]
 
+        # build the subquery first: the subquery fetch all the bookmark ids of Bookmarks having
+        # (all?)  `tags` among their tags.
+        subq = db.Session.query(bookmark_tags.c.bookmark_id).join(
+            Bookmark, Bookmark.id == bookmark_tags.c.bookmark_id
+        )
+        if user is None:
+            # Exclude private Bookmarks
+            subq = subq.filter(Bookmark.private == False)  # noqa
+        else:
+            # Exclude private Bookmarks but include user's bookmarks
+            subq = subq.filter(
+                or_(
+                    Bookmark.private == False,  # noqa
+                    and_(Bookmark.private == True, Bookmark.user_id == user.id),  # noqa
+                )
+            )
+
         subq = (
-            db.Session.query(bookmark_tags.c.bookmark_id)
-            .filter(bookmark_tags.c.tag_id.in_(tags_ids))
+            # Only include Bookmarks which tags matches our `tags`
+            subq.filter(bookmark_tags.c.tag_id.in_(tags_ids))
             .group_by(bookmark_tags.c.bookmark_id)
             .having(func.count(bookmark_tags.c.tag_id) == len(tags_ids))
             .subquery()
         )
 
+        # the query does a count() of tags joining the table `bookmark_tags`, only including
+        # bookmarks from the subquery, only including tags from `tags`.
         q = (
             db.Session.query(cls.id, cls.name, func.count("*").label("tot"))
             .select_from(bookmark_tags)

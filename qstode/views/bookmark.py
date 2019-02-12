@@ -65,7 +65,11 @@ def tagged(tags, page):
     bookmarks = bookmarks.paginate(page, app.config["PER_PAGE"])
 
     if app.config["ENABLE_RELATED_TAGS"]:
-        related = Tag.get_related(tags)
+        if current_user.is_authenticated:
+            kwargs = dict(user=current_user)
+        else:
+            kwargs = {}
+        related = Tag.get_related(tags, **kwargs)
     else:
         related = []
 

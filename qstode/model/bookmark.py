@@ -117,13 +117,13 @@ class Tag(db.Base):
         )
         if user is None:
             # Exclude private Bookmarks
-            subq = subq.filter(Bookmark.private == False)  # noqa
+            subq = subq.filter(Bookmark.private == false())
         else:
             # Exclude private Bookmarks but include user's bookmarks
             subq = subq.filter(
                 or_(
-                    Bookmark.private == False,  # noqa
-                    and_(Bookmark.private == True, Bookmark.user_id == user.id),  # noqa
+                    Bookmark.private == false(),
+                    and_(Bookmark.private == true(), Bookmark.user_id == user.id),
                 )
             )
 

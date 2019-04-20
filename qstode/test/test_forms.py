@@ -139,10 +139,11 @@ class BookmarkFormTest(BookmarkFormBaseTest):
             "title": "A new title",
             "url": "http://internet.com",
             "private": False,
-            # FUCK FUCK FUCK
+            # You MUST NOT pass a list here!
             # "tags": ["mordor", "ring", "tolkien"],
             "tags": "mordor, ring, tolkien",
             "notes": "it's beautiful",
+            "next": "/",
         }
         result = self.client.post(url_for("edit_bookmark", bId=bookmark.id), data=form)
         self.assertRedirects(result, url_for("index"))

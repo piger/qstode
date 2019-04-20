@@ -40,5 +40,8 @@ class RedirectForm(FlaskForm):
     def redirect(self, endpoint="index", **values):
         if is_safe_url(self.next.data):
             return redirect(self.next.data)
+
+        # TODO From Werkzeug 0.15.0 this code apparently is never reached when you create a
+        # RedirectForm with an empty `next` attribute and call form.redirect("something").
         target = get_redirect_target()
         return redirect(target or url_for(endpoint, **values))

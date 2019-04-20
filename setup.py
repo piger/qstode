@@ -26,7 +26,7 @@ setup(
         "Flask-Babel==0.12.2",
         "Flask-Login==0.4.1",
         "Flask-WTF==0.14.2",
-        "SQLAlchemy==1.2.17",
+        "SQLAlchemy==1.3.3",
         "WTForms==2.2.1",
         "alembic==1.0.7",
         "iso8601==0.1.12",

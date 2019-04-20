@@ -14,6 +14,9 @@ from wtforms import HiddenField
 
 
 # Secure Redirect-Back: http://flask.pocoo.org/snippets/63/
+# NOTE: this code was copied before werkzeug 0.15.0 and is unmaintaned.
+
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
@@ -38,10 +41,8 @@ class RedirectForm(FlaskForm):
             self.next.data = get_redirect_target() or ""
 
     def redirect(self, endpoint="index", **values):
-        if is_safe_url(self.next.data):
+        if self.next.data and is_safe_url(self.next.data):
             return redirect(self.next.data)
 
-        # TODO From Werkzeug 0.15.0 this code apparently is never reached when you create a
-        # RedirectForm with an empty `next` attribute and call form.redirect("something").
         target = get_redirect_target()
         return redirect(target or url_for(endpoint, **values))

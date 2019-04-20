@@ -143,7 +143,6 @@ class BookmarkFormTest(BookmarkFormBaseTest):
             # "tags": ["mordor", "ring", "tolkien"],
             "tags": "mordor, ring, tolkien",
             "notes": "it's beautiful",
-            "next": "/",
         }
         result = self.client.post(url_for("edit_bookmark", bId=bookmark.id), data=form)
         self.assertRedirects(result, url_for("index"))

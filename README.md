@@ -10,6 +10,8 @@ bookmark feed) are missing.
 
 ## Project status
 
+**THIS PROJECT IS UNMAINTAINED**
+
 QStode is mostly usable (read: it's **beta**) even if it still lacks
 some features and many things could be improved.
 

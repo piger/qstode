@@ -21,7 +21,7 @@ setup(
     license="BSD",
     long_description=__doc__,
     install_requires=[
-        "Babel==2.6.0",
+        "Babel==2.9.1",
         "Flask==1.0.2",
         "Flask-Babel==0.12.2",
         "Flask-Login==0.4.1",
